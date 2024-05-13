@@ -1,4 +1,4 @@
-# nodejs 3기 Basic Class
+# nodejs Basic Class
 
 ## 목표
 - 기본적인 웹 통신, 웹 서비스에 대한 흐름을 익힌다.
