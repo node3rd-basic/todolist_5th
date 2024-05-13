@@ -15,10 +15,10 @@
 - 전수원 : swjeon0330@gmail.com
 - 이동효 : idonghyo2@gmail.com
 - 황인건 : kikisushi24@gmail.com
+- 이현우 : gjtja7@naver.com
 
 ## 미제출
 - 민수현
-- 이현우
 - 신이지니 (결석)
 - 박순호 
 - 강하린 (결석)
