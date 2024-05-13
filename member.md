@@ -1,5 +1,5 @@
 ## member
-- 김진서 : kalum241@gmail.com
+- 김진서 : jskim5701@gmail.com
 - 구남욱 : 9redflame@gmail.com
 - 나지윤 : naji30@naver.com
 - 김헌선 : n960326@gmail.com
@@ -16,9 +16,9 @@
 - 이동효 : idonghyo2@gmail.com
 - 황인건 : kikisushi24@gmail.com
 - 이현우 : gjtja7@naver.com
+- 신이지니 : q1887156@gmail.com
+- 박순호 : shpark694576@gmail.com
 
 ## 미제출
 - 민수현
-- 신이지니 (결석)
-- 박순호 
 - 강하린 (결석)
