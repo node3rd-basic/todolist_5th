@@ -1,7 +1,7 @@
 ## member
 - 김진서 : jskim5701@gmail.com
 - 구남욱 : 9redflame@gmail.com
-- 나지윤 : naji30@naver.com
+- 나지윤 : 8naji@naver.com
 - 김헌선 : n960326@gmail.com
 - 황민도 : windo0602@naver.com
 - 박서진 : bym401543@gmail.com
