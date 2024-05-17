@@ -7,6 +7,8 @@ git clone https://~~~~~~
 
 git add 해당파일 또는 git add .
 
+그런데 git add . 이 아니고 git add -A를 사용하라고 하셨음!
+
 이후, 이 파일이나 이 코드들을 올려줘! 라고 하는 명령어는 git commit -m “testfile” 이렇게!
 
 그리고 git status 를 해보면, 깨끗하다는 창이 뜸
