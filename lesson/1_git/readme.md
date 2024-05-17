@@ -6,6 +6,9 @@
 ### remote add origin
 
 ### clone
+```bash
+git clone https://github.com/node3rd-basic/todolist_5th.git
+```
 
 ## 주요 상태
 
@@ -30,3 +33,9 @@
 ### checkout
 
 ### add
+
+## 코드 합치기
+
+### merge
+
+### pull request
