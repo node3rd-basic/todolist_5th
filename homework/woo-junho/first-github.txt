@@ -1,1 +1,33 @@
-깃헙 첫번째 과제
+오늘 배운 내용
+git clone https://~~~~~~
+
+-이상태는 Git 에서 코드변경을 추적하지 않음
+
+뭔가 파일을 추가하거나, 코드를 수정한 후 에는
+
+git add 해당파일 또는 git add .
+
+이후, 이 파일이나 이 코드들을 올려줘! 라고 하는 명령어는 git commit -m “testfile” 이렇게!
+
+그리고 git status 를 해보면, 깨끗하다는 창이 뜸
+
+추적이 되고 있을 때, 파일 수정을 하면 unstaged 라는 상태가 되있음
+
+이럴 때는 git add testfile.txt 또는 git add -A 하면 all file 올림
+
+git - b cehckout feature/movie-list
+
+cehckout 할 때 없는 브랜치를 만들고 이동하려면 git cehckout -b 를 해주면 된다!
+
+
+git checkout -b homework/jinser_kim-github
+
+git commit -am”첫번째 과제
+
+깃헙에 과제 제출하는 실습 과제”
+
+[김진서/github] 첫번째 깃헙 과제
+
+내용에는 뭘 했는지 적기
+
+첫번째 깃험 과제를 위한 파일 생성과, push 실습
