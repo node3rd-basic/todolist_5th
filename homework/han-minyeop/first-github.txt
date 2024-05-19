@@ -1,0 +1,28 @@
+[5월 17일 금요일]
+
+Git tracked   -> Git이 버전 관리하고 있는 파일들. 이는 Unmodified, Modified, Staged 상태
+    untracked -> Git이 아직 버전 관리에 포함시키지 않은 파일들
+
+=> git status 사용해서 어떤 파일이 추적되고 있는지 어떤 파일이 미추적 상태인지 알 수 있다
+
+파일 생성 -> git add . -> git commit -m "" -> git push
+파일 수정 -> git add . -> git commit -m "" -> git push
+        ->       git commit am""         ->
+git add .  -> 현재 디렉터리와 하위 디렉터리에서 변경된 파일과 새로 추가된 파일만 인덱스에 추가합니다.
+git add -A -> 프로젝트의 모든 변경사항(변경된 파일, 새로 추가된 파일, 삭제된 파일)을 인덱스에 추가합니다.
+
+프로젝트 전체의 변경사항을 한 번에 커밋하려면 git add -A를 사용
+특정 디렉터리의 변경사항만 추가하려면 git add .를 사용
+
+Branch -> 독립적인 작업 테이블
+
+git checkout -b <Branch name>
+
+새로운 <Branch name> 브랜치로 전환
+
+git pull origin main
+
+[숙제 제출 브랜치 양식]
+git checkout -b homework/han-minyeop-github
+
+git commit am"첫번째 과제"
