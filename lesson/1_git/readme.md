@@ -1,5 +1,33 @@
 # GIT
 ![스크린샷 2024-05-17 오후 9.16.33 3.png](..%2Fimages%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-05-17%20%EC%98%A4%ED%9B%84%209.16.33%203.png)
+
+## 우리들만의 요약
+### 파일 생성시
+```bash
+# 생성된 파일 git이 추적 (untracked -> tracked) 하도록 추가 한다 
+git add -A
+
+# 생성된 파일에 코딩 후 수정 내용을 commit 한다 (작업 내용을 남긴다)
+git commit -am "커밋 메세지"
+
+# 작업 한 내용을 github 에 올린다.
+git push origin {브랜치명}
+```
+
+### 파일 수정시
+```bash
+# 수정된 내용을 commit 할수 있는 상태로 변경 (unstaged -> staged) 과 동시에 커밋 한다.
+git commit -am "커밋 메세지"
+
+# 작업 한 내용을 github 에 올린다.
+git push origin {브랜치명}
+```
+
+- 당연하겠지만 push 를 하면 commit 된 모든 내용들이 한꺼번에 push 된다.
+- git status 를 통해 현재 파일들의 상태를 자주 확인하며 명령한다.
+- UI 툴을 사용하면 편하지만, git 에 대한 내용을 이해하기에는 효율적이지 않기에 당분간 git bash | terminal 을 이용학여 사용한다 (복붙 금지, 직접 작성)
+
+
 ## github 의 코드 로컬로 셋팅
 ### init
 - 현재 디텍토리를 git으로 관리하겠다는 명령어
