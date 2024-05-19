@@ -61,9 +61,15 @@ git commit -am "커밋 메시지"
 
 ### pull
 - remote(github)의 변경사항을 로컬로 가져옴
+```bash
+git pull origin {branch name}
+```
 
 ### push
 - 로컬의 변경사항을 remote (github) 로 보냄
+```bash
+git push origin {branch name}
+```
 
 ### checkout
 - branch를 변경
