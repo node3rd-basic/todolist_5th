@@ -7,14 +7,14 @@
 import express from 'express';
 //통신 가능 프로그램 정의, 연결포트 정의
 const app = express();
-const PORT = 3000;
+const port = 3000;
 //내가 요청받을 메뉴판 /주소로, 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 //항상듣고 있어, 포트번호 3000번 열고 듣고 있다가 콘솔에 찍어줘
-app.listen(PORT, () => {
-  console.log(PORT, '포트로 서버가 열렸어요!');
+app.listen(port, () => {
+  console.log(port, '포트로 서버가 열렸어요!');
 });
 
 //import express from 'express';
