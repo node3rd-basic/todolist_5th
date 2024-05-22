@@ -13,7 +13,7 @@ main branch 에서 각자의 브랜치를 생성한다.
 ##### homework/영문이름-과제이름
 ex) github 과제 제출 브랜치
 ```
-/homework/woojunho-github
+homework/woojunho-github
 ```
 > 과제 이름은 주차에 맞게 제공할 예정
 
