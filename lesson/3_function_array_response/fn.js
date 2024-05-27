@@ -112,3 +112,13 @@ const 베이직반_공주머니 = 반표기된_공주머니.filter(공 => {
 
 console.log("공주머니", 공주머니)
 console.log("베이직반_공주머니", 베이직반_공주머니)
+
+
+const 할일  = {
+    id: 1,
+    name: "할일1",
+    isDone: false
+}
+
+console.log(할일.name)
+console.log(할일["name"])
