@@ -9,6 +9,13 @@
 
 # 비구조화 할당
 - sample.js 확인
+
+# 조회 sample API
+- 할일 목록들 조회
+- 할일 목록 한개 조회
+
+## restApi 정리
+
 # 구조 분해 할당
 
 # 과제 :  read-api-sample
