@@ -11,10 +11,10 @@
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css'>
     <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
     <link rel="stylesheet" href="css/style.css">
-    <script src="script/auth.js"></script>
-    <script>
-        const {token, requireLogin} = auth()
-    </script>
+<!--    <script src="script/auth.js"></script>-->
+<!--    <script>-->
+<!--        const {token, requireLogin} = auth()-->
+<!--    </script>-->
     <style>
         #user-info {
             color: #fff;
@@ -26,16 +26,16 @@
 <body class="body">
 <div class="container">
     <div class="today"></div>
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4 col-xs-6 col-xs-offset-3">
-            <div id="user-info">
-                [<span id="span-user-email"></span>]
-                <span id="span-user-name"></span>
-                <span id="span-user-role"></span>
-                <button class="btn btn-danger btn-sm" id="btn-log_out">로그아웃</button>
-            </div>
-        </div>
-    </div>
+<!--    <div class="row">-->
+<!--        <div class="col-md-4 col-md-offset-4 col-xs-6 col-xs-offset-3">-->
+<!--            <div id="user-info">-->
+<!--                [<span id="span-user-email"></span>]-->
+<!--                <span id="span-user-name"></span>-->
+<!--                <span id="span-user-role"></span>-->
+<!--                <button class="btn btn-danger btn-sm" id="btn-log_out">로그아웃</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
     <div class="row">
         <div class="col-md-4 col-md-offset-4 col-xs-6 col-xs-offset-3">
             <div class="add-control">
@@ -57,17 +57,17 @@
 <script src="script/script.js"></script>
 <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async () => {
-    const user = await requireLogin()
-    document.getElementById("span-user-name").innerHTML = user.name
-    document.getElementById("span-user-email").innerHTML = user.email
-    document.getElementById("span-user-role").innerHTML = (user.role === "tutor"? "튜터" : "학생")  + "님"
-
-    document.getElementById("btn-log_out").addEventListener("click", (e) => {
-        e.preventDefault()
-        logout()
-    })
-});
+// document.addEventListener("DOMContentLoaded", async () => {
+//     const user = await requireLogin()
+//     document.getElementById("span-user-name").innerHTML = user.name
+//     document.getElementById("span-user-email").innerHTML = user.email
+//     document.getElementById("span-user-role").innerHTML = (user.role === "tutor"? "튜터" : "학생")  + "님"
+//
+//     document.getElementById("btn-log_out").addEventListener("click", (e) => {
+//         e.preventDefault()
+//         logout()
+//     })
+// });
 
 
 </script>

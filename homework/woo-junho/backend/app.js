@@ -22,11 +22,22 @@ app.get('/', (req, res) => {
 
 app.get("/todo-items", (req, res) => {
     res.send([
-        {id: 1, name: "일기 쓰기"},
-        {id: 2, name: "과제 하기"},
-        {id: 3, name: "잠자기"},
-        {id: 4, name: "게임하기"},
-        {id: 5, name: "운동하기"},
+        {
+            "id": 1,
+            "userId": 1,
+            "title": "할일1",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        },
+        {
+            "id": 2,
+            "userId": 1,
+            "title": "할일2",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        }
     ])
 })
 
