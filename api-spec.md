@@ -166,11 +166,12 @@
 - 회원 가입
 ### Request
 #### Body
-| key | type | description |
-| --- | --- | --- |
-| email | string | 이메일 |
+| key      | type | description |
+|----------| --- | --- |
+| email    | string | 이메일 |
 | password | string | 비밀번호 |
-| name | string | 이름 |
+| role     | string | 권한 (tutor \| student) |
+| name     | string | 이름 |
 
 ### 요청 예제
 ```json
@@ -187,9 +188,10 @@
 
 ### response
 #### 응답
-| key | type | description |
-| --- | --- | --- |
-| id | number | 유저 아이디 |
-| email | string | 이메일 |
-| name | string | 이름 |
-| createdAt | string | 생성일 |
+| key       | type | description           |
+|-----------| --- |-----------------------|
+| id        | number | 유저 아이디                |
+| email     | string | 이메일                   |
+| name      | string | 이름                    |
+| role      | string | 권한 (tutor \| student) |
+| createdAt | string | 생성일                   |
