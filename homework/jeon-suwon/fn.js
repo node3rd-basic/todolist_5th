@@ -1,12 +1,14 @@
 // 함수 만드는법 3가지
+
+//함수선언식
 function funcA() {
   console.log("함수A가 호출됨");
 }
-
+//함수표현식
 const funcB = function () {
   console.log("함수B가 호출됨");
 };
-
+//화살표함수
 const arrowfunc = () => {
   console.log("화살표 함수가 호출됨");
 };
@@ -85,8 +87,9 @@ findUserAndCallBack(1, function (user) {
 // find() ex)
 const 공주머니 = ["빨간공", "파란공", "노란공", "초록공", "보라공", "주황공"];
 
-const 공 = 공주머니.find((공) => {
-  return 공;
+const 공 = 공주머니.find((el) => {
+  const tool = el == "공";
+  return tool;
 });
 const 초록공 = 공주머니.find((공) => 공 === "초록공");
 
