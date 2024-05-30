@@ -95,30 +95,6 @@ console.log("빨간공", 빨간공)
 console.log("초록공", 초록공)
 
 // map
-const 반표기된_공주머니 = 공주머니.map(공 => 공 === "초록공" ? 공 + "_챌린지반" : 공 + "_베이직반")
-
-console.log(공주머니)
-console.log(반표기된_공주머니)
 
 // filter
 
-const 베이직반_공주머니 = 반표기된_공주머니.filter(공 => {
-    if (공.includes("스탠다드반")) {
-        return true
-    } else {
-        return false
-    }
-})
-
-console.log("공주머니", 공주머니)
-console.log("베이직반_공주머니", 베이직반_공주머니)
-
-
-const 할일  = {
-    id: 1,
-    name: "할일1",
-    isDone: false
-}
-
-console.log(할일.name)
-console.log(할일["name"])
