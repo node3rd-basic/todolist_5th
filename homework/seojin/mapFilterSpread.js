@@ -3,7 +3,7 @@
 const colors = ["빨강", "파랑", "노랑", "초록", "보라", "주황"];
 
 
-const colors_cloth = colors.map((color => color === "빨강" ? colors + "옷감" : color + "공"))
+const colors_cloth = colors.map((color => color === "빨강" ? color + "옷감" : color + "공"))
 
 console.log(colors_cloth);
 
@@ -16,6 +16,8 @@ const basic_colors = colors_cloth.filter(color => {
         return false
     }
 })
+
+console.log(basic_colors);
 
 // Spread
 
