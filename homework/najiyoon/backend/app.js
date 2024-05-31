@@ -10,8 +10,8 @@ const port = 3000;
 
 //할일목록조회
 app.get('/todo-items', (req, res, next) => {
-const TodoItems = [
-  {
+  const TodoItems = [
+   {
     "id": 1,
     "userId": 1,
     "title": "할일1",
