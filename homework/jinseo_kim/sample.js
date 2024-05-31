@@ -114,7 +114,6 @@ const movieMarvel1 = {
 // 2-3. 내부 데이터에 접근 하여 map() 메소드를 통해 모든 영화 제목앞에 '마블 -' 을 붙여서 출력하기
 const movieMarvel2 = {
   movie: Movie.movie.map((marvel) => ({
-    // ...marvel, // 기존 영화 객체의 모든 속성을 복사/
     id: marvel.id,
     name: "마블 - " + marvel.name, // name 속성에 "마블- "을 붙임
     개봉일: marvel.개봉일,
@@ -129,4 +128,105 @@ console.log(movieMarvel1);
 console.log("================================");
 console.log("영화 제목앞에 마블 - 붙이기, 스프레드 연산자 사용");
 console.log(movieMarvel2);
+console.log("================================");
+
+// 3. push() 배열의 끝에 하나 이상의 요소를 추가
+Movie.movie.push({ id: 31, name: "마블- movie", 개봉일: "2030-12-30" });
+console.log(Movie);
+// { id: 31, name: '마블- movie', '개봉일': '2030-12-30' } 추가
+console.log("================================");
+
+// 4. pop() 배열의 끝에 요소를 제거
+Movie.movie.pop({});
+console.log(Movie);
+// { id: 31, name: '마블- movie', '개봉일': '2030-12-30' } 삭제
+console.log("================================");
+
+// 5. shift() 배열의 첫 번째 요소를 제거
+Movie.movie.shift({});
+console.log(Movie);
+// { id: 1, name: '가디언즈 오브 갤럭시: Volume 3', '개봉일': '2023-05-05' } 삭제
+console.log("================================");
+
+// 6. unshift() 배열의 첫 번째 요소를 추가
+Movie.movie.unshift({ id: 32, name: "마블- movie", 개봉일: "2030-12-30" });
+console.log(Movie);
+// 배열의 맨 앞에 { id: 32, name: "마블- movie", 개봉일: "2030-12-30" } 추가
+console.log("================================");
+
+// 7-1. splice() 배열의 기존 요소를 삭제
+Movie.movie.splice(0, 1);
+console.log(Movie);
+console.log("================================");
+// 배열의 인덱스0번에서 1개의 요소 { id: 32, name: "마블- movie", 개봉일: "2030-12-30" } 삭제
+
+// 7-2. splice() 배열의 기존 요소를 삭제하지 않고 추가
+Movie.movie.splice(0, 0, { id: 10, name: "마블", 개봉일: "2222-22-22" });
+console.log(Movie);
+console.log("================================");
+// 배열의 인덱스0번에서 { id: 32, name: "마블- movie", 개봉일: "2030-12-30" } 추가
+
+// 7-3. splice() 배열의 기존 요소를 대체
+Movie.movie.splice(0, 1, { id: 10, name: "마블", 개봉일: "2222-22-22" });
+console.log(Movie);
+console.log("================================");
+// 배열의 인덱스0번에서 1개의 요소를 { id: 32, name: "마블- movie", 개봉일: "2030-12-30" } 로 대체
+
+// 7-4. splice() 배열에 여러 요소 추가
+Movie.movie.splice(
+  0,
+  0,
+  { id: 10, name: "마블", 개봉일: "2222-22-22" },
+  { id: 10, name: "마블", 개봉일: "2222-22-22" }
+);
+console.log(Movie);
+console.log("================================");
+// 배열의 인덱스0번에서 { id: 32, name: "마블- movie", 개봉일: "2030-12-30" } 를 두개 추가
+
+// 8-1. sort() 배열의 요소를 정렬 - ID 내림차순
+Movie.movie.sort(function (b, a) {
+  return a.id - b.id;
+});
+console.log(Movie);
+console.log("================================");
+
+// 8-2. sort() 배열의 요소를 정렬 - name 오름차순, 내림차순
+// 오름차순
+Movie.movie.sort((a, b) => a.name.localeCompare(b.name));
+console.log(Movie);
+
+// 내림차순
+Movie.movie.sort((a, b) => a.name.localeCompare(b.name) * -1);
+console.log(Movie);
+Movie.movie.sort((b, a) => a.name.localeCompare(b.name));
+console.log(Movie);
+Movie.movie.sort((a, b) => b.name.localeCompare(a.name));
+console.log(Movie);
+console.log("================================");
+
+// 8-3. sort() 배열의 요소를 정렬 - 개봉일 오름차순, 내림차순
+// 오름차순
+Movie.movie.sort((a, b) => new Date(a.개봉일) - new Date(b.개봉일));
+console.log(Movie);
+console.log("================================");
+
+//내림차순
+Movie.movie.sort((a, b) => new Date(b.개봉일) - new Date(a.개봉일));
+console.log(Movie);
+console.log("================================");
+
+// 9. reverse() 배열의 요소를 역순으로 정렬
+Movie.movie.reverse();
+console.log(Movie);
+console.log("================================");
+
+// 10. join() 배열의 이름 요소를 연결해 하나의 문자열로 출력
+const joinMovie = Movie.movie.map((movie) => movie.name).join(", ");
+console.log(joinMovie);
+
+const joinMovie2 = Movie.movie.map((movie) => movie.name).join(" / ");
+console.log(joinMovie2);
+
+const joinMovie3 = Movie.movie.map((movie) => movie.name).join(" ");
+console.log(joinMovie3);
 console.log("================================");

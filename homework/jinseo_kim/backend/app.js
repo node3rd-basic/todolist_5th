@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const app = express();
 const port = 3000;
 
@@ -11,6 +11,15 @@ app.listen(port, () => {
 });
 
 // app.get 으로 할일목록 , 할일 목록중 한개 조회 하기 API 생성
-//  2번 과제는 기존 homework/{이름}/backend/app.js 에 추가 작성 하시면 됩니다.
-// 2번은 할일목록 서비스를 만들기 위한 백엔드 프로그램의 일부 입니다.
-// 그래서 작성후에 node app.js 를 통해 실행 시켜보시고 브라우저등에서 호출해서 작성한 것이 잘 조회 되는지까지 해보셔야 합니다.
+const todolists = [
+  { id: 1, task: "SA 작성" },
+  { id: 2, task: "API 명세서 작성 " },
+  { id: 3, task: "와이어프레임 작성" },
+  { id: 4, task: "API 할당" },
+  { id: 5, task: "기능구현" },
+  { id: 6, task: "프로젝트 테스트" },
+  { id: 7, task: "퍼블리싱" },
+];
+app.get("/todolists", (req, res, next) => {
+  return res.send(todolists);
+});
