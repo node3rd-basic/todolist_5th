@@ -148,3 +148,4 @@ const numbers5 = [1, 2, 3, 4];
 const newNumbers5 = [...numbers5, 5];
 
 console.log(newNumbers5);
+
