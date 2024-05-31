@@ -1,25 +1,62 @@
-// express 사용법 작성
-// pull request에 json 내용정리작성
-//여지껏 package.json은 당연히 밖에다 저장되는 줄 알았는데 파일을 선택해서 들어오니 안에만 가능..
-//yarn init -y 하고 yarn add express 함
-// app.js
-// express 사용할 수 있도록 함
-import express from 'express';
-//통신 가능 프로그램 정의, 연결포트 정의
+//할일 api 만들기 
+// # 할일 관리 프로그램 API 명세서
+
+import express from "express";
+
 const app = express();
 const port = 3000;
-//내가 요청받을 메뉴판 /주소로, 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-//항상듣고 있어, 포트번호 3000번 열고 듣고 있다가 콘솔에 찍어줘
-app.listen(port, () => {
-  console.log(port, '포트로 서버가 열렸어요!');
+
+
+//할일목록조회
+app.get('/todo-items', (req, res, next) => {
+    const TodoItems = [
+        {
+            "id": 1,
+            "userId": 1,
+            "title": "할일1",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        },
+        {
+            "id": 2,
+            "userId": 1,
+            "title": "할일2",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        }
+    ]
+    res.send(TodoItems);
+})
+
+//할일목록 1개 조회
+app.get('/todo-itmes/:id', (req, res, next) => {
+    const id = req.params.id
+    const TodoItems = [
+        {
+            "id": 1,
+            "userId": 1,
+            "title": "할일1",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        },
+        {
+            "id": 2,
+            "userId": 1,
+            "title": "할일2",
+            "doneAt": "2021-08-01",
+            "createdAt": "2021-08-01",
+            "updatedAt": "2021-08-01"
+        }
+
+    ];
+    const TodoItem = TodoItems.find((TodoItem) =>
+        TodoItem.id === +id)
+    res.send(TodoItem);
 });
 
-//import express from 'express';
-//const app = express();
-//const PORT = 3000;
-//app.get('/', (req, res) => {
-    // return 
-// })
+app.listen(port, () => {
+    console.log(port, '포트로 서버가 열렸어요!');
+});

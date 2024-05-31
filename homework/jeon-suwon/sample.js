@@ -48,14 +48,17 @@ function solution(sizes) {
 }
 
 //filter
+//기본 짝수만 가져오기
 const filternumbers = [1, 2, 3, 4, 5, 6];
 const evens = filternumbers.filter((num) => num % 2 === 0);
 console.log(evens); // [2, 4, 6]
 
+//특정값 하나 빼기
 const number = [1, 2, 3, 4, 5];
 const withoutThree = number.filter((num) => num !== 3);
 console.log(withoutThree); // [1, 2, 4, 5]
 
+// 객체안에 필터 사용
 const user = [
   { name: "Alice", age: 25 },
   { name: "Bob", age: 30 },
@@ -64,8 +67,9 @@ const user = [
 const adults = users.filter((user) => user.age >= 30);
 console.log(adults); // [{ name: 'Bob', age: 30 }, { name: 'Charlie', age: 35 }]
 
+// 객체안에 특정 키값만 가져오기
 const items = [{ id: 1, name: "item1" }, { id: 2, name: "item2" }, { id: 3 }];
-const itemsWithName = items.filter((item) => item.name !== "");
+const itemsWithName = items.filter((item) => item.name !== undefined);
 console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 console.log(itemsWithName); // [{ id: 1, name: 'item1' }, { id: 2, name: 'item2' }]
 
