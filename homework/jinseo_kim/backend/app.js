@@ -95,3 +95,29 @@ app.get("/todo-items/:id", (req, res) => {
   res.send(todoItem);
   // todoItem 상수값을 res.send로 보낸다.
 });
+
+// app.post 로 할일목록 생성하기
+app.post("/todo-items", (req, res) => {
+  const { title } = req.body;
+  // 클라이언트로 부터 받은 요청에서 title 속성을 구조분해할당을 통해 추출한다.
+
+  const newId = todoItems[todoItems.length - 1]
+    ? // todoItems의 길이에서 -1을 한다, 즉 todoItems 배열의 길이, 마지막 항목을 나타낸다.
+      todoItems[todoItems.length - 1].id + 1
+    : 1;
+  // 삼항연산자를 사용하여 배열의 길이가 있다면 +1을, 배열의 길이가 없다면 1을 할당한다.
+
+  const newTodoItem = {
+    id: newId,
+    userId: 1,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+  // 새로운 할일목록 객체를 생성한다.
+  todoItems.push(newTodoItem);
+  // 전역변수로 지정된 todoItems에 새롭게 생성한 할일객체를 push 한다
+  res.send(newTodoItem);
+  // 새롭게 생성한 할일객체를 res.send로 보낸다.
+});
