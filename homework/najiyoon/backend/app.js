@@ -85,7 +85,7 @@ app.get('/todo-itmes/:id', (req, res, next) => {
 app.listen(port, () => {
     console.log(port, '포트로 서버가 열렸어요!');
 });
-// - 과제 명 register-todo-item
+// - 과제명 register-todo-item
 // - 요청자가 값을 전달 하고 백엔드 프로그램이 값을 받는 3가지 방법 정리
 // - frontend/index.html 할일 목록들 보여지도록 api 구현
 // - frontend/index.html 할밀 목록 추가되도록 api 구현
