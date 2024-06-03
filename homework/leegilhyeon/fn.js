@@ -59,6 +59,4 @@ const movieData = [
 //해리포터 영화정보 찾기
 const movieSerch = movieData.find(({name})=>name === "해리포터");
 
-console.log(movieSerch)
-
-
+console.log(movieSerch)  //{ id: 7, name: '해리포터', '평점': '9.5점' }
