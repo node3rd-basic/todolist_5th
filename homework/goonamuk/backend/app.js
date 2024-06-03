@@ -110,15 +110,15 @@ const todoData = [
 ];
 
 //todoData의 전체 리스트 get(READ)
-app.get("/todo-item", (res, req) => {
+app.get("/todo-item", (req, res) => {
   res.send(todoData);
 });
 
 //특정 id 의 todoData를 조회하는 get(READ)
-app.get("/todo-item/:id", (res, req) => {
-  const userId = req.params.userId;
+app.get("/todo-item/:id", (req, res) => {
+  const id = Number(req.params.id);
   const checkData = todoData.find((todo) => todo.id === id);
-  return res.statusCode(200).json({ todoData });
+  res.status(200).json({ checkData });
 });
 /*
 .listen <= 포트 번호가 들어오면 실행
