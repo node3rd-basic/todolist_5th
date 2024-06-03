@@ -52,6 +52,9 @@ const PORT = 3000;
     res.send("hello world") <= res로 반환할 내용
 }
 */
+
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("hello world");
 });
@@ -163,6 +166,15 @@ const todoData = [
 4. 과정 모두를 ChatGPT에게 알려준 뒤에, 왜 오류가 발생하는지 확인 요청 - html에서 title 필드가 없을 가능성이 있다는 답변 => 튜터님 작업 시에는 잘 되었음
 
 ????
+
+이유를 찾았다!
+원인 : app.use(express.json()) <= 이걸 안 해줬음...ㅋㅋ...
+당연히 const {title} = req.body가 작동할 리 없다(const something = req.body는 express.json에서 정의되어 있기 때문에)
+
+두 번째 문제
+: newTodoData를 json으로 받아오지 않고 todoData를 json으로 받아오니 undefined 발생
+당연함... todoData는 하나의 객체로만 이뤄져있지 않음...
+왜 return res.status(201).json({ newTodoData })를 해주어야 하는가? => fe에서 하나의 obj에 대응해서 화면에 뿌려주도록 설정했기 때문에.
 */
 app.post("/todo-items", (req, res) => {
   const newTodoId = todoData[todoData.length - 1]
@@ -180,7 +192,7 @@ app.post("/todo-items", (req, res) => {
 
   todoData.push(newTodoData);
 
-  return res.status(201).json({ todoData });
+  return res.status(201).json({ newTodoData });
 });
 
 //todoData의 전체 리스트 get(READ)
