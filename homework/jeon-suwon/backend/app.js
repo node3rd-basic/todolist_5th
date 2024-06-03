@@ -10,14 +10,24 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.get("/movie", (req, res) => {
+app.get("/todo-items", (req, res) => {
   const moviedata = [
-    { id: 1, name: "영화1", 개봉일: "2024-05-11" },
-    { id: 2, name: "영화2", 개봉일: "2024-05-12" },
-    { id: 3, name: "영화3", 개봉일: "2024-05-13" },
-    { id: 4, name: "영화4", 개봉일: "2024-05-14" },
-    { id: 5, name: "영화4", 개봉일: "2024-05-14" },
-    { id: 6, name: "영화4", 개봉일: "2024-05-14" },
+    {
+      id: 1,
+      userId: 1,
+      title: "과제하기",
+      doneAt: "2021-08-01",
+      createdAt: "2021-08-01",
+      updatedAt: "2021-08-01",
+    },
+    {
+      id: 2,
+      userId: 1,
+      title: "TIL작성하기",
+      doneAt: null,
+      createdAt: "2021-08-01",
+      updatedAt: "2021-08-01",
+    },
   ];
   res.send(moviedata);
 });
@@ -42,13 +52,25 @@ app.get("/work", (req, res) => {
   res.send(workdata);
 });
 
-app.get("/work/:userId", (req, res) => {
+app.get("/todo-items/:userId", (req, res) => {
   const userId = req.params.userId;
   const workdata = [
-    { id: 1, title: "공부하기", date: "2024-05-21" },
-    { id: 2, title: "운동하기", date: "2024-05-21" },
-    { id: 3, title: "강의듣기", date: "2024-05-21" },
-    { id: 4, title: "잠자기", date: "2024-05-21" },
+    {
+      id: 1,
+      userId: 1,
+      title: "할일1",
+      doneAt: "2021-08-01",
+      createdAt: "2021-08-01",
+      updatedAt: "2021-08-01",
+    },
+    {
+      id: 2,
+      userId: 1,
+      title: "할일2",
+      doneAt: "2021-08-01",
+      createdAt: "2021-08-01",
+      updatedAt: "2021-08-01",
+    },
   ];
   const selectdata = workdata.find((el) => el.id === Number(userId));
   res.send(selectdata);
