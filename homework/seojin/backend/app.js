@@ -53,6 +53,38 @@ app.post('/todo-items', (req, res) => {
     res.send(newTodoItem);
 });
 
+app.get('/todo-items/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const todoItems = [
+        {
+            id: 1,
+            userId: 1,
+            title: "알고리즘 코드카타풀기",
+            doneAt: null,
+            createdAt: new Date(),
+            updatedAt: null
+        },
+        {
+            id: 2,
+            userId: 1,
+            title: "밥 먹기",
+            doneAt: null,
+            createdAt: new Date(),
+            updatedAt: null
+        },
+        {
+            id: 3,
+            userId: 1,
+            title: "강의 듣기",
+            doneAt: null,
+            createdAt: new Date(),
+            updatedAt: null
+        }
+    ]
+    const todoItem = todoItems.find( todoItem => todoItem.id === id)
+    res.send(todoItem)
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
