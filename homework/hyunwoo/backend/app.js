@@ -1,51 +1,93 @@
-import express from 'express'
-const app = express()
-const port = 3000
+import express from "express";
+import cors from "cors";
 
-app.get('/', (req, res) => {
-    res.send("Hello World!");
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-/** 할일 목록 조회 API */
-app.get('/todolist', (req, res) => {
-const todos = [
-    { id: 1, do: "study-node", where: "home", date: "Everyday" },
-    { id: 2, do: "homework", where: "home", date: "Thursday" },
-    { id: 3, do: "project", where: "home", date: "Wednesday"} ,
-    { id: 4, do: "project-growth", where: "home", date: "Thursday" },
-    { id: 5, do: "algorithm", where: "home", date: "Everyday" },
-    { id: 6, do: "car-wash", where: "car-wash", date: "Sunday" },
-    { id: 7, do: "running", where: "park", date: "Monday" },
-    { id: 8, do: "health", where: "gym", date: "Wednesday" },
-    { id: 9, do: "shopping", where: "mart", date: "Saturday" },
-    { id: 10, do: "cleaning", where: "home", date: "Tuesday" }
-
+const todoItems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "베이직반 과제",
+    doneAt: "2024-06-03",
+    createdAt: new Date(),
+    updatedAt: null,
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: "팀프로젝트",
+    doneAt: "2024-06-07",
+    createdAt: new Date(),
+    updatedAt: null,
+  },
+  {
+    id: 3,
+    userId: 3,
+    title: "알고리즘 코드카타",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  },
+  {
+    id: 4,
+    userId: 4,
+    title: "Node.js 공부",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  },
+  {
+    id: 5,
+    userId: 5,
+    title: "청소",
+    doneAt: "2024-06-04",
+    createdAt: new Date(),
+    updatedAt: null,
+  },
 ];
-    res.status(200).json({ message: '할일 목록이 조회되었습니다.', data: todos});
-} );
 
-/** 할일 상세 조회 API */
-app.get('/todolist/:id', (req, res) => {
-    const todos = [
-        { id: 1, do: "study-node", where: "home", date: "Everyday" },
-        { id: 2, do: "homework", where: "home", date: "Thursday" },
-        { id: 3, do: "project", where: "home", date: "Wednesday"} ,
-        { id: 4, do: "project-growth", where: "home", date: "Thursday" },
-        { id: 5, do: "algorithm", where: "home", date: "Everyday" },
-        { id: 6, do: "car-wash", where: "car-wash", date: "Sunday" },
-        { id: 7, do: "running", where: "park", date: "Monday" },
-        { id: 8, do: "health", where: "gym", date: "Wednesday" },
-        { id: 9, do: "shopping", where: "mart", date: "Saturday" },
-        { id: 10, do: "cleaning", where: "home", date: "Tuesday" }
-    ];
-    const todoId = Number(req.params.id);
-    const todo = todos.find(todos => todos.id === todoId);
+/** 할일 목록들 보여지도록 api 구현 */
+app.get("/todo-items", (req, res) => {
+  res.send(todoItems);
+});
 
-    res.status(200).json({ message: '할일이 조회되었습니다.', data: todo});
-});-
+/** 할일 목록 추가되도록 api 구현 */
+app.post("/todo-items", (req, res) => {
+  const { title } = req.body;
 
+  const newId = todoItems[todoItems.length - 1] ? todoItems[todoItems.length - 1].id + 1 : 1;
 
+  const newTodoItem = {
+    id: newId,
+    userId: 1,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  todoItems.push(newTodoItem);
+
+  res.send(newTodoItem);
+});
+
+/** 할일 한가지 조회되도록 api 구현 */
+app.get("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
+
+  res.send(todoItem);
+});
 
 app.listen(port, () => {
-    console.log(port, '포트로 연결되었습니다.');
+  console.log(port, "포트로 연결되었습니다.");
 });
