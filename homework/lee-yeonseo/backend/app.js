@@ -24,6 +24,7 @@ const todoItems = [
 ]
 
 app.use(cors())
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('안녕하세요');
@@ -41,6 +42,27 @@ app.get('/todo-items/:id', (req, res) => {
 
   return res.send(todoItem)
 });
+
+
+//할 일 등록 api
+app.post('/todo-items', (req,res)=> {
+  const {title} = req.body
+
+  const newTodoId = todoItems[todoItems.length-1]? todoItems[todoItems.length-1].id + 1 : 1
+
+  const newTodoItem = {
+    id: newTodoId,
+    userId: 1,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null
+  }
+
+  todoItems.push(newTodoItem)
+
+  return res.send(newTodoItem)
+})
 
 app.listen(port, () => {
   console.log(`${port}로 서버가 열렸습니다!`);
