@@ -56,70 +56,145 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-//게임 데이터 arr 설정(지역적)
+//게임 데이터 arr 설정
+
+const games = [
+  {
+    game_id: 0,
+    name: "dark soul",
+    genre: "soullike",
+    launch: 2011,
+    maker: "From Software",
+  },
+  {
+    game_id: 1,
+    name: "dark soul2",
+    genre: "soullike",
+    launch: 2014,
+    maker: "From Software",
+  },
+  {
+    game_id: 2,
+    name: "dark soul3",
+    genre: "soullike",
+    launch: 2016,
+    maker: "From Software",
+  },
+  {
+    game_id: 3,
+    name: "elden ring",
+    genre: "soullike",
+    launch: 2022,
+    maker: "Bandai Namco",
+  },
+  {
+    game_id: 4,
+    name: "Dave the Diver",
+    genre: "simulation",
+    launch: 2023,
+    maker: "NeoWiz",
+  },
+  {
+    game_id: 5,
+    name: "lies of P",
+    genre: "soullike",
+    launch: 2023,
+    maker: "NeoWiz",
+  },
+  {
+    game_id: 6,
+    name: "Tekken 8",
+    genre: "fight",
+    launch: 2024,
+    maker: "Bandai Namco",
+  },
+];
+
 app.get("/games", (req, res) => {
-  const games = [
-    {
-      name: "dark soul",
-      genre: "soullike",
-      launch: 2011,
-      maker: "From Software",
-    },
-    {
-      name: "dark soul2",
-      genre: "soullike",
-      launch: 2014,
-      maker: "From Software",
-    },
-    {
-      name: "dark soul3",
-      genre: "soullike",
-      launch: 2016,
-      maker: "From Software",
-    },
-    {
-      name: "elden ring",
-      genre: "soullike",
-      launch: 2022,
-      maker: "Bandai Namco",
-    },
-    {
-      name: "Dave the Diver",
-      genre: "simulation",
-      launch: 2023,
-      maker: "NeoWiz",
-    },
-    { name: "lies of P", genre: "soullike", launch: 2023, maker: "NeoWiz" },
-    { name: "Tekken 8", genre: "fight", launch: 2024, maker: "Bandai Namco" },
-  ];
   res.send(games);
+});
+
+// 새 게임 데이터 넣기
+app.post("/games", (req, res) => {
+  const new_game_id = games[games.length - 1]
+    ? games[games.length - 1].id + 1
+    : 1;
+  const { name, genre, launch, maker } = req.body;
+  const newGame = {
+    game_id: new_game_id,
+    name,
+    genre,
+    launch,
+    maker,
+  };
+
+  games.push(newGame);
+
+  return res.status(201).json({ games });
 });
 
 //todoData 선언(전역적)
 const todoData = [
   {
     id: 1,
+    userId: 1,
     title: "할일1",
+    doneAt: "NULL",
     createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
   },
   {
     id: 2,
-    title: "할일2",
+    userId: 1,
+    title: "할일1",
+    doneAt: "NULL",
     createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
   },
 ];
 
+//post하여 create하려고 했지만, 왜인지 모르겠으나 title이 undefined가 되어 작동하지 않음.
+
+/* 
+해결하기 위해 해본 것들 
+1. 전체적인 오타 점검(games로 먼저 post 연습을 한 뒤에, 그걸 바탕으로 작업했기 때문에 혹시라도 games의 것이 남아있는지를 확인)
+2. ES6 문법 대신 title : title으로 명확히 명시
+3. app.post의 위치를 todoData 선언 바로 아래로 변경하여 코드 실행 순서 변경(기존 : app.listen 바로 위에 위치)
+4. 과정 모두를 ChatGPT에게 알려준 뒤에, 왜 오류가 발생하는지 확인 요청 - html에서 title 필드가 없을 가능성이 있다는 답변 => 튜터님 작업 시에는 잘 되었음
+
+????
+*/
+app.post("/todo-items", (req, res) => {
+  const newTodoId = todoData[todoData.length - 1]
+    ? todoData[todoData.length - 1].id + 1
+    : 1;
+  const { title } = req.body;
+  const newTodoData = {
+    id: newTodoId,
+    userId: 1,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  todoData.push(newTodoData);
+
+  return res.status(201).json({ todoData });
+});
+
 //todoData의 전체 리스트 get(READ)
-app.get("/todo-item", (req, res) => {
+app.get("/todo-items", (req, res) => {
   res.send(todoData);
 });
 
 //특정 id 의 todoData를 조회하는 get(READ)
-app.get("/todo-item/:id", (req, res) => {
+app.get("/todo-items/:id", (req, res) => {
   const id = Number(req.params.id);
   const checkData = todoData.find((todo) => todo.id === id);
   res.status(200).json({ checkData });
 });
+
 /*
 .listen <= 포트 번호가 들어오면 실행
 
