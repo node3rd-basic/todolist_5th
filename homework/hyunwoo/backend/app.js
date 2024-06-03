@@ -79,6 +79,15 @@ app.post("/todo-items", (req, res) => {
   res.send(newTodoItem);
 });
 
+/** 할일 한가지 조회되도록 api 구현 */
+app.get("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
+
+  res.send(todoItem);
+});
+
 app.listen(port, () => {
   console.log(port, "포트로 연결되었습니다.");
 });
