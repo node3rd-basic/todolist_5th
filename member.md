@@ -16,3 +16,4 @@
 - 이현우 : gjtja7@naver.com
 - 신이지니 : q1887156@gmail.com
 - 박순호 : shpark694576@gmail.com
+- 김현지 : hjkim678845@gmail.com 
