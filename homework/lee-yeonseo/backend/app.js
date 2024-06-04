@@ -66,19 +66,24 @@ app.post('/todo-items', (req, res) => {
 //할 일 수정 api
 app.put('/todo-items/:id', (req, res) => {
   const { id } = req.params;
-  const idAsNumber = Number(id);
-  if (isNaN(idAsNumber)) {
-    return res.status(400).json({ message: '아이디를 잘못 입력하셨습니다.' });
+  const todoItemId = Number(id);
+
+  if (isNaN(todoItemId)) {
+    return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
   }
 
-  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === idAsNumber);
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
+
+  if (!selectedTodoItem) {
+    return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
+  }
 
   const todoItemIndex = todoItems.indexOf(selectedTodoItem);
-  //없을 때 if문
 
-  const newDoneAt = selectedTodoItem.doneAt == null ? new Date() : null;
-
-  todoItems.splice(todoItemIndex);
+  todoItems.splice(todoItemIndex, 1, {
+    ...selectedTodoItem,
+    doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
+  });
 
   return res.send(todoItems);
 });
