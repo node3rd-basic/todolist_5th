@@ -120,7 +120,6 @@ app.put('/todo-items/:id', async (req, res) => {
     res.send({ result: true})
 })
 
-
 //삭제
 app.delete('/todo-items/:id', (req, res) => {
     const { id } = req.params
