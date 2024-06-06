@@ -62,25 +62,6 @@ app.post("/todo-items", (req, res) => {
   return res.send(items);
 });
 
-app.get("/book", (req, res) => {
-  const bookdata = [
-    { id: 1, name: "책1", 개봉일: "2024-05-21" },
-    { id: 2, name: "책2", 개봉일: "2024-05-22" },
-    { id: 3, name: "책3", 개봉일: "2024-05-23" },
-    { id: 4, name: "책4", 개봉일: "2024-05-24" },
-  ];
-  res.send(bookdata);
-});
-
-app.get("/work", (req, res) => {
-  const workdata = [
-    { id: 1, title: "공부하기", date: "2024-05-21" },
-    { id: 2, title: "운동하기", date: "2024-05-21" },
-    { id: 3, title: "강의듣기", date: "2024-05-21" },
-    { id: 4, title: "잠자기", date: "2024-05-21" },
-  ];
-  res.send(workdata);
-});
 
 app.get("/todo-items/:userId", (req, res) => {
   const userId = req.params.userId;
