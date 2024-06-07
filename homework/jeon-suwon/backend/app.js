@@ -65,25 +65,25 @@ app.post("/todo-items", (req, res) => {
 });
 
 //특정todolist/API조회
-app.get("/todo-items/:userId", (req, res) => {
-  const userId = Number(req.params.userId);
+app.get("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
 
-  const selectdata = tododata.find((el) => el.id === userId);
+  const selectdata = tododata.find((el) => el.id === id);
   res.send(selectdata);
 });
 
 //변경API
-app.post("/todo-items/:userId", (req, res) => {
-  const userId = Number(req.params.userId);
+app.post("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
   const { title } = req.body;
 
-  const selectData = tododata.findIndex((el) => el.id === userId);
+  const selectData = tododata.findIndex((el) => el.id === id);
   if (selectData === -1) {
     return res.json({ massege: "없는 Id입니다." });
   }
 
   const changeData = {
-    id: userId,
+    id: id,
     userId: 1,
     title: title,
     doneAt: null,
@@ -97,10 +97,10 @@ app.post("/todo-items/:userId", (req, res) => {
 });
 
 //삭제API
-app.delete("/todo-items/:userId", (req, res) => {
-  const userId = Number(req.params.userId);
+app.delete("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
 
-  const selectData = tododata.findIndex((el) => el.id === userId);
+  const selectData = tododata.findIndex((el) => el.id === id);
   if (selectData === -1) {
     return res.json({ massege: "없는 Id입니다." });
   }
@@ -112,3 +112,4 @@ app.delete("/todo-items/:userId", (req, res) => {
 app.listen(PORT, () => {
   console.log(`${PORT}포트번호에 연결되었습니다.`);
 });
+
