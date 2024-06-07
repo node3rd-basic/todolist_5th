@@ -156,6 +156,58 @@ app.delete("/todo-items/:id", (req, res) => {
   res.send({ resile: true });
 });
 
+
+const users = [{
+  id: 1,
+  email: "hyunwoo@example.com",
+  password: "1234",
+  role: "student",
+  name: "이현우",
+}];
+
+/** 회원가입 api 구현 */
+app.post("/sign-up", (req, res) => {
+  const { email, password, rePassword, role, name } = req.body;
+
+  if( !email || !password || !rePassword || !role || !name ) {
+    res.status(400).send({
+      result: false,
+      message: "모든 항목을 입력해주세요."
+    });
+    return;
+  };
+
+  if( password !== rePassword ) {
+    res.status(400).send({
+      resule: false,
+      message: "입력한 비밀번호가 일치하지 않습니다."
+    });
+    return;
+  };
+
+  const existingEmail = users.find(users => users.email === email);
+
+  if (existingEmail) {
+    res.status(409).send({
+      result: false,
+      message: "이미 등록된 이메일입니다."
+    });
+  };
+
+  const id = (users.length === 0) ? 1 : users[users.length -1].id + 1;
+
+  const newUser = {
+    id,
+    email,
+    role,
+    name
+  };
+  console.log(newUser);
+  users.push(newUser);
+  console.log(users);
+  res.send(newUser);
+});
+
 app.listen(port, () => {
   console.log(port, "포트로 연결되었습니다.");
 });
