@@ -50,34 +50,34 @@ const game = [
   { name: "Tekken 8", genre: "fight", launch: 2024, maker: "Bandai Namco" },
 ];
 
-// const soulGame = game.filter((game) => game.genre === "soullike");
+const soulGame = game.filter((game) => game.genre === "soullike");
 
-// console.log(soulGame);
+console.log(soulGame);
 
-// const soulGame22 = game.filter(
-//   (game) => game.genre === "soullike" && game.launch === 2022
-// );
+const soulGame22 = game.filter(
+  (game) => game.genre === "soullike" && game.launch === 2022
+);
 
-// console.log(soulGame22);
+console.log(soulGame22);
 
-// const oldGame = game.filter((game) => game.launch <= 2020);
+const oldGame = game.filter((game) => game.launch <= 2020);
 
-// console.log(oldGame);
+console.log(oldGame);
 
-// const FromSoul = game.filter((game) =>
-//   game.maker === "From Software" && game.genre === "soullike" ? true : false
-// );
+const FromSoul = game.filter((game) =>
+  game.maker === "From Software" && game.genre === "soullike" ? true : false
+);
 
-// console.log(FromSoul);
+console.log(FromSoul);
 
-// /* json화 */
-// const jsonGame = JSON.stringify(game, null, 2);
-// console.log(jsonGame);
+/* json화 */
+const jsonGame = JSON.stringify(game, null, 2);
+console.log(jsonGame);
 
-// /* spread */
-// const newObj = { ...game };
+/* spread */
+const newObj = { ...game };
 
-// console.log(newObj);
+console.log(newObj);
 
 const newGame = {
   name: "elden ring golden branch",
@@ -88,10 +88,10 @@ const newGame = {
 
 console.log(newGame);
 
-// /* arr에 객체 추가 */
-// const updatedGame = [...game, newGame];
+/* arr에 객체 추가 */
+const updatedGame = [...game, newGame];
 
-// console.log(updatedGame);
+console.log(updatedGame);
 
 const changeGameName = { ...newGame, name: "Elden Ring DLC" };
 

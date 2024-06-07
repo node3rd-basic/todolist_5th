@@ -31,12 +31,16 @@ const tododata = [
   },
 ];
 
+
 // 조회API
+
 app.get("/todo-items", (req, res) => {
   res.send(tododata);
 });
 
+
 // 추가API
+
 app.post("/todo-items", (req, res) => {
   const { title } = req.body;
 
@@ -69,6 +73,7 @@ app.get("/todo-items/:id", (req, res) => {
   const id = Number(req.params.id);
 
   const selectdata = tododata.find((el) => el.id === id);
+
   res.send(selectdata);
 });
 

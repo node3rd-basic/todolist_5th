@@ -17,3 +17,4 @@
 - 신이지니 : q1887156@gmail.com
 - 박순호 : shpark694576@gmail.com
 - 김현지 : hkim678845@gmail.com
+- 민수현 : 깃헙 제출 안함
