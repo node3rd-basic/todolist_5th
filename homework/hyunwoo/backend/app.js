@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = 3000;
@@ -51,6 +52,17 @@ const todoItems = [
     doneAt: null,
     createdAt: new Date(),
     updatedAt: null,
+  },
+];
+
+const secretKey = "slkfjslkdfjoie";
+const users = [
+  {
+    id: 1,
+    email: "hyunwoo@example.com",
+    password: "1234",
+    role: "student",
+    name: "이현우",
   },
 ];
 
@@ -153,59 +165,74 @@ app.delete("/todo-items/:id", (req, res) => {
   // 해당 인덱스에 있는 할일 삭제
   todoItems.splice(indexToDelete, 1);
 
-  res.send({ resile: true });
+  res.send({ result: true });
 });
-
-
-const users = [{
-  id: 1,
-  email: "hyunwoo@example.com",
-  password: "1234",
-  role: "student",
-  name: "이현우",
-}];
 
 /** 회원가입 api 구현 */
 app.post("/sign-up", (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
 
-  if( !email || !password || !rePassword || !role || !name ) {
+  if (!email || !password || !rePassword || !role || !name) {
     res.status(400).send({
       result: false,
-      message: "모든 항목을 입력해주세요."
+      message: "모든 항목을 입력해주세요.",
     });
     return;
-  };
+  }
 
-  if( password !== rePassword ) {
+  if (password !== rePassword) {
     res.status(400).send({
       resule: false,
-      message: "입력한 비밀번호가 일치하지 않습니다."
+      message: "입력한 비밀번호가 일치하지 않습니다.",
     });
     return;
-  };
+  }
 
-  const existingEmail = users.find(users => users.email === email);
+  const existingEmail = users.find((user) => user.email === email);
 
   if (existingEmail) {
     res.status(409).send({
       result: false,
-      message: "이미 등록된 이메일입니다."
+      message: "이미 등록된 이메일입니다.",
     });
-  };
+  }
 
-  const id = (users.length === 0) ? 1 : users[users.length -1].id + 1;
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
 
   const newUser = {
     id,
     email,
+    password,
     role,
-    name
+    name,
   };
   console.log(newUser);
   users.push(newUser);
   console.log(users);
-  res.send(newUser);
+  res.json(newUser);
+});
+
+/** 로그인 api 구현 */
+app.post("/sign-in", (req,res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send({
+      result: false,
+      message: "모든 항목을 입력해주세요",
+    });
+  }
+
+  const { password: _password, ...user} = users.find(user => user.email === email && user.password === password)
+
+  if (!user) {
+    res.status(400).send({
+      result: false,
+      message: "회원 정보가 존재하지 않습니다",
+    });
+    return;
+  };
+  res.json(user);
 });
 
 app.listen(port, () => {
