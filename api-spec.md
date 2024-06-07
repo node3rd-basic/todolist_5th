@@ -162,6 +162,11 @@
 }
 ```
 
+## 응답
+| key | type | description |
+| --- | --- | --- |
+| token | string | 토큰 |
+
 ## `POST` /sign-up
 - 회원 가입
 ### Request
