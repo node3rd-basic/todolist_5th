@@ -209,11 +209,11 @@ app.post("/sign-up", (req, res) => {
   console.log(newUser);
   users.push(newUser);
   console.log(users);
-  res.json(newUser);
+  res.status(200).json(newUser);
 });
 
 /** 로그인 api 구현 */
-app.post("/sign-in", (req,res) => {
+app.post("/sign-in", (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -223,16 +223,30 @@ app.post("/sign-in", (req,res) => {
     });
   }
 
-  const { password: _password, ...user} = users.find(user => user.email === email && user.password === password)
+  const { password: _password, ...user } = users.find(user => user.email === email && user.password === password)
 
   if (!user) {
-    res.status(400).send({
+    res.status(404).send({
       result: false,
       message: "회원 정보가 존재하지 않습니다",
     });
     return;
   };
-  res.json(user);
+
+  const token = jwt.sign(user, secretKey);
+  res.status(200).json({token});
+});
+
+/** 토큰 검증 api 구현 */
+app.get("/users/me", (req, res) => {
+  const token = req.headers.authorization;
+  
+  try{
+  const user = jwt.verify(token, secretKey);
+  res.status(200).json(user);
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다."});
+  };
 });
 
 app.listen(port, () => {
