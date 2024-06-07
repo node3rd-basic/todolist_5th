@@ -116,20 +116,29 @@ app.put('/todo-items/:id', (req, res) => {
 app.delete('/todo-items/:id', (req, res) => {
   const { id } = req.params;
   const todoItemId = Number(id);
+  const token = req.headers.authorization;
 
   if (isNaN(todoItemId)) {
     return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
   }
 
-  const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
+  try {
+    const user = jwt.verify(token, secretKey);
+    const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
 
-  if (todoItemIndex === -1) {
-    return res.status(400).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
+    if (todoItemIndex === -1) {
+      return res.status(400).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
+    }
+    if (todoItems[todoItemIndex].userId !== user.id) {
+      return res.status(401).json({ message: '삭제 권한이 없습니다.' });
+    }
+
+    todoItems.splice(todoItemIndex, 1);
+
+    return res.send(todoItems);
+  } catch (error) {
+    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
   }
-
-  todoItems.splice(todoItemIndex, 1);
-
-  return res.send(todoItems);
 });
 
 //회원가입 api
@@ -169,7 +178,7 @@ app.get('/users/me', (req, res) => {
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, secretKey);
-    return res.status(200).json({ user });
+    return res.status(200).json({ ...user });
   } catch (error) {
     return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
   }
