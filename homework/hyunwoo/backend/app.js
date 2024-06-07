@@ -70,34 +70,42 @@ const users = [
 app.get("/todo-items", (req, res) => {
   const token = req.headers.authorization;
 
-  try{
+  try {
     const user = jwt.verify(token, secretKey);
-    res.status(200).send(todoItems.filter(todoItem => todoItem.userId === user.id));
+    res
+      .status(200)
+      .send(todoItems.filter((todoItem) => todoItem.userId === user.id));
   } catch (error) {
-    res.status(401).json({ message: "권한이 없습니다."});
+    res.status(401).json({ message: "권한이 없습니다." });
   }
 });
 
 /** 할일 목록 추가되도록 api 구현 */
 app.post("/todo-items", (req, res) => {
+  const token = req.headers.authorization;
   const { title } = req.body;
 
-  const newId = todoItems[todoItems.length - 1]
-    ? todoItems[todoItems.length - 1].id + 1
-    : 1;
+  try {
+    const user = jwt.verify(token, secretKey);
+    const newId = todoItems[todoItems.length - 1]
+      ? todoItems[todoItems.length - 1].id + 1
+      : 1;
 
-  const newTodoItem = {
-    id: newId,
-    userId: 1,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
+    const newTodoItem = {
+      id: newId,
+      userId: user.id,
+      title,
+      doneAt: null,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
 
-  todoItems.push(newTodoItem);
+    todoItems.push(newTodoItem);
 
-  res.send(newTodoItem);
+    res.send(newTodoItem);
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다." });
+  }
 });
 
 /** 할일 한가지 조회되도록 api 구현 */
@@ -230,7 +238,9 @@ app.post("/sign-in", (req, res) => {
     });
   }
 
-  const { password: _password, ...user } = users.find(user => user.email === email && user.password === password)
+  const { password: _password, ...user } = users.find(
+    (user) => user.email === email && user.password === password
+  );
 
   if (!user) {
     res.status(404).send({
@@ -238,22 +248,22 @@ app.post("/sign-in", (req, res) => {
       message: "회원 정보가 존재하지 않습니다",
     });
     return;
-  };
+  }
 
   const token = jwt.sign(user, secretKey);
-  res.status(200).json({token});
+  res.status(200).json({ token });
 });
 
 /** 토큰 검증 api 구현 */
 app.get("/users/me", (req, res) => {
   const token = req.headers.authorization;
-  
-  try{
-  const user = jwt.verify(token, secretKey);
-  res.status(200).json(user);
+
+  try {
+    const user = jwt.verify(token, secretKey);
+    res.status(200).json(user);
   } catch (error) {
-    res.status(401).json({ message: "권한이 없습니다."});
-  };
+    res.status(401).json({ message: "권한이 없습니다." });
+  }
 });
 
 app.listen(port, () => {
