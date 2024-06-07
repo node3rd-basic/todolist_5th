@@ -68,7 +68,14 @@ const users = [
 
 /** 할일 목록들 보여지도록 api 구현 */
 app.get("/todo-items", (req, res) => {
-  res.send(todoItems);
+  const token = req.headers.authorization;
+
+  try{
+    const user = jwt.verify(token, secretKey);
+    res.status(200).send(todoItems.filter(todoItem => todoItem.userId === user.id));
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다."});
+  }
 });
 
 /** 할일 목록 추가되도록 api 구현 */
