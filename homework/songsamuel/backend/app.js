@@ -28,7 +28,6 @@ app.use(express.json()); // 브라우져나 express에서 받은 데이터들을
 //     res.send('연습만이 살길이다.5')
 // })
 
-// // (숙제용)목록조회 API
 // app.get("/todolists", (req, res, next) => {
 //   const todolists = [
 //     { id: 1, task: "숨쉬기" },
@@ -42,7 +41,6 @@ app.use(express.json()); // 브라우져나 express에서 받은 데이터들을
 //   return res.send(todolists);
 // });
 
-// // (숙제용)목록 상세조회 API
 // app.get("/todolists/:todolistId", (req, res, next) => {
 //   const todolistId = Number(req.params.todolistId); // 여기서 숫자형으로 바꾸는 이유는 아래의 todo.id와 타입과 정보가 일치해야하기 때문에 숫자형으로 바꾸는 것이다.
 //   // 또한 .todolistId를 작성하는 이유는 URL에 :todolistId에서 받아오는 값이랑 일치해야하기 때문이다.
@@ -62,44 +60,50 @@ app.use(express.json()); // 브라우져나 express에서 받은 데이터들을
 //   return res.send(findtodo);
 // });
 
-// 할일 목록들 API 만들기  (6차 강의)
-app.get("/todo-items", (req, res, next) => {
-  const todoItems = [
-    {
-      id: 1,
-      userId: 1,
-      title: "할일1",
-      doneAt: "2021-08-01",
-      createdAt: "2021-08-01",
-      updatedAt: "2021-08-01",
-    },
-    {
-      id: 2,
-      userId: 1,
-      title: "할일2",
-      doneAt: "2021-08-01",
-      createdAt: "2021-08-01",
-      updatedAt: "2021-08-01",
-    },
-  ];
+// 할일 목록 전역 변수 설정
+const todoItems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 1,
+    title: "할일2",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+];
 
-  res.send(todoItems);
+// 할일 목록들 조회 API 만들기  (6차 강의)
+app.get("/todo-items", (req, res, next) => {
+  const ReadTodoItems = todoItems;
+
+  res.send(ReadTodoItems);
 });
 
 // 할일 목록들 추가 API (6차 강의)
 app.post("/todo-items", (req, res, next) => {
+  // 입력을 받을 데이터
   const { title } = req.body;
-  const todoItems = [
-    {
-      id: 3,
-      userId: 1,
-      title: title,
-      doneAt: null,
-      createdAt: new Date(),
-      updatedAt: null,
-    },
-  ];
 
+  // todo-items 목록에 추가될 새로운 할 일의 틀
+  const creatTodoItems = {
+    id: 3,
+    userId: 1,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  // 새로운 할 일의 틀을 기존의 틀 즉 목록 리스트에 집어넣는(push) 추가하는 코드
+  todoItems.push(creatTodoItems);
   res.send(todoItems);
 });
 
