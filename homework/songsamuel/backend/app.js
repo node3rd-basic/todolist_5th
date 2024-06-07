@@ -91,20 +91,12 @@ app.post("/todo-items", (req, res, next) => {
   const { title } = req.body;
   const todoItems = [
     {
-      id: 1,
+      id: 3,
       userId: 1,
       title: title,
-      doneAt: "2021-08-01",
-      createdAt: "2021-08-01",
-      updatedAt: "2021-08-01",
-    },
-    {
-      id: 2,
-      userId: 1,
-      title: "할일2",
-      doneAt: "2021-08-01",
-      createdAt: "2021-08-01",
-      updatedAt: "2021-08-01",
+      doneAt: null,
+      createdAt: new Date(),
+      updatedAt: null,
     },
   ];
 
