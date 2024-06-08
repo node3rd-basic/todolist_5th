@@ -162,6 +162,11 @@
 }
 ```
 
+## 응답
+| key | type | description |
+| --- | --- | --- |
+| token | string | 토큰 |
+
 ## `POST` /sign-up
 - 회원 가입
 ### Request
@@ -170,6 +175,7 @@
 |----------| --- | --- |
 | email    | string | 이메일 |
 | password | string | 비밀번호 |
+| rePassword | string | 비밀번호 |
 | role     | string | 권한 (tutor \| student) |
 | name     | string | 이름 |
 

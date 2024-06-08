@@ -91,8 +91,9 @@ const 공 = 공주머니.find((el) => {
   const tool = el == "공";
   return tool;
 });
-const 초록공 = 공주머니.find((공) => 공 === "초록공");
+const 초록공 = 공주머니.find((공) => 공 === "공");
 
+console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 console.log("빨간공", 공);
 console.log("초록공", 초록공);
 

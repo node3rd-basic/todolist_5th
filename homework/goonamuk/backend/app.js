@@ -52,74 +52,86 @@ const PORT = 3000;
     res.send("hello world") <= res로 반환할 내용
 }
 */
+
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-//게임 데이터 arr 설정(지역적)
-app.get("/games", (req, res) => {
-  const games = [
-    {
-      name: "dark soul",
-      genre: "soullike",
-      launch: 2011,
-      maker: "From Software",
-    },
-    {
-      name: "dark soul2",
-      genre: "soullike",
-      launch: 2014,
-      maker: "From Software",
-    },
-    {
-      name: "dark soul3",
-      genre: "soullike",
-      launch: 2016,
-      maker: "From Software",
-    },
-    {
-      name: "elden ring",
-      genre: "soullike",
-      launch: 2022,
-      maker: "Bandai Namco",
-    },
-    {
-      name: "Dave the Diver",
-      genre: "simulation",
-      launch: 2023,
-      maker: "NeoWiz",
-    },
-    { name: "lies of P", genre: "soullike", launch: 2023, maker: "NeoWiz" },
-    { name: "Tekken 8", genre: "fight", launch: 2024, maker: "Bandai Namco" },
-  ];
-  res.send(games);
-});
-
-//todoData 선언(전역적)
-const todoData = [
+//todoItems 선언(전역적)
+const todoItems = [
   {
     id: 1,
+    userId: 1,
     title: "할일1",
+    doneAt: "NULL",
     createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
   },
   {
     id: 2,
-    title: "할일2",
+    userId: 1,
+    title: "할일1",
+    doneAt: "NULL",
     createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
   },
 ];
 
-//todoData의 전체 리스트 get(READ)
-app.get("/todo-item", (req, res) => {
-  res.send(todoData);
+//post하여 create하려고 했지만, 왜인지 모르겠으나 title이 undefined가 되어 작동하지 않음.
+
+/* 
+해결하기 위해 해본 것들 
+1. 전체적인 오타 점검(games로 먼저 post 연습을 한 뒤에, 그걸 바탕으로 작업했기 때문에 혹시라도 games의 것이 남아있는지를 확인)
+2. ES6 문법 대신 title : title으로 명확히 명시
+3. app.post의 위치를 todoItems 선언 바로 아래로 변경하여 코드 실행 순서 변경(기존 : app.listen 바로 위에 위치)
+4. 과정 모두를 ChatGPT에게 알려준 뒤에, 왜 오류가 발생하는지 확인 요청 - html에서 title 필드가 없을 가능성이 있다는 답변 => 튜터님 작업 시에는 잘 되었음
+
+????
+
+이유를 찾았다!
+원인 : app.use(express.json()) <= 이걸 안 해줬음...ㅋㅋ...
+당연히 const {title} = req.body가 작동할 리 없다(const something = req.body는 express.json에서 정의되어 있기 때문에)
+
+두 번째 문제
+: newtodoItems를 json으로 받아오지 않고 todoItems를 json으로 받아오니 undefined 발생
+당연함... todoItems는 하나의 객체로만 이뤄져있지 않음...
+왜 return res.status(201).json({ newtodoItems })를 해주어야 하는가? => fe에서 하나의 obj에 대응해서 화면에 뿌려주도록 설정했기 때문에.
+*/
+app.post("/todo-items", (req, res) => {
+  const newTodoId = todoItems[todoItems.length - 1]
+    ? todoItems[todoItems.length - 1].id + 1
+    : 1;
+  const { title } = req.body;
+  const newtodoItems = {
+    id: newTodoId,
+    userId: 1,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  todoItems.push(newtodoItems);
+
+  return res.status(201).json({ newtodoItems });
 });
 
-//특정 id 의 todoData를 조회하는 get(READ)
-app.get("/todo-item/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const checkData = todoData.find((todo) => todo.id === id);
-  res.status(200).json({ checkData });
+//todoItems의 전체 리스트 get(READ)
+app.get("/todo-items", (req, res) => {
+  res.send(todoItems);
 });
+
+//특정 id 의 todoItems를 조회하는 get(READ)
+app.get("/todo-items/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const checkData = todoItems.find((todo) => todo.id === id);
+  res.status(200).json({ ...checkData });
+
+  console.log(checkData);
+});
+
 /*
 .listen <= 포트 번호가 들어오면 실행
 
