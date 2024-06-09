@@ -121,3 +121,66 @@ app.post("/todo-items", (req, res) => {
   res.send(newTodoItem);
   // 새롭게 생성한 할일객체를 res.send로 보낸다.
 });
+
+const users = [
+  {
+    id: 1,
+    email: "test@mail.com",
+    password: "001234",
+    name: "testuser",
+    role: "student",
+  },
+];
+
+app.post("/sign-up", (req, res) => {
+  // 일단 req body를 통해 email / name / password / repassword / role 을 받는다
+  // 그리고 이 내용을 const 에 담는다. 어떻게? 구조분해 할당으로
+  const { name, email, password, repassword, role } = req.body;
+
+  // 그리고 이 필드 중에 없는게 있는지 검사한다.
+  if (!name || !email || !password || !repassword || !role) {
+    res.status(400).send({
+      message: "잘못된 입력값이 있습니다. 값을 다시한번 확인인 해보세요",
+    });
+    return;
+  }
+
+  // 그리고 이 필드 중에 email 필드의 데이터가 중복이 아닌지 검사한다. if가 아니고 cosnt = extinguser 이런걸로
+  const exisUser = users.email;
+  if (exisUser === email) {
+    res.status(400).send({
+      message: "이미 가입된 사용자 입니다.",
+    });
+    return;
+  }
+
+  // 그리고 user id를 검사하여 0일 경우 1을, 그렇지 않은 경우 userid의 길이 +1 한다.
+  //일단 패스
+
+  // password 가 repasswrd 랑 맞는지 확인하기.
+  if (password !== repassword) {
+    res.status(400).send({
+      message: "비밀번호가 일치하지 않아요.",
+    });
+    return;
+  }
+
+  // 그리고 newuser에 담는다.
+  const newuser = {
+    id: 1,
+    name: name,
+    email: email,
+    password: password,
+    repassword: repassword,
+    role: role,
+  };
+
+  // 그리고 users 배열에 newuser를 push 한다.
+  users.push(newuser);
+  console.log(users);
+
+  // 그리고 newuser를 res.send로 보낸다.
+  res.send(newuser);
+});
+
+console.log(users);
