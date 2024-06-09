@@ -7,8 +7,9 @@
 
 const numbers1_0 = [0, 1, 2, 3, 4, 5];
 const indexofZero = numbers1_0.indexOf(0);
-`numbers 배열에서 숫자 ${indexofZero} 인덱스는 ${indexofZero} 입니다. `;
-
+console.log(
+  `numbers 배열에서 숫자 ${indexofZero} 인덱스는 ${indexofZero} 입니다. `
+);
 console.log(indexofZero);
 
 const numbers1_1 = [0, 1, 2, 3, 4, 5];
