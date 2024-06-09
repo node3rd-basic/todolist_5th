@@ -87,9 +87,9 @@ console.log(replaceTen2_2);
 console.log(numbers2_2);
 console.log("........................");
 
-// 03. 음수 인덱스
+// 04. 음수 인덱스
 // 아래 연습문제는 음수 INDEX를 지정하고, 변경할 PROPERTY를 지정하여 배열을 변경한다.
-// 03-1. 음수 인덱스를 사용하여 삭제하기.
+// 04-1. 음수 인덱스를 사용하여 삭제하기.
 const numbers3_0 = [0, 1, 2, 3, 4, 5];
 const minuesIndexDelete0_1 = numbers3_0.splice(-1, 1);
 console.log(minuesIndexDelete0_1);
@@ -105,7 +105,7 @@ const minuesIndexDelete0_3 = numbers3_2.splice(-3, 1);
 console.log(minuesIndexDelete0_3);
 console.log(numbers3_2);
 
-//03-2. 음수 인덱스를 사용하여 추가하기.
+//04-2. 음수 인덱스를 사용하여 추가하기.
 const numbers3_3 = [0, 1, 2, 3, 4, 5];
 const minuesIndexAdd0_0 = numbers3_3.splice(-1, 0, 10);
 console.log(minuesIndexAdd0_0);
@@ -121,7 +121,7 @@ const minuesIndexAdd0_2 = numbers3_5.splice(-3, 0, 10);
 console.log(minuesIndexAdd0_2);
 console.log(numbers3_5);
 
-//03-3. 음수 인덱스를 사용하여 대체하기.
+//04-3. 음수 인덱스를 사용하여 대체하기.
 const numbers3_6 = [0, 1, 2, 3, 4, 5];
 const minuesIndexReplcae0_0 = numbers3_6.splice(-1, 1, 10);
 console.log(minuesIndexReplcae0_0);
