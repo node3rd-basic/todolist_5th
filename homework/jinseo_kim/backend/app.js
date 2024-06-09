@@ -121,12 +121,30 @@ app.delete("/todo-items/:id", (req, res) => {
   const todoItemId = Number(id);
 
   // todoItemIndex 라는 변수에 todoItems 배열에서 일치하는 값을 찾아 저장한다.
-  // 조건은 요청받은 id값이 저장된 todoItemId 와 todoItems 배열에서의 id를 비교하여 동일한 값을 todoItemIndex에 저장한다.
-  const todoItemIndex = todoItems.findIndex((ids) => ids.id === todoItemId);
+  // 조건은 요청받은 id값이 저장된 todoItemId 와 todoItems 배열에서의 id를 비교하여 동일한 값을 selTodoItem에 저장한다.
+  const selTodoItem = todoItems.findIndex((ids) => ids.id === todoItemId);
 
-  // todoItems 배열에 대해 splice를 실행하는데, 조건은 인덱스는 todoItemIndex를, 삭제할 카운터는 1개만 이다.
-  todoItems.splice(todoItemIndex, 1);
+  // todoItems 배열에 대해 splice를 실행하는데, 조건은 인덱스는 selTodoItem를, 삭제할 카운터는 1개만 이다.
+  todoItems.splice(selTodoItem, 1);
   return res.send(todoItems);
+});
+
+// app.put 할일목록 수정
+app.put("/todo-items/:id", (req, res) => {
+  // 요청받은 파라미터에서 id값을 가져온다.
+  const todoItemId = Number(req.params.id);
+
+  // selTodoItem 라는 변수에 todoItems 배열에서 일치하는 값을 찾아 저장한다.
+  // 조건은 요청받은 id값이 저장된 todoItemI 와 todoItems 배열에서의 id를 비교하여 동일한 값의 객체를 selTodoItem에 저장한다.
+  const selTodoItem = todoItems.find((ids) => ids.id === todoItemId);
+
+  // todoItems 배열에 대해 splice를 실행하는데, 조건은 인덱스는 selTodoItem를, 삭제할 카운터는 1개만, 추가할 데이터는 selTodoItem 이다.
+  todoItems.splice(selTodoItem, 1, {
+    ...selTodoItem,
+    doneAt: selTodoItem.doneAt == null ? new Date() : null, // 삼항연산자
+  });
+
+  res.send({ result: true });
 });
 
 // app.get /todo-items/:id 할일목록 상세조회
