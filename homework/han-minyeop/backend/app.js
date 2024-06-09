@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 const app = express();
 const port = 3000;
-const secretKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtaW55ZW9wMDQyM0BuYXZlci5jb20iLCJyb2xlIjoic3R1ZGVudCIsIm5hbWUiOiLtlZzrr7zsl70iLCJpYXQiOjE3MTc5Njg5MDh9.GparkpzeqLuVn2a_bzSlTD6ISoRSEdRIelzDrB5c2ic';
+const secretKey = 'eyJhbGciOiJIUzI1NInR5cCI6IkpXVCJ9';
 
 // 미들웨어 추가
 app.use(cors());
