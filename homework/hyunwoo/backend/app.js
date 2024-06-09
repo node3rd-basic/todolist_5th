@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = 3000;
@@ -54,31 +55,57 @@ const todoItems = [
   },
 ];
 
+const secretKey = "slkfjslkdfjoie";
+const users = [
+  {
+    id: 1,
+    email: "hyunwoo@example.com",
+    password: "1234",
+    role: "student",
+    name: "이현우",
+  },
+];
+
 /** 할일 목록들 보여지도록 api 구현 */
 app.get("/todo-items", (req, res) => {
-  res.send(todoItems);
+  const token = req.headers.authorization;
+
+  try {
+    const user = jwt.verify(token, secretKey);
+    res
+      .status(200)
+      .send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다." });
+  }
 });
 
 /** 할일 목록 추가되도록 api 구현 */
 app.post("/todo-items", (req, res) => {
+  const token = req.headers.authorization;
   const { title } = req.body;
 
-  const newId = todoItems[todoItems.length - 1]
-    ? todoItems[todoItems.length - 1].id + 1
-    : 1;
+  try {
+    const user = jwt.verify(token, secretKey);
+    const newId = todoItems[todoItems.length - 1]
+      ? todoItems[todoItems.length - 1].id + 1
+      : 1;
 
-  const newTodoItem = {
-    id: newId,
-    userId: 1,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
+    const newTodoItem = {
+      id: newId,
+      userId: user.id,
+      title,
+      doneAt: null,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
 
-  todoItems.push(newTodoItem);
+    todoItems.push(newTodoItem);
 
-  res.send(newTodoItem);
+    res.send(newTodoItem);
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다." });
+  }
 });
 
 /** 할일 한가지 조회되도록 api 구현 */
@@ -153,7 +180,90 @@ app.delete("/todo-items/:id", (req, res) => {
   // 해당 인덱스에 있는 할일 삭제
   todoItems.splice(indexToDelete, 1);
 
-  res.send({ resile: true });
+  res.send({ result: true });
+});
+
+/** 회원가입 api 구현 */
+app.post("/sign-up", (req, res) => {
+  const { email, password, rePassword, role, name } = req.body;
+
+  if (!email || !password || !rePassword || !role || !name) {
+    res.status(400).send({
+      result: false,
+      message: "모든 항목을 입력해주세요.",
+    });
+    return;
+  }
+
+  if (password !== rePassword) {
+    res.status(400).send({
+      resule: false,
+      message: "입력한 비밀번호가 일치하지 않습니다.",
+    });
+    return;
+  }
+
+  const existingEmail = users.find((user) => user.email === email);
+
+  if (existingEmail) {
+    res.status(409).send({
+      result: false,
+      message: "이미 등록된 이메일입니다.",
+    });
+  }
+
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
+
+  const newUser = {
+    id,
+    email,
+    password,
+    role,
+    name,
+  };
+  console.log(newUser);
+  users.push(newUser);
+  console.log(users);
+  res.status(200).json(newUser);
+});
+
+/** 로그인 api 구현 */
+app.post("/sign-in", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send({
+      result: false,
+      message: "모든 항목을 입력해주세요",
+    });
+  }
+
+  const { password: _password, ...user } = users.find(
+    (user) => user.email === email && user.password === password
+  );
+
+  if (!user) {
+    res.status(404).send({
+      result: false,
+      message: "회원 정보가 존재하지 않습니다",
+    });
+    return;
+  }
+
+  const token = jwt.sign(user, secretKey);
+  res.status(200).json({ token });
+});
+
+/** 토큰 검증 api 구현 */
+app.get("/users/me", (req, res) => {
+  const token = req.headers.authorization;
+
+  try {
+    const user = jwt.verify(token, secretKey);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(401).json({ message: "권한이 없습니다." });
+  }
 });
 
 app.listen(port, () => {
