@@ -12,7 +12,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "dev": "node app.js"
+    "start": "nodemon app.js",
+    "dev": "nodemon app.js"
   }
 }

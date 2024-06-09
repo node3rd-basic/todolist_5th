@@ -1,7 +1,9 @@
 // Express 설정
 import express from "express";
+import jwt from "jsonwebtoken";
 const app = express();
 const port = 3000;
+const secretKey = "a1b2c3d4";
 
 // CORS 설정
 import cors from "cors";
@@ -153,9 +155,6 @@ app.post("/sign-up", (req, res) => {
     });
     return;
   }
-
-  // 그리고 user id를 검사하여 0일 경우 1을, 그렇지 않은 경우 userid의 길이 +1 한다.
-  //일단 패스
 
   // password 가 repasswrd 랑 맞는지 확인하기.
   if (password !== repassword) {
