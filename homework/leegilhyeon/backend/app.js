@@ -150,7 +150,7 @@ app.post('/sign-up', (req, res)=> {
     const id = (users.length===0) ? 1 : users[users.length - 1].id + 1
     const newUser = { id, email, password, role, name }
     users.push(newUser)
-    console.log(users)
+   
     res.json(newUser)   
 })
 
@@ -171,7 +171,7 @@ app.post('/sign-in', (req, res)=> {
 //토큰검증
 app.get('/users/me', (req, res) =>{
     const token = req.headers.authorization
-    console.log(token)
+   
     try{
         const user = jwt.verify(token, secretKey)
         res.json(user)
