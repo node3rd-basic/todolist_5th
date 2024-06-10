@@ -199,6 +199,7 @@ app.delete("/todo-items/:id", (req, res, next) => {
     result: true,
     date: ClearTodoItem,
   });
+});
 
 //   return res.send(todolists);
 // });
@@ -223,7 +224,7 @@ app.delete("/todo-items/:id", (req, res, next) => {
 // });
 
 // 할일 목록 전역 변수 설정
-const todoItems = [
+const todoItems2 = [
   {
     id: 1,
     userId: 1,
@@ -244,7 +245,7 @@ const todoItems = [
 
 // 할일 목록들 조회 API 만들기  (6차 강의)
 app.get("/todo-items", (req, res, next) => {
-  const ReadTodoItems = todoItems;
+  const ReadTodoItems = todoItems2;
 
   res.send(ReadTodoItems);
 });
@@ -265,8 +266,8 @@ app.post("/todo-items", (req, res, next) => {
   };
 
   // 새로운 할 일의 틀을 기존의 틀 즉 목록 리스트에 집어넣는(push) 추가하는 코드
-  todoItems.push(creatTodoItems);
-  res.send(todoItems);
+  todoItems2.push(creatTodoItems);
+  res.send(todoItems2);
 });
 
 app.listen(port, () => {
