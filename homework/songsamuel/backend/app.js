@@ -131,21 +131,21 @@ app.put("/todo-items/:id", (req, res, next) => {
 
   // :id로 입력 받은 값이 todoItems에 있는지 확인 작업
   // 여기서 이걸 쓰는 이유! const AddtodoItem에서 ...을 쓸 때 뽑아 쓸 {} 전체를 가져와야하니까 찾는 것!
-  const CheckTodoItem = todoItems.find((할일) => 할일.id === todoId);
-  if (!CheckTodoItem) {
+  const checkTodoItem = todoItems.find((할일) => 할일.id === todoId);
+  if (!checkTodoItem) {
     res.send({ message: "존재하지 않는 Id입니다." });
     return;
   }
 
   // 수정될 id값이 어디인지 todoItems에서 찾는 작업 ex) :id가 3이면 3번위치 자리
   // 여기는 실질적인 객체{} 데이터가 아닌 위치만 찾는다.
-  const todoItemsIndex = todoItems.indexOf(CheckTodoItem);
+  const todoItemsIndex = todoItems.indexOf(checkTodoItem);
 
-  const newDoneAt = CheckTodoItem.doneAt === null ? new Date() : null;
+  const newDoneAt = checkTodoItem.doneAt === null ? new Date() : null;
 
   // 수정할 위치에서 자르고 수정할 값 넣는 작업.
   const AddtodoItem = todoItems.splice(todoItemsIndex, 1, {
-    ...CheckTodoItem,
+    ...checkTodoItem,
     doneAt: newDoneAt,
   });
 
