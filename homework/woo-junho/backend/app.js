@@ -6,8 +6,21 @@ const jwt = require('jsonwebtoken')
 // 나의 통신가능한 프로그램 (application) 을 정의
 const app = express()
 const port = 3000
+
+const leaveLogMiddleware = (req, res, next) => {
+    console.log(`${req.method} ${req.url} [${ new Date().toISOString()}] ${ req.headers.referer }`)
+    next()
+}
+
+const errorMiddleware = (err, req,res, next) => {
+    res.status(500).json({
+        message: "Internal Server Error",
+    })
+}
+
 app.use(cors())
 app.use(express.json())
+app.use(leaveLogMiddleware)
 
 const secretKey = "ijklsdf89ufsdjklsdf"
 const todoItems = [
@@ -39,63 +52,70 @@ const users = [
     }
 ]
 
-app.get("/todo-items", (req, res) => {
+const authMiddleware = (req, res, next) => {
     const token = req.headers.authorization
-
     try {
-        const user = jwt.verify(token, secretKey)
-        res.send(
-            todoItems.filter(todoItem => todoItem.userId === user.id)
-        )
+        req.user = jwt.verify(token, secretKey)
+        next()
     } catch (e) {
         res.status(401).send({"message": "권한이 없습니다."})
     }
-})
+}
 
-app.post("/todo-items", (req, res) => {
-    const token = req.headers.authorization
-    const {title} = req.body
-
-    try {
-        const user = jwt.verify(token, secretKey)
-        const newId = (todoItems[todoItems.length - 1]) ? todoItems[todoItems.length - 1].id + 1 : 1
-        const newTodoItem = {
-            "id": newId,
-            "userId": user.id,
-            "title": title,
-            "doneAt": null,
-            "createdAt": new Date(),
-            "updatedAt": null
-        }
-        todoItems.push(newTodoItem)
-        res.send(newTodoItem)
-    } catch (e) {
-        res.status(401).send({"message": "권한이 없습니다."})
+const validateTodoItemId = (req) => {
+    const idAsNumber = Number(req.params.id)
+    if (isNaN(idAsNumber)) {
+        throw new Error("ID must be a number")
     }
 
+    return idAsNumber
+}
 
-
-})
-
-app.get("/todo-items/:id", (req, res) => {
-    const id = Number(req.params.id)
+const getTodoItemById = (id) => {
     const todoItem = todoItems.find(todoItem => todoItem.id === id)
+    if (!todoItem) {
+        throw new Error("Todo item not found")
+    }
+
+    return todoItem
+}
+
+const getIncrementedId = arr => arr[todoItems.length - 1]
+    ? arr[todoItems.length - 1].id + 1
+    : 1
+
+app.get("/todo-items", authMiddleware, (req, res) => {
+    const user = req.user
+    res.send(
+        todoItems.filter(todoItem => todoItem.userId === user.id)
+    )
+})
+
+app.post("/todo-items", authMiddleware, (req, res) => {
+    const {title} = req.body
+    const user = req.user
+    const newId = getIncrementedId(todoItems)
+    const newTodoItem = {
+        "id": newId,
+        "userId": user.id,
+        "title": title,
+        "doneAt": null,
+        "createdAt": new Date(),
+        "updatedAt": null
+    }
+    todoItems.push(newTodoItem)
+    res.send(newTodoItem)
+})
+
+app.get("/todo-items/:id", authMiddleware, (req, res) => {
+    const id = validateTodoItemId(req)
+    const todoItem = getTodoItemById(id)
     res.send(todoItem)
 })
 
-app.put("/todo-items/:id", (req, res) => {
-    const id = Number(req.params.id)
-    if (isNaN(id)) {
-        res.status(400).send({"message": "id 는 숫자여야 합니다."})
-        return
-    }
-
-    const selectedTodoItem = todoItems.find(todoItem => todoItem.id === id)
-    if (!selectedTodoItem) {
-        res.status(404).send({"message": "해당 아이디를 가진 todo item 이 없습니다."})
-        return
-    }
-
+app.put("/todo-items/:id", authMiddleware, (req, res) => {
+    const id = validateTodoItemId(req)
+    const selectedTodoItem = getTodoItemById(id)
     const todoItemIndex = todoItems.indexOf(selectedTodoItem)
     todoItems.splice(todoItemIndex, 1,
         {
@@ -105,20 +125,10 @@ app.put("/todo-items/:id", (req, res) => {
     res.send({result: true})
 })
 
-app.delete("/todo-items/:id", (req, res) => {
-    const {id} = req.params
-    const idAsNumber = Number(id)
-    if (isNaN(idAsNumber)) {
-        res.status(400).send({"message": "id 는 숫자여야 합니다."})
-        return
-    }
-
-    const indexToDelete = todoItems.findIndex(todoItem => todoItem.id === idAsNumber)
-
-    if (indexToDelete === -1) {
-        res.status(404).send({"message": "해당 아이디를 가진 todo item 이 없습니다."})
-        return
-    }
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
+    const id = validateTodoItemId(req)
+    const selectedTodoItem = getTodoItemById(id)
+    const indexToDelete = todoItems.indexOf(selectedTodoItem)
 
     todoItems.splice(indexToDelete, 1)
     res.send({
@@ -144,16 +154,16 @@ app.post("/sign-up", (req, res) => {
         res.status(409).json({"message": "이미 가입된 이메일 입니다."})
     }
 
-    const id = (users.length === 0) ? 1 : users[users.length - 1].id + 1
+    const id = getIncrementedId(users)
     const newUser = {id, email, password, role, name}
     users.push(newUser)
-    console.log(users)
     res.json(newUser)
 })
 
 app.post("/sign-in", (req, res) => {
     const { email, password } = req.body
-    const { password: _password, ...user} = users.find(user => user.email === email && user.password === password)
+    const selectedUser = users.find(user => user.email === email && user.password === password)
+    const { password: _password, ...user} = selectedUser
 
     if (!user) {
         res.status(404).send({"message": "사용자를 찾을 수 없습니다."})
@@ -164,16 +174,11 @@ app.post("/sign-in", (req, res) => {
     res.json({token})
 })
 
-app.get("/users/me", (req, res) => {
-    const token = req.headers.authorization
-
-    try {
-        const user = jwt.verify(token, secretKey)
-        res.json(user)
-    } catch (e) {
-        res.status(401).send({"message": "권한이 없습니다."})
-    }
+app.get("/users/me", authMiddleware, (req, res) => {
+    res.json(req.user)
 })
+
+app.use(errorMiddleware)
 
 const listeningCallback = () => {
     console.log(`Example app listening on port ${port}`)

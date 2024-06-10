@@ -74,17 +74,17 @@ app.post("/todo-items", (req, res) => {
     try {
         const user = jwt.verify(token,secretKey)
         const newId = (todoItems[todoItems.length - 1]) ? todoItems[todoItems.length-1].id+1 : 1
-    const newTodoItem = {
-        //고유값을 가져야함. 3번이라고 지정하면 3번 수정할 때 여러개가 나오므로
-        //마지막 아이디 +1 
-        "id": newId,
-        "userId": user.id,
-         //타이틀: 위에서 선언한 타이틀
-        "title": title,
-        "doneAt": null,
-        "createdAt": new Date(),
-        "updatedAt": "2024-06-01"
-    }
+        const newTodoItem = {
+            //고유값을 가져야함. 3번이라고 지정하면 3번 수정할 때 여러개가 나오므로
+            //마지막 아이디 +1 
+            "id": newId,
+            "userId": user.id,
+            //타이틀: 위에서 선언한 타이틀
+            "title": title,
+            "doneAt": null,
+            "createdAt": new Date(),
+            "updatedAt": "2024-06-01"
+        }
         todoItems.push(newTodoItem)
         res.send(newTodoItem)
     } catch (err){
