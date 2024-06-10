@@ -12,9 +12,9 @@ let users = [];
 app.post("/sign-up", (req, res) => {
   // 일단 req body를 통해 email / name / password / repassword / role 을 받는다
   // 그리고 이 내용을 const 에 담는다. 어떻게? 구조분해 할당으로
-  const { name, email, password, repassword, role } = req.body;
+  const { email, password, rePassword, role, name } = req.body;
   // 그리고 이 필드 중에 없는게 있는지 검사한다.
-  if (!name || !email || !password || !repassword || !role) {
+  if (!email || !password || !rePassword || !role || !name) {
     res.status(400).send({ message: "입력값을 확인해주세요" });
     return;
     // 위 코드를 아래와 같이 바꾸면 에러가 나지 않는다.
