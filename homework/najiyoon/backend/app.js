@@ -94,7 +94,7 @@ app.post("/todo-items", (req, res) => {
 )
 
 //할일목록 1개 조회 & 중복 수정하기
-app.get("/todo-itmes/:id", (req, res, next) => {
+app.get("/todo-itmes/:id", (req, res) => {
     const id = Number(req.params.id)
     const todoItem = todoItems.find(todoItem =>
         todoItem.id === id)
@@ -195,21 +195,22 @@ app.post("/sign-up", (req, res) => {
         res.json(newUser)
         console.log(newUser)
 
-    // res.send()
+    res.send()
 })
 
 //로그인
 app.post("/sign-in", (req, res) => {
-    // const users1 = users;
-    // console.log("users1--", users1)
-    // console.log("users---", users)
+    
     const { email, password } = req.body;
     console.log("users--->>",users)
     console.log("req.body--->", req.body)
-    console.log("password--->",password)
+    console.log("password--->", password)
+    //users에서 find한 애를 user에 넣겠다. 패스워드 빼고 
     const {password: _password , ...user} = users.find(users => users.email === email && users.password === password)
-    console.log("users.email-->", users.email)
-    console.log("users.password-->", users.password)
+    
+    console.log("user.email-->", user.email)
+    console.log("user.password-->", user.password)
+   
     if (!user) {
         res.status(404).send({
             "result": true,
@@ -219,8 +220,8 @@ app.post("/sign-in", (req, res) => {
     }
 
     //토큰 만들기
-const token = jwt.sign(user, secretKey)
-    
+    const token = jwt.sign(user, secretKey)
+    console.log(token)
     res.json({
         "result": true,
         "message": "로그인성공",
@@ -231,9 +232,10 @@ const token = jwt.sign(user, secretKey)
 app.get("/users/me", (req, res) => {
     const token = req.headers.authorization
     console.log(token)
-try{const user = jwt.verify(token, secretKey)
-    res.status(401).json({ user });
-} catch (err) {
+    try {
+        const user = jwt.verify(token, secretKey)
+    res.status(200).json({ ...user });
+    } catch (err) {
     res.status(401).send({"message":"권한이 없습니다."})
     } 
     
