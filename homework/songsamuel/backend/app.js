@@ -199,6 +199,74 @@ app.delete("/todo-items/:id", (req, res, next) => {
     result: true,
     date: ClearTodoItem,
   });
+
+//   return res.send(todolists);
+// });
+
+// app.get("/todolists/:todolistId", (req, res, next) => {
+//   const todolistId = Number(req.params.todolistId); // 여기서 숫자형으로 바꾸는 이유는 아래의 todo.id와 타입과 정보가 일치해야하기 때문에 숫자형으로 바꾸는 것이다.
+//   // 또한 .todolistId를 작성하는 이유는 URL에 :todolistId에서 받아오는 값이랑 일치해야하기 때문이다.
+//   const todolists = [
+//     { id: 1, task: "숨쉬기" },
+//     { id: 2, task: "먹기" },
+//     { id: 3, task: "자기" },
+//     { id: 4, task: "공부하기" },
+//     { id: 5, task: "영화보기" },
+//     { id: 6, task: "게임하기" },
+//   ];
+
+//   const findtodo = todolists.find((todo) => {
+//     return todo.id === todolistId;
+//   });
+
+//   return res.send(findtodo);
+// });
+
+// 할일 목록 전역 변수 설정
+const todoItems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 1,
+    title: "할일2",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+];
+
+// 할일 목록들 조회 API 만들기  (6차 강의)
+app.get("/todo-items", (req, res, next) => {
+  const ReadTodoItems = todoItems;
+
+  res.send(ReadTodoItems);
+});
+
+// 할일 목록들 추가 API (6차 강의)
+app.post("/todo-items", (req, res, next) => {
+  // 입력을 받을 데이터
+  const { title } = req.body;
+
+  // todo-items 목록에 추가될 새로운 할 일의 틀
+  const creatTodoItems = {
+    id: 3,
+    userId: 1,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  // 새로운 할 일의 틀을 기존의 틀 즉 목록 리스트에 집어넣는(push) 추가하는 코드
+  todoItems.push(creatTodoItems);
+  res.send(todoItems);
 });
 
 app.listen(port, () => {
