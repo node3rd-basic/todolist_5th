@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import e from "express";
 
 const app = express();
 const port = 3000;
@@ -166,6 +167,136 @@ app.delete("/todo-items/:id", (req, res, next) => {
   res.send({
     result: true,
   });
+});
+
+// 8차 강의
+const users = [
+  {
+    id: 1,
+    email: "thdtkandpf@naver.com",
+    password: "aaaa4321",
+    role: "학생",
+    name: "송사무엘",
+  },
+  {
+    id: 2,
+    email: "ssong@naver.com",
+    password: "aaaa4321",
+    role: "학생",
+    name: "쏭쏭쏭",
+  },
+];
+
+const secretKey = "돈 많이 벌고 싶다.";
+
+app.post("/sign-up", (req, res, next) => {
+  const { email, password, rePassword, role, name } = req.body;
+
+  if (
+    !email ||
+    !password ||
+    !rePassword ||
+    !role ||
+    !name ||
+    password !== rePassword
+  ) {
+    res.status(400).send("입력값을 확인해 주세요.");
+    return;
+  }
+
+  const existingUser = users.find((users) => users.email === email);
+
+  if (existingUser) {
+    res.status(409).send("이미 존재하는 이메일입니다.");
+  }
+
+  // 유저의 배열의 길이가 0이라면 (즉, 배열에 있는 요소의 개수) 1을 넣고 0이 아니라면 (즉, 배열에 있는 요소의 개수)에서 맨끝("- 1")(수학적 의미 없음)에서 +1을 하라
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
+
+  const newUser = {
+    id,
+    email,
+    password,
+    role,
+    name,
+  };
+
+  users.push(newUser);
+
+  res.json(newUser);
+});
+
+app.post("/sign-in", (req, res, next) => {
+  const { email, password } = req.body;
+  const { password: _password, ...user } = users.find(
+    (user) => user.email === email && user.password === password
+  );
+
+  if (!user) {
+    res.send("존재하지 않는 사용자 입니다.");
+    return;
+  }
+
+  //여기서 말하는 user는  268번째 줄을 말한다.
+  const token = jwt.sign(user, secretKey);
+
+  res.json({ token: token });
+});
+
+// 토큰 검증 API 내 정보 가져오기
+
+app.get("/users/me", (req, res, next) => {
+  //요청에 있는 header
+  const token = req.headers.authorization;
+
+  // 토큰을 검증하는 것!
+  try {
+    const user = jwt.verify(token, secretKey);
+    res.json(user);
+  } catch (error) {
+    res.status(401).send("권한이 없습니다.");
+  }
+});
+
+// 할일 목록들 조회 API 만들기  (8차 강의)
+app.get("/todo-items", (req, res, next) => {
+  const token = req.headers.authorization;
+
+  // 토큰을 검증하는 것!
+  try {
+    const user = jwt.verify(token, secretKey);
+    res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  } catch (error) {
+    res.status(401).send("권한이 없습니다.");
+  }
+});
+
+// 할일 목록들 추가 API (8차 강의)
+app.post("/todo-items", (req, res, next) => {
+  const token = req.headers.authorization;
+  const { title } = req.body;
+
+  try {
+    const user = jwt.verify(token, secretKey);
+    const newTodoId = todoItems[todoItems.length - 1]
+      ? todoItems[todoItems.length - 1].id + 1
+      : 1;
+
+    const creatTodoItems = {
+      id: newTodoId,
+      userId: user.id,
+      title: title,
+      doneAt: null,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    // 새로운 할 일의 틀을 기존의 틀 (즉 목록 리스트)에 집어넣는(push) 추가하는 코드
+    todoItems.push(creatTodoItems);
+    res.send(creatTodoItems);
+  } catch (error) {
+    res.status(401).send("권한이 없습니다.");
+  }
 });
 
 app.listen(port, () => {
