@@ -43,127 +43,117 @@ app.get('/', (req, res) => {
   res.send('안녕하세요');
 });
 
-//할 일 목록 조회 api
-app.get('/todo-items', (req, res) => {
-  const token = req.headers.authorization;
+const authMiddleware = (req, res, next) => {
   try {
+    const { token } = req.headers.authorization;
     const user = jwt.verify(token, secretKey);
-    return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+
+    req.user = user;
+    next();
   } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
+    return res.status(401).json({ message: '권한이 없습니다.' });
   }
+};
+
+//할 일 목록 조회 api
+app.get('/todo-items', authMiddleware, (req, res) => {
+  const user = res.user;
+  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
 //할 일 상세 조회 api
-app.get('/todo-items/:id', (req, res) => {
+app.get('/todo-items/:id', authMiddleware, (req, res) => {
   const id = Number(req.params.id);
-  const token = req.headers.authorization;
+  const user = req.user;
 
-  try {
-    const user = jwt.verify(token, secretKey);
-
-    const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === id);
-    if (!selectedTodoItem) {
-      return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-    }
-
-    const todoItem = todoItems.find((todoItem) => todoItem.id === id);
-    if (todoItem.userId !== user.id) {
-      return res.status(401).json({ message: '접근 권한이 없는 투두 목록입니다.' });
-    }
-
-    return res.send(todoItem);
-  } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
+  if (isNaN(id)) {
+    return res.status(400).json({ message: '할 일 아이디는 숫자로 입력해야 합니다.' });
   }
+
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === id);
+
+  if (!selectedTodoItem) {
+    return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
+  }
+
+  if (selectedTodoItem.userId !== user.id) {
+    return res.status(401).json({ message: '접근 권한이 없는 투두 목록입니다.' });
+  }
+
+  return res.send(selectedTodoItem);
 });
 
 //할 일 등록 api
-app.post('/todo-items', (req, res) => {
+app.post('/todo-items', authMiddleware, (req, res) => {
   const { title } = req.body;
-  const token = req.headers.authorization;
+  const user = req.user;
+  const newTodoId = todoItems[todoItems.length - 1] ? todoItems[todoItems.length - 1].id + 1 : 1;
 
-  try {
-    const user = jwt.verify(token, secretKey);
-    const newTodoId = todoItems[todoItems.length - 1] ? todoItems[todoItems.length - 1].id + 1 : 1;
+  const newTodoItem = {
+    id: newTodoId,
+    userId: user.id,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
 
-    const newTodoItem = {
-      id: newTodoId,
-      userId: user.id,
-      title,
-      doneAt: null,
-      createdAt: new Date(),
-      updatedAt: null,
-    };
-
-    todoItems.push(newTodoItem);
-    return res.send(newTodoItem);
-  } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
-  }
+  todoItems.push(newTodoItem);
+  return res.send(newTodoItem);
 });
 
 //할 일 수정 api
-app.put('/todo-items/:id', (req, res) => {
+app.put('/todo-items/:id', authMiddleware, (req, res) => {
+  const user = req.user;
   const { id } = req.params;
   const todoItemId = Number(id);
-  const token = req.headers.authorization;
 
   if (isNaN(todoItemId)) {
     return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
   }
 
-  try {
-    const user = jwt.verify(token, secretKey);
-    const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
 
-    if (!selectedTodoItem) {
-      return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-    }
-
-    if (selectedTodoItem.userId !== user.id) {
-      return res.status(404).json({ message: '수정 권한이 없습니다.' });
-    }
-    const todoItemIndex = todoItems.indexOf(selectedTodoItem);
-
-    todoItems.splice(todoItemIndex, 1, {
-      ...selectedTodoItem,
-      doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
-    });
-
-    return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-  } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
+  if (!selectedTodoItem) {
+    return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
   }
+
+  if (selectedTodoItem.userId !== user.id) {
+    return res.status(404).json({ message: '수정 권한이 없습니다.' });
+  }
+
+  const todoItemIndex = todoItems.indexOf(selectedTodoItem);
+
+  todoItems.splice(todoItemIndex, 1, {
+    ...selectedTodoItem,
+    doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
+  });
+
+  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
 //할 일 삭제 api
-app.delete('/todo-items/:id', (req, res) => {
+app.delete('/todo-items/:id', authMiddleware, (req, res) => {
+  const user = req.user;
   const { id } = req.params;
   const todoItemId = Number(id);
-  const token = req.headers.authorization;
 
   if (isNaN(todoItemId)) {
     return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
   }
 
-  try {
-    const user = jwt.verify(token, secretKey);
-    const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
+  const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
 
-    if (todoItemIndex === -1) {
-      return res.status(400).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-    }
-    if (todoItems[todoItemIndex].userId !== user.id) {
-      return res.status(401).json({ message: '삭제 권한이 없습니다.' });
-    }
-
-    todoItems.splice(todoItemIndex, 1);
-
-    return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-  } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
+  if (todoItemIndex === -1) {
+    return res.status(400).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
   }
+  if (todoItems[todoItemIndex].userId !== user.id) {
+    return res.status(401).json({ message: '삭제 권한이 없습니다.' });
+  }
+
+  todoItems.splice(todoItemIndex, 1);
+
+  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
 //회원가입 api
@@ -199,14 +189,8 @@ app.post('/sign-in', (req, res) => {
 });
 
 //토큰 검증 api
-app.get('/users/me', (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    return res.status(200).json({ ...user });
-  } catch (error) {
-    return res.status(401).json({ message: '인증정보가 유효하지 않습니다.' });
-  }
+app.get('/users/me', authMiddleware, (req, res) => {
+  return res.json(req.user);
 });
 
 app.listen(port, () => {
