@@ -77,6 +77,9 @@ const getTodoItemById = (id) => {
   return todoItem;
 };
 
+//투두 아이템 , 유저 아이디 생성 //프리티어 때문에 자동 정렬....
+const getIncrementedId = (arr) => (arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1);
+
 app.get('/', (req, res) => {
   res.send('안녕하세요');
 });
@@ -106,7 +109,7 @@ app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
 app.post('/todo-items', authMiddleware, (req, res) => {
   const { title } = req.body;
   const user = req.user;
-  const newTodoId = todoItems[todoItems.length - 1] ? todoItems[todoItems.length - 1].id + 1 : 1;
+  const newTodoId = getIncrementedId(todoItems);
 
   const newTodoItem = {
     id: newTodoId,
@@ -174,7 +177,7 @@ app.post('/sign-up', (req, res) => {
   if (existingUser) {
     return res.status(409).json({ message: '이미 가입한 이메일입니다.' });
   }
-  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
+  const id = getIncrementedId(users);
   const newUser = { id, email, password, role, name };
 
   users.push(newUser);
