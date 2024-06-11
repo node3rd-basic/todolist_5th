@@ -5,6 +5,12 @@ import jwt from 'jsonwebtoken';
 const app = express();
 const port = 3000;
 
+const errorHandlingMiddleware = (err, req, res, next) => {
+  res.status(500).json({
+    message: err.message,
+  });
+};
+
 const secretKey = 'aksjhdfjkladhfklhjaskl';
 
 const todoItems = [
@@ -55,12 +61,20 @@ const authMiddleware = (req, res, next) => {
 //입력 투두 아이디 검증
 const todoItemIdValidator = (req, res, next) => {
   const id = +req.params.id;
-  console.log('2222', id);
   if (isNaN(id)) {
-    throw new Error(400, '아이디는 숫자 형태로 입력해야 합니다.');
+    throw new Error('아이디는 숫자 형태로 입력해야 합니다.');
   }
   req.id = id;
   next();
+};
+
+//투두 아이템 찾기
+const getTodoItemById = (id) => {
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
+  if (!todoItem) {
+    throw new Error('해당 아이디의 할 일이 존재하지 않습니다.');
+  }
+  return todoItem;
 };
 
 app.get('/', (req, res) => {
@@ -79,11 +93,7 @@ app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
   const todoItemId = req.id;
   const user = req.user;
 
-  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
-
-  if (!selectedTodoItem) {
-    return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-  }
+  const selectedTodoItem = getTodoItemById(todoItemId);
 
   if (selectedTodoItem.userId !== user.id) {
     return res.status(401).json({ message: '접근 권한이 없는 투두 목록입니다.' });
@@ -116,11 +126,7 @@ app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
   const user = req.user;
   const todoItemId = req.id;
 
-  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
-
-  if (!selectedTodoItem) {
-    return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-  }
+  const selectedTodoItem = getTodoItemById(todoItemId);
 
   if (selectedTodoItem.userId !== user.id) {
     return res.status(404).json({ message: '수정 권한이 없습니다.' });
@@ -140,17 +146,18 @@ app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
 app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
   const user = req.user;
   const todoItemId = req.id;
-  const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
 
-  if (todoItemIndex === -1) {
-    return res.status(400).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
-  }
+  const selectedTodoItem = getTodoItemById(todoItemId);
+
+  const todoItemIndex = todoItems.indexOf(selectedTodoItem);
+
   if (todoItems[todoItemIndex].userId !== user.id) {
     return res.status(401).json({ message: '삭제 권한이 없습니다.' });
   }
 
   todoItems.splice(todoItemIndex, 1);
 
+  //삭제하고 남은 리스트 반환
   return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
@@ -190,6 +197,8 @@ app.post('/sign-in', (req, res) => {
 app.get('/users/me', authMiddleware, (req, res) => {
   return res.json(req.user);
 });
+
+app.use(errorHandlingMiddleware);
 
 app.listen(port, () => {
   console.log(`${port}로 서버가 열렸습니다!`);
