@@ -39,13 +39,10 @@ const users = [
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('안녕하세요');
-});
-
+//사용자 인증 미들웨어
 const authMiddleware = (req, res, next) => {
   try {
-    const { token } = req.headers.authorization;
+    const token = req.headers.authorization;
     const user = jwt.verify(token, secretKey);
 
     req.user = user;
@@ -55,22 +52,34 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+//입력 투두 아이디 검증
+const todoItemIdValidator = (req, res, next) => {
+  const id = +req.params.id;
+  console.log('2222', id);
+  if (isNaN(id)) {
+    throw new Error(400, '아이디는 숫자 형태로 입력해야 합니다.');
+  }
+  req.id = id;
+  next();
+};
+
+app.get('/', (req, res) => {
+  res.send('안녕하세요');
+});
+
 //할 일 목록 조회 api
 app.get('/todo-items', authMiddleware, (req, res) => {
-  const user = res.user;
+  const user = req.user;
+
   return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
 //할 일 상세 조회 api
-app.get('/todo-items/:id', authMiddleware, (req, res) => {
-  const id = Number(req.params.id);
+app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
+  const todoItemId = req.id;
   const user = req.user;
 
-  if (isNaN(id)) {
-    return res.status(400).json({ message: '할 일 아이디는 숫자로 입력해야 합니다.' });
-  }
-
-  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === id);
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
 
   if (!selectedTodoItem) {
     return res.status(404).json({ message: '해당 아이디의 할 일이 존재하지 않습니다.' });
@@ -103,14 +112,9 @@ app.post('/todo-items', authMiddleware, (req, res) => {
 });
 
 //할 일 수정 api
-app.put('/todo-items/:id', authMiddleware, (req, res) => {
+app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
   const user = req.user;
-  const { id } = req.params;
-  const todoItemId = Number(id);
-
-  if (isNaN(todoItemId)) {
-    return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
-  }
+  const todoItemId = req.id;
 
   const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
 
@@ -133,15 +137,9 @@ app.put('/todo-items/:id', authMiddleware, (req, res) => {
 });
 
 //할 일 삭제 api
-app.delete('/todo-items/:id', authMiddleware, (req, res) => {
+app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
   const user = req.user;
-  const { id } = req.params;
-  const todoItemId = Number(id);
-
-  if (isNaN(todoItemId)) {
-    return res.status(400).json({ message: '할 일 아이디는 숫자 형태로 입력해야 합니다.' });
-  }
-
+  const todoItemId = req.id;
   const todoItemIndex = todoItems.findIndex((todoItem) => todoItem.id === todoItemId);
 
   if (todoItemIndex === -1) {
@@ -183,7 +181,7 @@ app.post('/sign-in', (req, res) => {
   if (!user) {
     return res.status(404).json({ message: '유저를 찾을 수 없습니다.' });
   }
-  console.log(user);
+
   const token = jwt.sign(user, secretKey);
   return res.status(200).json({ token });
 });
