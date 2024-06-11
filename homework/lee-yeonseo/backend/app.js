@@ -80,6 +80,12 @@ const getTodoItemById = (id) => {
 //투두 아이템 , 유저 아이디 생성 //프리티어 때문에 자동 정렬....
 const getIncrementedId = (arr) => (arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1);
 
+//투두 아이템 필터링
+const filteredTodoItems = (userId) => {
+  const filteredtodoItems = todoItems.filter((todoItem) => todoItem.userId === userId);
+  return filteredtodoItems;
+};
+
 app.get('/', (req, res) => {
   res.send('안녕하세요');
 });
@@ -88,7 +94,7 @@ app.get('/', (req, res) => {
 app.get('/todo-items', authMiddleware, (req, res) => {
   const user = req.user;
 
-  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  return res.send(filteredTodoItems(user.id));
 });
 
 //할 일 상세 조회 api
@@ -142,7 +148,7 @@ app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
     doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
   });
 
-  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  return res.send(filteredTodoItems(user.id));
 });
 
 //할 일 삭제 api
@@ -152,16 +158,16 @@ app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) =>
 
   const selectedTodoItem = getTodoItemById(todoItemId);
 
-  const todoItemIndex = todoItems.indexOf(selectedTodoItem);
-
-  if (todoItems[todoItemIndex].userId !== user.id) {
+  if (selectedTodoItem.userId !== user.id) {
     return res.status(401).json({ message: '삭제 권한이 없습니다.' });
   }
+
+  const todoItemIndex = todoItems.indexOf(selectedTodoItem);
 
   todoItems.splice(todoItemIndex, 1);
 
   //삭제하고 남은 리스트 반환
-  return res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  return res.send(filteredTodoItems(user.id));
 });
 
 //회원가입 api
