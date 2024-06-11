@@ -47,7 +47,7 @@ const users = [{
     email : "parkseojin@example.com",
     password: "1234",
     name:"박서진",
-    role : "학생", 
+    role : "student", 
 }]
 
 app.get('/todo-items', (req, res) => {
@@ -94,7 +94,7 @@ app.get('/todo-items/:id', (req, res) => {
 })
 
 
-app.put("todo-items/:id", (req, res) => {
+app.put('todo-items/:id', (req, res) => {
     const id = Number(req.params.id);
     
     if (isNaN(id)){
@@ -125,7 +125,7 @@ app.put("todo-items/:id", (req, res) => {
     })
 
 
-app.delete("todo_items/:id", (req, res) =>{
+app.delete('todo_items/:id', (req, res) =>{
     const { id } = req.params
     const idAsNumber = Number(id)
 
@@ -151,7 +151,7 @@ app.delete("todo_items/:id", (req, res) =>{
     res.send({result: true})
 });
 
-app.post("/sign-up,", (req, res) => {
+app.post("/sign-up", (req, res) => {
     const  { email, password, rePassword, role, name } = req.body
     if(!email ||
        !password ||
@@ -192,7 +192,6 @@ app.post( "/sign-in", (req, res) => {
         })
         return
     }
-
     const token = jwt.sign(user, secretKey)
     res.json({ token })
 })
