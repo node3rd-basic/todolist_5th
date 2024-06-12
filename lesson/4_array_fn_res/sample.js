@@ -10,3 +10,6 @@ console.log(ironmanEng)
 
 const ironmanEngDes = { ...ironman, name: "Ironman" }
 console.log(ironmanEngDes)
+
+const { name: nameReName, 평점, ...info } = ironmanEng
+console.log(nameReName, info)

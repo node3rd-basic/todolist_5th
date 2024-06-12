@@ -53,8 +53,7 @@ app.post('/todo-items', (req, res) => {
     }
     todoItems.push(newTodoItem)
     res.send(newTodoItem)
-}
-)
+})
 
 //할일목록 1개 조회
 app.get('/todo-itmes/:id', (req, res, next) => {

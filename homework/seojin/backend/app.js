@@ -82,7 +82,7 @@ app.post('/todo-items', (req, res) => {
     };
     todoItems.push(newTodoItem);
     res.send(newTodoItem);
-} catch (e){
+} catch (err){
     res.status(401).send({ message : "권한이 없습니다."})
 }
 });
@@ -94,7 +94,7 @@ app.get('/todo-items/:id', (req, res) => {
 })
 
 
-app.put('todo-items/:id', (req, res) => {
+app.put('/todo-items/:id', (req, res) => {
     const id = Number(req.params.id);
     
     if (isNaN(id)){
@@ -102,7 +102,7 @@ app.put('todo-items/:id', (req, res) => {
             result: false,
             message: "id는 숫자여야 합니다."
         })
-        return
+        return;
     }
     
     const selectedTodoItem = todoItems.find(todoItem => todoItem.id === id)
@@ -111,7 +111,7 @@ app.put('todo-items/:id', (req, res) => {
             result: false,
             message: "해당 아이디를 가진 할 일 목록이 없습니다."
         })
-        return
+        return;
     }
 
 
@@ -125,7 +125,7 @@ app.put('todo-items/:id', (req, res) => {
     })
 
 
-app.delete('todo_items/:id', (req, res) =>{
+app.delete('/todo-items/:id', (req, res) =>{
     const { id } = req.params
     const idAsNumber = Number(id)
 
@@ -133,8 +133,8 @@ app.delete('todo_items/:id', (req, res) =>{
         res.status(400).send({
             result: false,
             message: "id는 숫자여야 합니다."
-        })
-        return
+        });
+        return;
     }
     const indexToDelete = todoItems.findIndex(todoItem => todoItem.id === id)
     
@@ -142,8 +142,8 @@ app.delete('todo_items/:id', (req, res) =>{
         res.status(404).send({
             result: false,
             message: "해당 아이디를 가진 할 일 목록이 없습니다."
-        })
-        return
+        });                           
+        return;
     }
 
     todoItems.splice(indexToDelete, 1)
@@ -164,7 +164,7 @@ app.post("/sign-up", (req, res) => {
             result: false,
             message: "입력 값을 확인해주세요."
     })
-    return
+    return;
 
     }
     const existingUser = users.find(user => user.email === email)
@@ -173,7 +173,8 @@ app.post("/sign-up", (req, res) => {
         res.status(409).json({
              result: false,
             message: "이미 가입된 이메일입니다."
-        })
+        });
+        return;
     }
     const id = (users.length === 0) ? 1 : users[users.length -1].id + 1
     const newUser = { id, email, password, rePassword, role, name } 
@@ -189,28 +190,29 @@ app.post( "/sign-in", (req, res) => {
         res.status(404).send({
             result: false,
             message: "사용자를 찾을 수 없습니다."
-        })
-        return
+        });
+        return;
     }
     const token = jwt.sign(user, secretKey)
-    res.json({ token })
-})
+    res.json({ message: "로그인에 성공하였습니다.", token })
+});
 
 app.get("/users/me", (req, res) => {
    const token =  req.headers.authorization
 
 try{
-
    const user = jwt.verify(token, secretKey)
    res.json(user)
 
 }catch (err) {
     res.status(401).send({ message: "권한이 없습니다."})
 }
-})
+});
+
+
+  
 
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
-

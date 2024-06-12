@@ -23,7 +23,7 @@ const todoItems = [
     title: "SA 작성",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ const todoItems = [
     title: "API 명세서 작성 ",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const todoItems = [
     title: "와이어프레임 작성",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 4,
@@ -47,7 +47,7 @@ const todoItems = [
     title: "API 할당",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 5,
@@ -55,7 +55,7 @@ const todoItems = [
     title: "기능구현",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 6,
@@ -63,7 +63,7 @@ const todoItems = [
     title: "프로젝트 테스트",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
   {
     id: 7,
@@ -71,7 +71,7 @@ const todoItems = [
     title: "퍼블리싱",
     doneAt: null,
     createdAt: new Date(),
-    updatedAt: null,
+    updatedAt: new Date(),
   },
 ];
 
@@ -80,9 +80,71 @@ app.get("/", (req, res) => {
   res.send("Hello, World?, i am express");
 });
 
+// // // // // // 새로운 기능 개발 시작
+// // // // // // 2024-06-09
+
 // app.get 할일목록 전체조회
-app.get("/todo-items", (req, res, next) => {
+app.get("/todo-items", (req, res) => {
   return res.send(todoItems);
+});
+
+// app.post 할일목록 추가
+app.post("/todo-items", (req, res) => {
+  // 요청받은 body 에서 title 값을 가져온다.
+  const { title } = req.body;
+  // newTodoId 의 길이를 측정한다, 만약 0일경우 ID를 1로, 0이 아닐경우 마지막  ID에 +1을 한다.
+  const newTodoId = todoItems[todoItems.length - 1]
+    ? todoItems[todoItems.length - 1].id + 1
+    : 1;
+  // 새로운 newTodoItem 객체를 생성한다.
+  // ID는 위에서 계산한 값을, userID는 1로 고정, title은 위에서 가져온 title값을, dontAt 은 null을, createdAt 과 updatedAt 는 현재시간을 저장한다.
+  const newTodoItem = {
+    id: newTodoId,
+    userId: 1,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  // todoItems 변수에 newTodoItem를 추가한다.
+  todoItems.push(newTodoItem);
+  // 새로 생성된 newTodoItem를 JSON 형식으로 보낸다.
+  return res.send(newTodoItem);
+});
+
+// app.delete 할일목록 삭제
+app.delete("/todo-items/:id", (req, res) => {
+  // 요청받은 파라미터에서 id값을 가져온다.
+  const { id } = req.params;
+  // id값을 숫자로 변환한다.
+  const todoItemId = Number(id);
+
+  // todoItemIndex 라는 변수에 todoItems 배열에서 일치하는 값을 찾아 저장한다.
+  // 조건은 요청받은 id값이 저장된 todoItemId 와 todoItems 배열에서의 id를 비교하여 동일한 값을 selTodoItem에 저장한다.
+  const selTodoItem = todoItems.findIndex((ids) => ids.id === todoItemId);
+
+  // todoItems 배열에 대해 splice를 실행하는데, 조건은 인덱스는 selTodoItem를, 삭제할 카운터는 1개만 이다.
+  todoItems.splice(selTodoItem, 1);
+  return res.send(todoItems);
+});
+
+// app.put 할일목록 수정
+app.put("/todo-items/:id", (req, res) => {
+  // 요청받은 파라미터에서 id값을 가져온다.
+  const todoItemId = Number(req.params.id);
+
+  // selTodoItem 라는 변수에 todoItems 배열에서 일치하는 값을 찾아 저장한다.
+  // 조건은 요청받은 id값이 저장된 todoItemI 와 todoItems 배열에서의 id를 비교하여 동일한 값의 객체를 selTodoItem에 저장한다.
+  const selTodoItem = todoItems.find((ids) => ids.id === todoItemId);
+
+  // todoItems 배열에 대해 splice를 실행하는데, 조건은 인덱스는 selTodoItem를, 삭제할 카운터는 1개만, 추가할 데이터는 selTodoItem 이다.
+  todoItems.splice(selTodoItem, 1, {
+    ...selTodoItem,
+    doneAt: selTodoItem.doneAt == null ? new Date() : null, // 삼항연산자
+  });
+
+  res.send({ result: true });
 });
 
 // app.get /todo-items/:id 할일목록 상세조회
@@ -94,30 +156,4 @@ app.get("/todo-items/:id", (req, res) => {
   // 일치하는 첫번째 값을 찾고 todoItem 상수에 저장한다.
   res.send(todoItem);
   // todoItem 상수값을 res.send로 보낸다.
-});
-
-// app.post 로 할일목록 생성하기
-app.post("/todo-items", (req, res) => {
-  const { title } = req.body;
-  // 클라이언트로 부터 받은 요청에서 title 속성을 구조분해할당을 통해 추출한다.
-
-  const newId = todoItems[todoItems.length - 1]
-    ? // todoItems의 길이에서 -1을 한다, 즉 todoItems 배열의 길이, 마지막 항목을 나타낸다.
-      todoItems[todoItems.length - 1].id + 1
-    : 1;
-  // 삼항연산자를 사용하여 배열의 길이가 있다면 +1을, 배열의 길이가 없다면 1을 할당한다.
-
-  const newTodoItem = {
-    id: newId,
-    userId: 1,
-    title: title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-  // 새로운 할일목록 객체를 생성한다.
-  todoItems.push(newTodoItem);
-  // 전역변수로 지정된 todoItems에 새롭게 생성한 할일객체를 push 한다
-  res.send(newTodoItem);
-  // 새롭게 생성한 할일객체를 res.send로 보낸다.
 });
