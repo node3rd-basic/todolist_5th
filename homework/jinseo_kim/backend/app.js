@@ -1,222 +1,54 @@
-// 라이브러리 import 설정
 import express from "express";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
-// 전역변수 설정
 const app = express();
 const port = 3000;
-const secretKey = "a1b2c3d4";
-
-// CORS 검증 설정
-import cors from "cors";
+const secretKey = "1a2b3c4d";
 app.use(cors());
-
-// JSON 형식의 요청 본문파싱
 app.use(express.json());
-
-// Express 로 웹서버 오픈
 app.listen(port, () => {
-  console.log(`${port}로 서버가 열렸습니다!`);
+  console.log(`서버가 오픈되었습니다.`);
 });
 
-// 회원목록 전역변수 선언 및 데이터 할당
-const users = [
-  {
-    id: 1,
-    email: "test@mail.com",
-    password: "001234",
-    name: "testuser",
-    role: "student",
-  },
-];
-
-// 할일목록 전역변수 선언 및 데이터 할당
-const todoItems = [
-  {
-    id: 1,
-    userId: 1,
-    title: "SA 작성",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 2,
-    userId: 2,
-    title: "API 명세서 작성 ",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 3,
-    userId: 3,
-    title: "와이어프레임 작성",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 4,
-    userId: 4,
-    title: "API 할당",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 5,
-    userId: 5,
-    title: "기능구현",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 6,
-    userId: 6,
-    title: "프로젝트 테스트",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 7,
-    userId: 7,
-    title: "퍼블리싱",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-];
-
-// LocalHost:3000 접속시 Hello World 출력
 app.get("/", (req, res) => {
-  res.send("Hello, World?, i am express");
+  res.send("hello World");
 });
 
-// LocalHost:3000/check 접속시 Server Opserver 실행
-app.get("/check", (req, res) => {
-  // .send("STATUS: 200, Server is running on http://localhost:3000");
-  res.status(200).send(`
-      <html>
-        <body style="background-color: green;">
-          <h1 style="color: red;">Server Opserver</h1>
-          <h2 style="color: red;">STATUS: 200</h2>
-          <h2 style="color: red;">Server is running on http://localhost:3000</h2>
-        </body>
-      </html>
-    `);
-});
+const users = [];
 
+// 회원가입 API
 app.post("/sign-up", (req, res) => {
-  // 일단 req body를 통해 email / name / password / repassword / role 을 받는다
-  // 그리고 이 내용을 const 에 담는다. 어떻게? 구조분해 할당으로
+  // api spec 을 통해 req.body 에서 받아야 하는 값을 확인한다.
+  // email password rePassword role name
   const { email, password, rePassword, role, name } = req.body;
 
-  // 그리고 이 필드 중에 없는게 있는지 검사한다.
+  // 비어있는 칸이 없는지 확인하는 로직을 작성한다.
   if (!email || !password || !rePassword || !role || !name) {
-    res.status(400).send({
-      message: "잘못된 입력값이 있습니다. 값을 다시한번 확인인 해보1세요",
-    });
-    return;
+    res.status(408).send({ message: "비어있는 칸이 있습니다. 확인해주세요." });
   }
 
-  // 그리고 이 필드 중에 email 필드의 데이터가 중복이 아닌지 검사한다. if가 아니고 cosnt = extinguser 이런걸로
-  const existUser = users.find((user) => user.email === email);
-  if (existUser) {
-    res.status(409).json({ message: "이미 가입된 이메일 입니다." });
-  }
-
-  // password 가 repasswrd 랑 맞는지 확인하기.
+  // 비밀번호가 서로 일치하는지 확인하는 로직을 작성한다.
   if (password !== rePassword) {
-    res.status(400).send({
-      message: "비밀번호가 일치하지 않아요.",
-    });
-    return;
+    res
+      .status(400)
+      .send({ message: "비밀번호 확인이 일치하지 않습니다. 확인해주세요." });
   }
 
-  // 그리고 newuser에 담는다.
-  const newuser = {
-    id: 1,
-    email: email,
-    password: password,
-    rePassword: rePassword,
-    role: role,
-    name: name,
-  };
-
-  // 그리고 users 배열에 newuser를 push 한다.
-  users.push(newuser);
-  console.log(`지금 가입을 신청한 회원입니다.`);
-  console.log(newuser);
-
-  // 그리고 newuser를 res.send로 보낸다.
-  res.send(newuser);
-});
-console.log(`사이트 전체 회원조회 입니다.`);
-console.log(users);
-
-app.get("/sign-in", (req, res) => {
-  const { email, password } = req.body;
-
-  // 그리고 이 필드 중에 없는게 있는지 검사한다.
-  if (!email || !password) {
-    res.status(400).send({
-      message: "잘못된 입력값이 있습니다. 값을 다시한번 확인인 해보1세요",
-    });
-    return;
+  // 회원가입시 EMAIL이 중복되는지 확인하는 로직을 작성한다.
+  const existingUser = users.find((user) => user.email === email);
+  if (existingUser) {
+    res.status(409).send({ message: "이미 가입된 이메일 입니다." });
   }
 
-  const { password: _password, ...user } = users.find(
-    (users) => users.email === email && users.password === password
-  );
-  if (!user) {
-    res.status(404).send({
-      result: true,
-      "message:": "사용자를 찾을 수 없습니다.",
-    });
-    return;
-  }
-});
-// app.get 할일목록 전체조회
-app.get("/todo-items", (req, res, next) => {
-  return res.send(todoItems);
-});
+  // 위의 모든 로직을 통과했을 경우, userId의 값을 초기화 또는 증가 시키는 로직을 작성한다.
 
-// app.get /todo-items/:id 할일목록 상세조회
-app.get("/todo-items/:id", (req, res) => {
-  const id = Number(req.params.id);
-  // 요청된(/todo-items/:id 로 들어온 값) 값을 Number로 변환 하고 id변수에 담는다
-  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
-  // 위에서 저장된 id값과 전역변수로 지정된 todoItems배열을 순회하며
-  // 일치하는 첫번째 값을 찾고 todoItem 상수에 저장한다.
-  res.send(todoItem);
-  // todoItem 상수값을 res.send로 보낸다.
-});
+  // 회원가입을 완료하고, users = [] 에 넣는다.
+  const newUser = { email, password, role, name, password, rePassword };
+  users.push(newUser);
 
-// app.post 로 할일목록 생성하기
-app.post("/todo-items", (req, res) => {
-  const { title } = req.body;
-  // 클라이언트로 부터 받은 요청에서 title 속성을 구조분해할당을 통해 추출한다.
+  // 위의 모든 로직을 통과했을 경우, 회원가입에 성공했다는 응답을 보낸다.
+  res.status(200).send({ message: "회원가입 성공이다" });
 
-  const newId = todoItems[todoItems.length - 1]
-    ? // todoItems의 길이에서 -1을 한다, 즉 todoItems 배열의 길이, 마지막 항목을 나타낸다.
-      todoItems[todoItems.length - 1].id + 1
-    : 1;
-  // 삼항연산자를 사용하여 배열의 길이가 있다면 +1을, 배열의 길이가 없다면 1을 할당한다.
-
-  const newTodoItem = {
-    id: newId,
-    userId: 1,
-    title: title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-  // 새로운 할일목록 객체를 생성한다.
-  todoItems.push(newTodoItem);
-  // 전역변수로 지정된 todoItems에 새롭게 생성한 할일객체를 push 한다
-  res.send(newTodoItem);
-  // 새롭게 생성한 할일객체를 res.send로 보낸다.
+  console.log(newUser);
 });
