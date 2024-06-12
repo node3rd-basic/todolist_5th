@@ -78,29 +78,13 @@ const todoItems = [
     createdAt: "2021-08-01",
     updatedAt: "2021-08-01",
   },
-  {
-    id: 3,
-    userId: 1,
-    title: "할일3",
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 4,
-    userId: 1,
-    title: "할일4",
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
 ];
 
 // 할일 목록들 조회 API 만들기  (6차 강의)
 app.get("/todo-items", (req, res, next) => {
-  const readTodoItems = todoItems;
+  const ReadTodoItems = todoItems;
 
-  res.send(readTodoItems);
+  res.send(ReadTodoItems);
 });
 
 // 할일 목록들 추가 API (6차 강의)
@@ -123,81 +107,64 @@ app.post("/todo-items", (req, res, next) => {
   res.send(todoItems);
 });
 
-// 할 일 목록들 중 하나 수정 APi (7차 강의)
+// 할일 목록들 중 하나 수정 APi (7차 강의)
 
 app.put("/todo-items/:id", (req, res, next) => {
   const { id } = req.params;
-  const todoId = Number(id);
-
-  // :id로 입력 받은 값이 todoItems에 있는지 확인 작업
-  // 여기서 이걸 쓰는 이유! const AddtodoItem에서 ...을 쓸 때 뽑아 쓸 {} 전체를 가져와야하니까 찾는 것!
-  const checkTodoItem = todoItems.find((할일) => 할일.id === todoId);
-  if (!checkTodoItem) {
-    res.send({ message: "존재하지 않는 Id입니다." });
+  const retodo = Number(id);
+  const selectedTodoItem = todoItems.find((할일) => 할일.id === retodo);
+  if (!selectedTodoItem) {
+    res.status(404),
+      send({
+        message: "해당 Id를 가진 todo item이 없습니다.",
+      });
     return;
   }
 
-  // 수정될 id값이 어디인지 todoItems에서 찾는 작업 ex) :id가 3이면 3번위치 자리
-  // 여기는 실질적인 객체{} 데이터가 아닌 위치만 찾는다.
-  const todoItemsIndex = todoItems.indexOf(checkTodoItem);
+  // 여기서 부터 내가 생각 못했던 것
+  // let newDoneAt;
+  // if (selectedTodoItem.doneAt === null) {
+  //   newDoneAt = new Date();
+  // } else {
+  //   newDoneAt = null;
+  // }
 
-  const newDoneAt = checkTodoItem.doneAt === null ? new Date() : null;
+  // 위의 코드를 삼항 연산자로 고칠 수 있다.
+  // const newDoneAt = selectedTodoItem.doneAt === null ? new Date() : null;
 
-  // 수정할 위치에서 자르고 수정할 값 넣는 작업.
-  const addtodoItem = todoItems.splice(todoItemsIndex, 1, {
-    ...checkTodoItem,
-    doneAt: newDoneAt,
+  const todoItemIndex = todoItems.indexOf(selectedTodoItem);
+
+  const addtodoItem = todoItems.splice(todoItemIndex, 1, {
+    ...selectedTodoItem,
+    doneAt: selectedTodoItem.doneAt === null ? new Date() : null,
   });
 
   res.send({
     result: true,
-    data: addtodoItem,
   });
 });
 
-// 할 일 목록들 중 하나 삭제 API (7차 강의)
+// 항리 목록들 중 하나 삭제 API (7차 강의)
 app.delete("/todo-items/:id", (req, res, next) => {
   const { id } = req.params;
-  const did = Number(id);
-
-  const delTodoItem = todoItems.find((삭제할_일) => 삭제할_일.id === did);
-
-  if (!delTodoItem) {
-    res.send("해당 할 일이 없습니다.");
-    return;
-  }
-
-  const delTodoItem_index = todoItems.indexOf(delTodoItem);
-
-  console.log(delTodoItem_index);
-
-  const clearTodoItem = todoItems.splice(delTodoItem_index, 1);
-
-  res.send({
-    result: true,
-    date: clearTodoItem,
-  });
-});
-
-// 할 일 목록들 중 하나 삭제 API 2 (7차 강의)
-app.delete("/todo-items/:id", (req, res, next) => {
-  const { id } = req.params;
-  const todoid = Number(id);
-
-  const indexTodoItem = todoItems.findIndex(
-    (삭제할_일) => 삭제할_일.id === todoid
+  const idAsNumber = Number(id);
+  const indexToDelete = todoItems.findIndex(
+    (todoItem) => todoItem.id === idAsNumber
   );
-  if (indexTodoItem === -1) {
-    res.send("존재하지 않는 할 일 입니다.");
-    return;
+
+  if (indexToDelete === -1) {
+    res.status(404).send({
+      result: false,
+      message: "해당 아이디를 가진 todo item이 없습니다.",
+    });
+    return; // <- 이거 쓰는 이유는 return을 안적으면 밑에 함수를 계속 실행하기 때문에 안내문이 나가도 함수가 실행된다.
   }
 
-  console.log(indexTodoItem);
-  const clearTodoItem = todoItems.splice(indexTodoItem, 1);
+  todoItems.splice(indexToDelete, 1);
 
+  console.log(id);
   res.send({
     result: true,
-    date: clearTodoItem,
   });
 });
 
