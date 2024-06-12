@@ -1,6 +1,7 @@
 // const express = require('express')
 import express from 'express'
 import cors from 'cors'
+import jwt from 'jsonwebtoken'
 
 const app = express()
 const port = 3000
@@ -11,6 +12,7 @@ app.get('/', (req, res) => {
     res.send("hello world")
 });
 
+const secretKey = "wewqsfaserafgf"
 const todoItems = [
     {
         "id": 1,
@@ -35,45 +37,53 @@ const todoItems = [
         "doneAt": "2024-05-24",
         "createdAt": "2024-05-24",
         "updatedAt": "2024-05-24",
-    },
-    {
-        "id": 4,
-        "userId": 1,
-        "title": "운동하기",
-        "doneAt": null,
-        "createdAt": new Date(),
-        "updatedAt": null
-    },
-    {
-        "id": 5,
-        "userId": 1,
-        "title": "잠자기",
-        "doneAt": null,
-        "createdAt": new Date(),
-        "updatedAt": null
-    },
+    }
 ]
- 
+
+const users = [
+    {
+        id: 1,
+        email: "lgh5498@example.com",
+        password: "1234",
+        name: "이길현",
+        role: "student",
+    }
+]
 //할일 생성
 app.post('/todo-items', (req, res)=>{
     const {title} = req.body
+    const token = req.headers.authorization
 
-    const newId = (todoItems[todoItems.length-1]) ? todoItems[todoItems.length -1].id +1 : 1
-    const newTodoItem = {
-        "id": newId,
-        "userId": 1,
-        "title": title,
-        "doneAt": null,
-        "createdAt": new Date(),
-        "updatedAt": null
+    try{
+        const user = jwt.verify(token, secretKey)
+        const newId = (todoItems[todoItems.length-1]) ? todoItems[todoItems.length -1].id +1 : 1
+        const newTodoItem = {
+            "id": newId,
+            "userId": user.id,
+            "title": title,
+            "doneAt": null,
+            "createdAt": new Date(),
+            "updatedAt": null
+        }
+        todoItems.push(newTodoItem)
+        res.send(newTodoItem)
+    } catch (err) {
+        res.status(401).send({"message":"권한이 없습니다."})
     }
-    todoItems.push(newTodoItem)
-    res.send(newTodoItem)
+    
 })
 
-//할일 목록 만들기
+//할일 목록 api
 app.get('/todo-items', (req, res)=>{
-    res.send(todoItems)
+    const token = req.headers.authorization
+
+    try{
+        const user = jwt.verify(token, secretKey)
+        res.send(todoItems.filter(todoItem => todoItem.userId === user.id))
+    } catch (err) {
+        res.status(401).send({"message":"권한이 없습니다."})
+    }
+  
 })
 
 //할일 목록중 한개 조회하기
@@ -103,6 +113,7 @@ app.put('/todo-items/:id', (req, res)=> {
     })
     res.send({message:"수정되었습니다."})
 })
+
 //할일 삭제 
 app.delete('/todo-items/:id', (req, res)=> {
     const { id } = req.params
@@ -120,9 +131,56 @@ app.delete('/todo-items/:id', (req, res)=> {
     res.send({message:"todoItem이 삭제되었습니다."})
 })
 
+//회원가입
+app.post('/sign-up', (req, res)=> {
+    const {email, password, rePassword, role, name} = req.body
+    if(!email ||
+        !password ||
+        !rePassword ||
+        !role ||
+        !name ||
+        password !== rePassword) {
+            res.status(400).send({"message":"입력 값을 확인 해 주세요."})
+            return
+        }
+    const existedUser = users.find(user=> user.email === email)
+    if(existedUser) {
+        res.status(409).json({"message":"이미 가입된 이메일 입니다."})
+    }
+    const id = (users.length===0) ? 1 : users[users.length - 1].id + 1
+    const newUser = { id, email, password, role, name }
+    users.push(newUser)
+   
+    res.json(newUser)   
+})
+
+//로그인
+app.post('/sign-in', (req, res)=> {
+    const { email, password } = req.body
+    const { password: _password,...user } = users.find(user => user.email === email
+        && user.password === password)
+    if(!user){
+        res.status(404).send({"message": "해당하는 사용자가 없습니다."})
+        return
+    }
+    const token = jwt.sign(user, secretKey)
+    
+    res.json({token})
+})
+
+//토큰검증
+app.get('/users/me', (req, res) =>{
+    const token = req.headers.authorization
+   
+    try{
+        const user = jwt.verify(token, secretKey)
+        res.json(user)
+    } catch (err) {
+        res.status(401).send({"message": "인증되지 않았습니다."})
+    }
+})
 
 app.listen(port, () => {
     console.log(`${port}포트 서버가 열렸습니다.`)
 })
 
-//app.get 으로 할일목록 , 할일 목록중 한개 조회 하기 API 생성
