@@ -116,7 +116,7 @@ const todoItems = [
   },
 ];
 
-// 내가 만든 것만 보는 할 일 목록들 조회 API 만들기
+// 목록 조회 API 만들기
 app.get("/todo-items", (req, res, next) => {
   // 내 정보가 들어있는 jwt를 가져온다.
   const token = req.headers.authorization;
@@ -132,7 +132,7 @@ app.get("/todo-items", (req, res, next) => {
   }
 });
 
-// 내가 만든 것만 볼 때 할 일 목록들 추가 API
+// 목록 추가 API
 app.post("/todo-items", (req, res, next) => {
   const { title } = req.body;
   const token = req.headers.authorization;
@@ -163,7 +163,7 @@ app.post("/todo-items", (req, res, next) => {
   }
 });
 
-// 할 일 목록들 중 하나 수정 APi (7차 강의)
+// 목록 수정 APi (7차 강의)
 
 app.put("/todo-items/:id", (req, res, next) => {
   const { id } = req.params;
@@ -195,23 +195,21 @@ app.put("/todo-items/:id", (req, res, next) => {
   });
 });
 
-// 할 일 목록들 중 하나 삭제 API (7차 강의)
+// 목록 삭제 API (7차 강의)
 app.delete("/todo-items/:id", (req, res, next) => {
   const { id } = req.params;
-  const did = Number(id);
+  const delId = Number(id);
 
-  const delTodoItem = todoItems.find((삭제할_일) => 삭제할_일.id === did);
+  const delTodoItem = todoItems.find((삭제할_일) => 삭제할_일.id === delId);
 
   if (!delTodoItem) {
     res.send("해당 할 일이 없습니다.");
     return;
   }
 
-  const delTodoItem_index = todoItems.indexOf(delTodoItem);
+  const delTodoItemIndex = todoItems.indexOf(delTodoItem);
 
-  console.log(delTodoItem_index);
-
-  const clearTodoItem = todoItems.splice(delTodoItem_index, 1);
+  const clearTodoItem = todoItems.splice(delTodoItemIndex, 1);
 
   res.send({
     result: true,
@@ -222,17 +220,16 @@ app.delete("/todo-items/:id", (req, res, next) => {
 // 할 일 목록들 중 하나 삭제 API 2 (7차 강의)
 app.delete("/todo-items/:id", (req, res, next) => {
   const { id } = req.params;
-  const todoid = Number(id);
+  const todoId = Number(id);
 
   const indexTodoItem = todoItems.findIndex(
-    (삭제할_일) => 삭제할_일.id === todoid
+    (삭제할_일) => 삭제할_일.id === todoId
   );
   if (indexTodoItem === -1) {
     res.send("존재하지 않는 할 일 입니다.");
     return;
   }
 
-  console.log(indexTodoItem);
   const clearTodoItem = todoItems.splice(indexTodoItem, 1);
 
   res.send({
@@ -311,11 +308,13 @@ app.post("/sign-in", (req, res) => {
     return;
   }
 
+  // 로그인을 성공하면 토큰을 발급한다.
   const token = jwt.sign(user, secretKey);
 
   res.json({ token });
 });
 
+// 내 정보 조회
 app.get("/users/me", (req, res) => {
   // 내 정보들은 전부 header의 들어 있다.
   const token = req.headers.authorization;
