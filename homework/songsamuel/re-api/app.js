@@ -22,7 +22,7 @@ const users = [
   },
 ];
 
-const todoItem = [
+const todoItems = [
   {
     id: 1,
     userId: 1,
@@ -33,7 +33,7 @@ const todoItem = [
   },
   {
     id: 2,
-    userId: 1,
+    userId: 2,
     title: "할일2",
     doneAt: "2021-08-01",
     createdAt: "2021-08-01",
@@ -52,9 +52,9 @@ app.get("/todo-items", (req, res) => {
   // todoItem에서 내가 작성한 것들만 가져올 것인데 그 구분을 뭐로 하냐? userId로 한다
 
   // 이거 못 쓰는 이유 api 스펙이서 나온대로 가 안된다. mytodoItem = {} 이런 모습이 나오기 때문에 쓰면 안된다.
-  //   const mytodoItem = todoItem.filter((item) => item.userId === user.id);
+  // const mytodoItem = todoItem.filter((item) => item.userId === user.id);
 
-  res.status(200).json(todoItem.filter((item) => item.userId === user.id));
+  res.status(200).json(todoItems.filter((item) => item.userId === user.id));
   return;
 });
 
@@ -66,15 +66,21 @@ app.get("/todo-items/:id", (req, res) => {
   // 할 일 목록 한개를 조회하려면 내 정보를 가져와야한다. = 토큰
   const token = req.headers.authorization;
 
-  // 가져온 토큰을 통해서 정보를 꺼내야한다. very
+  try {
+    const user = jwt.verify(token, secretKey);
+    const findItem = todoItems.find((item) => item.id === todoId);
 
-  const user = jwt.verify(token, secretKey);
+    if (user.id !== findItem.userId) {
+      res.status(401).json({ message: "접근 권한이 없습니다." });
+      return;
+    }
 
-  //   // 이거 이대로 넣지 마라잉?!
-  //   const oneTodoItem = todoItem.find((item) => item.id === todoId);
-
-  res.status(200).json(todoItem.find((item) => item.id === todoId));
-  return;
+    res.status(200).json({ ...findItem });
+    return;
+  } catch (error) {
+    res.status(401).json({ message: "접근 권한이 없습니다." });
+    return;
+  }
 });
 
 // 키워드를 통한 할 일 목록들 조회  // 지금은 안하는 것
@@ -90,8 +96,8 @@ app.post("/todo-items", (req, res) => {
   // 2. 작성 할 수 있도록 인증을 받은 토큰을 가져온다.
   const user = jwt.verify(token, secretKey);
 
-  const newId = todoItem[todoItem.length - 1]
-    ? todoItem[todoItem.length - 1].id + 1
+  const newId = todoItems[todoItems.length - 1]
+    ? todoItems[todoItems.length - 1].id + 1
     : 1;
 
   const newItem = {
@@ -103,7 +109,7 @@ app.post("/todo-items", (req, res) => {
     updatedAt: null,
   };
 
-  todoItem.push(newItem);
+  todoItems.push(newItem);
 
   res.status(201).json(newItem);
   return;
@@ -112,15 +118,43 @@ app.post("/todo-items", (req, res) => {
 // 할일 완료 여부 토글
 
 app.put("/todo-items/:id", (req, res) => {
-  res.status(200).json({ result: true });
+  const { id } = req.params;
+  const todoId = Number(id);
+
+  const checkTodoItem = todoItems.find((item) => item.id === todoId);
+  if (!checkTodoItem) {
+    res.status(400).json({ message: "틀린 id 입니다." });
+  }
+
+  const todoItemIndex = todoItems.indexOf(checkTodoItem);
+
+  const newDoneAt = checkTodoItem.doneAt === null ? new Date() : null;
+
+  const addtodoItem = todoItems.splice(todoItemIndex, 1, {
+    ...checkTodoItem,
+    doneAt: newDoneAt,
+  });
+  res.status(200).json({ result: true, data: addtodoItem });
 });
 
 // 할일 삭제
 app.delete("/todo-items/:id", (req, res) => {
-  return res.send("할일 삭제가 완료되었습니다.");
+  const { id } = req.params;
+  const delId = Number(id);
+
+  const delItem = todoItems.find((item) => item.id === delId);
+  if (!delItem) {
+    res.status(400).json({ message: "해당 할 일이 없습니다." });
+    return;
+  }
+  const deleteItemIndex = todoItems.indexOf(delItem);
+
+  const deleteItem = todoItems.splice(deleteItemIndex, 1);
+
+  res.status(200).json({ result: true, data: deleteItem });
 });
 
-const secretKey = "돈 많이 벌고 싶다.";
+const secretKey = "코딩 괴물 이연서 화이팅!.";
 
 // 로그인
 app.post("/sign-in", (req, res) => {
