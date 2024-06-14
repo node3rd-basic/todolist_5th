@@ -1,54 +1,60 @@
+// 코딩 연습 & 실습 파일
 import express from "express";
-import jwt from "jsonwebtoken";
-import cors from "cors";
 
 const app = express();
 const port = 3000;
-const secretKey = "1a2b3c4d";
-app.use(cors());
 app.use(express.json());
-app.listen(port, () => {
-  console.log(`서버가 오픈되었습니다.`);
-});
 
-app.get("/", (req, res) => {
-  res.send("hello World");
+app.listen(port, (req, res) => {
+  console.log(`서버오픈 ${port} 포트`);
 });
 
 const users = [];
 
 // 회원가입 API
 app.post("/sign-up", (req, res) => {
-  // api spec 을 통해 req.body 에서 받아야 하는 값을 확인한다.
-  // email password rePassword role name
   const { email, password, rePassword, role, name } = req.body;
-
-  // 비어있는 칸이 없는지 확인하는 로직을 작성한다.
   if (!email || !password || !rePassword || !role || !name) {
-    res.status(408).send({ message: "비어있는 칸이 있습니다. 확인해주세요." });
+    res.status(408).send({ message: "빈칸확인" });
+    return;
   }
 
-  // 비밀번호가 서로 일치하는지 확인하는 로직을 작성한다.
-  if (password !== rePassword) {
-    res
-      .status(400)
-      .send({ message: "비밀번호 확인이 일치하지 않습니다. 확인해주세요." });
+  if (password == !rePassword) {
+    res.status(408).send({ message: "비밀번호 불일치" });
+    return;
   }
 
-  // 회원가입시 EMAIL이 중복되는지 확인하는 로직을 작성한다.
-  const existingUser = users.find((user) => user.email === email);
-  if (existingUser) {
-    res.status(409).send({ message: "이미 가입된 이메일 입니다." });
+  const 중복유저 = users.find((메일) => 메일.email === email);
+  if (중복유저) {
+    res.send({ message: "중복된 유저" });
+    return;
   }
 
-  // 위의 모든 로직을 통과했을 경우, userId의 값을 초기화 또는 증가 시키는 로직을 작성한다.
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
 
-  // 회원가입을 완료하고, users = [] 에 넣는다.
-  const newUser = { email, password, role, name, password, rePassword };
+  const newUser = { email, password, rePassword, role, name, id };
   users.push(newUser);
 
-  // 위의 모든 로직을 통과했을 경우, 회원가입에 성공했다는 응답을 보낸다.
   res.status(200).send({ message: "회원가입 성공이다" });
-
   console.log(newUser);
+});
+
+app.get("/sign-in", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.send({ message: "빈칸확인" });
+    return;
+  }
+
+  const findUser = users.find(
+    (usr) => usr.email === email && usr.password === password
+  );
+  const { passowrd: _pw, ...user } = findUser;
+
+  if (!findUser) {
+    res.send({ message: "유저없음" });
+    return;
+  }
+
+  res.json({ token: jwt.sign(user, secretKey) });
 });
