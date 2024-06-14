@@ -19,6 +19,8 @@ const users = [
   },
 ];
 
+const secretKey = "sdhtfgwgrljkw";
+
 //회원가입, 로그인, 인증 : 리턴확인
 //회원가입 :
 app.post("/sign-up", (req, res) => {
@@ -55,9 +57,22 @@ app.post("/sign-up", (req, res) => {
 //로그인 - email, password / res : token
 app.post("/sign-in", (req, res) => {
   const { email, password } = req.body;
-  //이메일과 비밀번호가 유저의 정보와 일치하는지
+  //이메일과 비밀번호가 유저의 정보와 일치하는지 //users 와 바디에서 받은 정보
+  //   console.log(user.email);
+  //   console.log(users.password);
+  //   console.log(users);
+  //   console.log(user);
+  //users.find(user=> ??? 강의 다시 볼것...
+  const { password: _password, ...user } = users.find(
+    (users) => users.email === email && users.password === password
+  );
 
   //토큰만들기
+  const token = jwt.sign(user, secretKey);
+  res.json({
+    message: "로그인성공",
+    token,
+  });
   //
 });
 
