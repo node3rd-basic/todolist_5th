@@ -5,6 +5,10 @@ import jwt from "jsonwebtoken";
 const app = express();
 const port = 3000;
 
+const errorMiddleware = (err, req, res, next) => {
+  res.status(500).json({ message: "Internal Server Error"});
+};
+
 app.use(cors());
 app.use(express.json());
 
@@ -257,6 +261,8 @@ app.post("/sign-in", (req, res) => {
 app.get("/users/me", authMiddleware, (req, res) => {
   res.json(req.user);
 });
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(port, "포트로 연결되었습니다.");
