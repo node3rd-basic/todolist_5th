@@ -74,6 +74,12 @@ app.post("/sign-in", (req, res) => {
 
 // 내정보 API
 app.get("/users/me", (req, res) => {
+  // req headers 에서 authorization 을 받아서 token에 저장한다.
+  // try catch 를 실행한다.
+  // token 과 secretKey 를 사용하여 jwt.verify를 하고, user에 저장한다.
+  // 그리고 user를 json으로 보낸다.
+  // catch 에서 에러가 나면 실행한다.
+  // 권한 없음
   res.send({ message: "로그인이다." });
 });
 
