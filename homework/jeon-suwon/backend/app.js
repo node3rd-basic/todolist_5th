@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const PORT = 3000;
@@ -31,13 +32,11 @@ const tododata = [
   },
 ];
 
-
 // 조회API
 
 app.get("/todo-items", (req, res) => {
   res.send(tododata);
 });
-
 
 // 추가API
 
@@ -117,4 +116,3 @@ app.delete("/todo-items/:id", (req, res) => {
 app.listen(PORT, () => {
   console.log(`${PORT}포트번호에 연결되었습니다.`);
 });
-
