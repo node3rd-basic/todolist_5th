@@ -9,6 +9,12 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const errorMiddleware = (err, req, res, next) => {
+  res.status(500).json({
+    message: "Internal Server Error",
+  });
+};
+
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
@@ -32,7 +38,7 @@ const tododata = [
     updatedAt: "2021-08-01",
   },
   {
-    id: 2,
+    id: 3,
     userId: 2,
     title: "과제하기",
     doneAt: "2021-08-01",
@@ -53,27 +59,25 @@ const users = [
 
 //id 생성
 const makeid = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const id = data[i].id;
-    if (!id) {
-      return 1;
-    } else if (id !== i + 1) {
+  if (!data.length) return 1;
+
+  const sortdata = data.sort((a, b) => a.id - b.id);
+  for (let i = 0; i < sortdata.length; i++) {
+    const id = sortdata[i].id;
+    if (id !== i + 1) {
       return i + 1;
     }
-    return id + 1;
   }
+  return sortdata.length + 1;
 };
 
-const makeuserid = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const id = data[i].userId;
-    if (!id) {
-      return 1;
-    } else if (id !== i + 1) {
-      return i + 1;
-    }
-    return id + 1;
-  }
+//인증
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) throw new Error("토큰이 없습니다.");
+
+  req.user = jwt.verify(token, secretKey);
+  next();
 };
 
 // 조회API
@@ -84,12 +88,13 @@ app.get("/todo-items", (req, res) => {
 
 // 추가API
 
-app.post("/todo-items", (req, res) => {
+app.post("/todo-items", authMiddleware, (req, res, next) => {
   const { title } = req.body;
+  const user = req.user;
 
   const items = {
     id: makeid(tododata),
-    userId: 1,
+    userId: user.userId,
     title: title,
     doneAt: null,
     createdAt: new Date(),
@@ -109,18 +114,22 @@ app.get("/todo-items/:id", (req, res) => {
 });
 
 //변경API
-app.post("/todo-items/:id", (req, res) => {
+app.post("/todo-items/:id", authMiddleware, (req, res) => {
   const id = Number(req.params.id);
   const { title } = req.body;
+  const user = req.user;
 
   const selectData = tododata.findIndex((el) => el.id === id);
+
   if (selectData === -1) {
     return res.json({ message: "없는 Id입니다." });
   }
+  if (tododata[selectData].userId !== user.userId)
+    res.json({ message: "접근 권한이 없습니다." });
 
   const changeData = {
     id: id,
-    userId: 1,
+    userId: user.userId,
     title: title,
     doneAt: null,
     createdAt: new Date(),
@@ -133,13 +142,16 @@ app.post("/todo-items/:id", (req, res) => {
 });
 
 //삭제API
-app.delete("/todo-items/:id", (req, res) => {
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
   const id = Number(req.params.id);
+  const user = req.user;
 
   const selectData = tododata.findIndex((el) => el.id === id);
   if (selectData === -1) {
     return res.json({ message: "없는 Id입니다." });
   }
+  if (tododata[selectData].userId !== user.userId)
+    res.json({ message: "접근 권한이 없습니다." });
 
   tododata.splice(selectData, 1);
   return res.json({ massege: "정상적으로 삭제되었습니다." });
@@ -204,13 +216,16 @@ app.get("/users/me", (req, res) => {
 });
 
 //user list api 전체 조회
-app.get("/todo-items/user/:userId", (req, res) => {
-  const userId = Number(req.params.userId);
+app.get("/todo-items/user", authMiddleware, (req, res) => {
+  const user = req.user;
+  const userId = user.userId;
 
   const selectdata = tododata.filter((el) => el.userId === userId);
 
   res.send(selectdata);
 });
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`${PORT}포트번호에 연결되었습니다.`);
