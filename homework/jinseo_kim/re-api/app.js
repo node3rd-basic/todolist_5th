@@ -36,12 +36,12 @@ app.post("/sign-up", (req, res) => {
   // 이메일 중복 없는지 검증한다, 중복 이메일 가입시 409 에러처리
   const extUser = users.find((usr) => usr.email === email);
   if (extUser) {
-    res.status(409).send({ messagse: "중복이다 이녀석아" });
+    res.status(409).send({ message: "중복이다 이녀석아" });
     return;
   }
   // 비밀번호와 비밀번호 확인이 일치하는지 확인, 일치하지 않을경우 400 에러처리
   if (password !== rePassword) {
-    res.status(400).send({ messagse: "비번을 확인하거라" });
+    res.status(400).send({ message: "비번을 확인하거라" });
     return;
   }
   // id 값을 검증하여 +1, 1 을 준다.
