@@ -78,7 +78,7 @@ const user = [
 
 //할일 목록 조회 api
 app.get("/todo-items", (req, res) => {
-  res.send({ data: todoData });
+  res.status(200).send(todoData);
   return;
 });
 
@@ -88,10 +88,11 @@ app.get("/todo-items/:id", (req, res) => {
 
   const selectData = todoData.find((el) => el.id === +id);
 
-  res.send({ data: selectData });
+  res.status.send(selectData);
   return;
 });
 
+//할일 목록 생성 api
 app.post("/todo-items", authMiddleware, (req, res) => {
   const { title } = req.body;
   const { userId } = req.user;
@@ -105,7 +106,26 @@ app.post("/todo-items", authMiddleware, (req, res) => {
     updatedAt: new Date(),
   };
   todoData.push(todoitem);
-  res.json(todoitem);
+  res.status(200).json(todoitem);
+});
+
+//할일 완료 여부
+app.put("/todo-items/:id", authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
+  const findTodoItem = todoData.find((el) => el.id === +id);
+  console.log(findTodoItem);
+  const changeTodoItem = {
+    id,
+    userId,
+    title: findTodoItem.title,
+    doneAt: new Date(),
+    createdAt: findTodoItem.createdAt,
+    updatedAt: new Date(),
+  };
+
+  res.status(200).json(changeTodoItem);
 });
 
 //회원가입
