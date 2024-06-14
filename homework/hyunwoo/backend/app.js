@@ -66,31 +66,29 @@ const users = [
   },
 ];
 
+// token 인증 미들웨어 함수
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization;
+  try {
+    req.user = jwt.verify(token, secretKey);
+    next();
+  } catch (error) {
+    res.status(401).send({ messagae: "권한이 없습니다." });
+  }
+};
+
 /** 할일 목록들 보여지도록 api 구현 */
-app.get(
-  "/todo-items",
-  (req, res, next) => {
-    const token = req.headers.authorization;
-    try {
-      req.user = jwt.verify(token, secretKey);
-      next();
-    } catch (error) {
-      res.status(401).send({ messagae: "권한이 없습니다." });
-    }
-  },
-  (req, res) => {
+app.get("/todo-items", authMiddleware, (req, res) => {
     const user = req.user;
     res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
   }
 );
 
 /** 할일 목록 추가되도록 api 구현 */
-app.post("/todo-items", (req, res) => {
-  const token = req.headers.authorization;
+app.post("/todo-items", authMiddleware, (req, res) => {
+  const user = req.user;
   const { title } = req.body;
 
-  try {
-    const user = jwt.verify(token, secretKey);
     const newId = todoItems[todoItems.length - 1]
       ? todoItems[todoItems.length - 1].id + 1
       : 1;
@@ -107,13 +105,10 @@ app.post("/todo-items", (req, res) => {
     todoItems.push(newTodoItem);
 
     res.send(newTodoItem);
-  } catch (error) {
-    res.status(401).json({ message: "권한이 없습니다." });
-  }
 });
 
 /** 할일 한가지 조회되도록 api 구현 */
-app.get("/todo-items/:id", (req, res) => {
+app.get("/todo-items/:id", authMiddleware, (req, res) => {
   const id = Number(req.params.id);
 
   const todoItem = todoItems.find((todoItem) => todoItem.id === id);
@@ -122,7 +117,7 @@ app.get("/todo-items/:id", (req, res) => {
 });
 
 /** 할일 수정 api 구현 */
-app.put("/todo-items/:id", (req, res) => {
+app.put("/todo-items/:id", authMiddleware, (req, res) => {
   // 할일 id 가져오기
   const id = Number(req.params.id);
   // id가 숫자가 아닌 경우
@@ -157,7 +152,7 @@ app.put("/todo-items/:id", (req, res) => {
 });
 
 /** 할일 삭제 api 구현 */
-app.delete("/todo-items/:id", (req, res) => {
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
   // 할일 id 가져오기
   const id = Number(req.params.id);
   // id가 숫자가 아닌 경우
@@ -259,15 +254,8 @@ app.post("/sign-in", (req, res) => {
 });
 
 /** 토큰 검증 api 구현 */
-app.get("/users/me", (req, res) => {
-  const token = req.headers.authorization;
-
-  try {
-    const user = jwt.verify(token, secretKey);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(401).json({ message: "권한이 없습니다." });
-  }
+app.get("/users/me", authMiddleware, (req, res) => {
+  res.json(req.user);
 });
 
 app.listen(port, () => {
