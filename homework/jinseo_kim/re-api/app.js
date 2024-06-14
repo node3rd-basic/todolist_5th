@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const port = 3000;
 const app = express();
+const secretKey = "1a2b3c4b";
 
 app.use(cors());
 app.use(express.json());
@@ -49,6 +51,9 @@ app.post("/sign-up", (req, res) => {
 
 // 로그인 API
 app.post("/sign-in", (req, res) => {
+  // req.body 로 email pass 받음
+  // users 에서 email pass 일치하는 user 저장
+  // 일치하면jwt.sign으로 json 을 전달함
   res.send({ message: "로그인이다." });
 });
 
