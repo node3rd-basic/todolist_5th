@@ -1,15 +1,106 @@
 // 코딩 연습 & 실습 파일
 import express from "express";
+import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = 3000;
+app.use(cors());
 app.use(express.json());
 
 app.listen(port, (req, res) => {
   console.log(`서버오픈 ${port} 포트`);
 });
 
-const users = [];
+// 회원목록 전역변수 선언 및 데이터 할당
+const users = [
+  {
+    id: 1,
+    email: "test@mail.com",
+    password: "001234",
+    name: "testuser",
+    role: "student",
+  },
+];
+
+// 할일목록 전역변수 선언 및 데이터 할당
+const todoItems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "SA 작성",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: "API 명세서 작성 ",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: 3,
+    title: "와이어프레임 작성",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 4,
+    userId: 4,
+    title: "API 할당",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 5,
+    userId: 5,
+    title: "기능구현",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 6,
+    userId: 6,
+    title: "프로젝트 테스트",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 7,
+    userId: 7,
+    title: "퍼블리싱",
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
+// LocalHost:3000 접속시 Hello World 출력
+app.get("/", (req, res) => {
+  res.send("Hello, World?, i am express");
+});
+
+// LocalHost:3000/check 접속시 Server Opserver 실행
+app.get("/check", (req, res) => {
+  // .send("STATUS: 200, Server is running on http://localhost:3000");
+  res.status(200).send(`
+      <html>
+        <body style="background-color: green;">
+          <h1 style="color: red;">Server Opserver</h1>
+          <h2 style="color: red;">STATUS: 200</h2>
+          <h2 style="color: red;">Server is running on http://localhost:3000</h2>
+        </body>
+      </html>
+    `);
+});
 
 // 회원가입 API
 app.post("/sign-up", (req, res) => {
@@ -39,7 +130,7 @@ app.post("/sign-up", (req, res) => {
   console.log(newUser);
 });
 
-app.get("/sign-in", (req, res) => {
+app.post("/sign-in", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.send({ message: "빈칸확인" });
@@ -52,6 +143,8 @@ app.get("/sign-in", (req, res) => {
   const { passowrd: _pw, ...user } = findUser;
 
   if (!findUser) {
+    console.log(findUser);
+    console.log(users);
     res.send({ message: "유저없음" });
     return;
   }
