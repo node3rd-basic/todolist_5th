@@ -14,37 +14,56 @@ app.use(express.json());
 
 const users = [
   {
+    id: 1,
     email: "thdtkandpf@naver.com",
     password: "aaaa4321",
-    rePassword: "aaaa4321",
     role: "학생",
     name: "송사무엘",
   },
 ];
 
+const TodoItem = [
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 1,
+    title: "할일2",
+    doneAt: "2021-08-01",
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+];
+
 // 목록들 조회
 app.get("/todo-items", (req, res) => {
-  return res.send("조회가 완료되었습니다.");
+  return res.send("목록들 조회가 완료되었습니다.");
 });
 
 // 할 일 목록 한개 조회
 app.get("/todo-items/:id", (req, res) => {
-  return res.send("조회가 완료되었습니다.");
+  return res.send("목록들 중 한개가 완료되었습니다.");
 });
 
 // 키워드를 통한 할 일 목록들 조회
 app.get("/todo-items/search/:keyword", (req, res) => {
-  return res.send("조회가 완료되었습니다.");
+  return res.send("키워드를 통한 목록 조회가 완료되었습니다.");
 });
 
 // 할 일 등록
 app.post("/todo-items", (req, res) => {
-  return res.json({ msg: "조회가 완료되었습니다." });
+  return res.json({ msg: "할일 등록이 완료되었습니다." });
 });
 
 // 할일 삭제
 app.delete("/todo-items/:id", (req, res) => {
-  return res.send("조회가 완료되었습니다.");
+  return res.send("할일 삭제가 완료되었습니다.");
 });
 
 const secretKey = "돈 많이 벌고 싶다.";
@@ -58,13 +77,17 @@ app.post("/sign-in", (req, res) => {
   const foundUser = users.find(
     (user) => user.email === email && user.password === password
   );
+
+  // 내가 까먹은 것!
+  const { password: _password, ...user } = foundUser;
+
   if (!foundUser) {
     res.status(400).json({ message: "존재하지 않는 사용자입니다." });
     return;
   }
 
-  // 3. 토큰 발행하기
-  const token = jwt.sign(foundUser, secretKey);
+  // 3. 내 정보가 들어간 토큰 발행하기
+  const token = jwt.sign(user, secretKey);
 
   res.status(200).json({ message: "로그인이 성공적으로 되었습니다.", token });
   return;
@@ -118,7 +141,16 @@ app.post("/sign-up", (req, res) => {
 
 // 내 정보 가져오기
 app.get("/users/me", (req, res) => {
-  res.json({ msg: "완료되었습니다." });
+  const token = req.headers.authorization;
+
+  // 가져온 토큰을 검증해서 거기서 내 정보를 꺼내야한다.
+  const user = jwt.verify(token, secretKey);
+  // 만약 잘못된 시크릿 키를 가져왔으면
+  if (!user) {
+    res.status(400).json({ message: "당신은 권한이 없어!" });
+  }
+
+  res.status(200).json({ user });
   return;
 });
 
