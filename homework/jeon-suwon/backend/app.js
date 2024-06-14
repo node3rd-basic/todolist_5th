@@ -131,8 +131,8 @@ app.post("/todo-items/:id", authMiddleware, (req, res) => {
     id: id,
     userId: user.userId,
     title: title,
-    doneAt: null,
-    createdAt: new Date(),
+    doneAt: new Date(),
+    createdAt: user.createdAt,
     updatedAt: new Date(),
   };
 
@@ -204,11 +204,9 @@ app.post("/sign-in", (req, res) => {
 //인증
 app.get("/users/me", (req, res) => {
   const token = req.headers.authorization;
-  console.log(token);
   if (!token) res.status(401).send({ message: "토큰이 없습니다." });
   try {
     const user = jwt.verify(token, secretKey);
-    console.log(user);
     res.json(user);
   } catch (e) {
     res.status(401).send({ message: "권한이 없습니다." });
