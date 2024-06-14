@@ -19,11 +19,30 @@ const users = [
   {
     email: "1111",
     password: "1111",
-    rePassword: "1111",
     role: "student",
-    name: "student",
+    name: "1111",
   },
 ];
+
+const todoItems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+];
+
 // 회원가입 API
 app.post("/sign-up", (req, res) => {
   // req.body 를 통해 api spec을 받아서 저장한다.
@@ -65,9 +84,10 @@ app.post("/sign-in", (req, res) => {
   const findUser = users.find(
     (usr) => usr.email === email && usr.password === password
   );
+  const { password: _pw, ...user } = findUser;
   // 일치하면jwt.sign으로 json 을 전달함
-  if (findUser) {
-    const token = jwt.sign(findUser, secretKey);
+  if (user) {
+    const token = jwt.sign(user, secretKey);
     res.send({ token });
   }
 });
@@ -75,12 +95,18 @@ app.post("/sign-in", (req, res) => {
 // 내정보 API
 app.get("/users/me", (req, res) => {
   // req headers 에서 authorization 을 받아서 token에 저장한다.
+  const token = req.headers.authorization;
   // try catch 를 실행한다.
-  // token 과 secretKey 를 사용하여 jwt.verify를 하고, user에 저장한다.
-  // 그리고 user를 json으로 보낸다.
-  // catch 에서 에러가 나면 실행한다.
-  // 권한 없음
-  res.send({ message: "로그인이다." });
+  try {
+    // token 과 secretKey 를 사용하여 jwt.verify를 하고, user에 저장한다.
+    const user = jwt.verify(token, secretKey);
+    // 그리고 user를 json으로 보낸다.
+    res.status(200).json(user);
+
+    // catch 에서 에러가 나면 실행한다.
+  } catch {
+    res.status(401).send({ message: "권한이 없다 이녀석아" });
+  }
 });
 
 // 할일 목록들 조회 API
