@@ -75,13 +75,13 @@ const user = [
 ];
 
 //할일 목록 조회 api
-app.get("/todo-items", (req, res, next) => {
+app.get("/todo-items", (req, res) => {
   res.send({ data: todoData });
   return;
 });
 
 //할일 목록 한개 조회 api
-app.get("/todo-items/:id", (req, res, next) => {
+app.get("/todo-items/:id", (req, res) => {
   const { id } = req.params;
 
   const selectData = todoData.find((el) => el.id === +id);
@@ -90,8 +90,13 @@ app.get("/todo-items/:id", (req, res, next) => {
   return;
 });
 
+//할일 목록 등록
+app.post("todo-items", (req, res) => {
+  const { title } = req.body;
+});
+
 //회원가입
-app.post("/sign-up", (req, res, next) => {
+app.post("/sign-up", (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
   const emailExist = user.find((el) => el.email === email);
 
@@ -118,7 +123,7 @@ app.post("/sign-up", (req, res, next) => {
   return;
 });
 
-app.post("/sign-in", (req, res, next) => {
+app.post("/sign-in", (req, res) => {
   const { email, password } = req.body;
 
   const findUser = user.find((el) => el.email === email);
@@ -130,8 +135,15 @@ app.post("/sign-in", (req, res, next) => {
     res.status(409).json({ message: "패스워드가 일치하지않습니다." });
   }
 
-  const token = jwt.sign(findUser, secretKey, { expiresIn: "10s" });
+  const token = jwt.sign(findUser, secretKey);
   res.status(200).json({ token });
+  return;
+});
+
+app.get("/users/me", authMiddleware, (req, res) => {
+  const userInfo = req.user;
+
+  res.status(200).json(userInfo);
   return;
 });
 
