@@ -17,6 +17,7 @@ app.listen(port, () => {
 
 const users = [
   {
+    id: "1",
     email: "1111",
     password: "1111",
     role: "student",
@@ -28,6 +29,54 @@ const todoItems = [
   {
     id: 1,
     userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 2,
     title: "할일1",
     doneAt: null,
     createdAt: "2021-08-01",
@@ -111,7 +160,22 @@ app.get("/users/me", (req, res) => {
 
 // 할일 목록들 조회 API
 app.get("/todo-items", (req, res) => {
-  res.send({ message: "할일 목록들 이다." });
+  // req.header를 통해 token을 받아서 저장한다.
+  const token = req.headers.authorization;
+  // try 실행
+  try {
+    // user 에 jwt.verify 를 한 정보를 넣는다.
+    const user = jwt.verify(token, secretKey);
+    // res.send를 통해 값을 전달한다.
+    console.res.send(
+      // todoItems 를 filter 걸어서 userId와 일치하는 값을 전달한다.
+      todoItems.filter((todoItem) => todoItem.userId === Number(user.id))
+    );
+    // catch 실행
+  } catch (error) {
+    // 권한이 없다고 보낸다.
+    res.status(401).send({ message: "권한이 없다 이녀석아" });
+  }
 });
 
 // 할일 상세 조회 API
