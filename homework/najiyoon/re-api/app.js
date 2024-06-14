@@ -48,8 +48,9 @@ app.post("/sign-up", (req, res) => {
     return;
   }
   //회원가입진행 유저만들기 : 반환, 푸쉬, userid
-
-  const newUser = { email, password, rePassword, role, name };
+  //id 넣어주기 삼항 유저가 아무도 없다면 1 : 그렇지 않으면 +1= 아이디
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
+  const newUser = { id, email, password, rePassword, role, name };
   res.json(newUser);
   users.push(newUser);
 });
@@ -69,15 +70,30 @@ app.post("/sign-in", (req, res) => {
 
   //토큰만들기
   const token = jwt.sign(user, secretKey);
+  console.log("token-->", token);
+  console.log("user-->", user);
   res.json({
     message: "로그인성공",
     token,
   });
+  console.log(token);
   //
 });
 
 //내정보 가져오기 : 인증토큰 , 아이디 확인할 수 있게/ res : id, email, name, role, createdAT
-app.get("/users/me", (req, res) => {});
+app.get("/users/me", (req, res) => {
+  //토큰으로 나인지 확인 : 토큰 verify
+  const token = req.headers.authorization;
+  try {
+    const user = jwt.verify(token, secretKey);
+    console.log("인증user-->", user);
+    //user를 {로 감싸면} 로그인 후 정보가 안나오므로 풀어줄것
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(400).json({ message: "인증오류" });
+    next(err);
+  }
+});
 
 //할일목록들 조회 : 응답[] id, userid, title, doneAt, createdAt, updatedAt
 app.get("/todo-items", (req, res) => {});
