@@ -67,18 +67,22 @@ const users = [
 ];
 
 /** 할일 목록들 보여지도록 api 구현 */
-app.get("/todo-items", (req, res) => {
-  const token = req.headers.authorization;
-
-  try {
-    const user = jwt.verify(token, secretKey);
-    res
-      .status(200)
-      .send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-  } catch (error) {
-    res.status(401).json({ message: "권한이 없습니다." });
+app.get(
+  "/todo-items",
+  (req, res, next) => {
+    const token = req.headers.authorization;
+    try {
+      req.user = jwt.verify(token, secretKey);
+      next();
+    } catch (error) {
+      res.status(401).send({ messagae: "권한이 없습니다." });
+    }
+  },
+  (req, res) => {
+    const user = req.user;
+    res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
   }
-});
+);
 
 /** 할일 목록 추가되도록 api 구현 */
 app.post("/todo-items", (req, res) => {
