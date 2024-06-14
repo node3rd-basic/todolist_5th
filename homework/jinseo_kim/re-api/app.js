@@ -15,7 +15,15 @@ app.listen(port, () => {
 
 // api spec을 보고 api controller 부터 작성한다.
 
-const users = [];
+const users = [
+  {
+    email: "1111",
+    password: "1111",
+    rePassword: "1111",
+    role: "student",
+    name: "student",
+  },
+];
 // 회원가입 API
 app.post("/sign-up", (req, res) => {
   // req.body 를 통해 api spec을 받아서 저장한다.
@@ -52,9 +60,16 @@ app.post("/sign-up", (req, res) => {
 // 로그인 API
 app.post("/sign-in", (req, res) => {
   // req.body 로 email pass 받음
+  const { email, password } = req.body;
   // users 에서 email pass 일치하는 user 저장
+  const findUser = users.find(
+    (usr) => usr.email === email && usr.password === password
+  );
   // 일치하면jwt.sign으로 json 을 전달함
-  res.send({ message: "로그인이다." });
+  if (findUser) {
+    const token = jwt.sign(findUser, secretKey);
+    res.send({ token });
+  }
 });
 
 // 내정보 API
