@@ -1,15 +1,26 @@
 // 1. express -> 서버 띄우기
 
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import jwt from "jsonwebtoken";
 
+const port = 3000; // 함부로 바꾸면 안된다. why? FA랑 약속한 값이기 때문에
 const app = express();
-// const port = 3000;
+
+app.use(cors());
+app.use(express.json());
 
 // api 스펙을 보고 api 컨트롤러 작성
 
-//
-
-const users = {};
+const users = [
+  {
+    email: "thdtkandpf@naver.com",
+    password: "aaaa4321",
+    rePassword: "aaaa4321",
+    role: "학생",
+    name: "송사무엘",
+  },
+];
 
 // 목록들 조회
 app.get("/todo-items", (req, res) => {
@@ -36,9 +47,27 @@ app.delete("/todo-items/:id", (req, res) => {
   return res.send("조회가 완료되었습니다.");
 });
 
+const secretKey = "돈 많이 벌고 싶다.";
+
 // 로그인
 app.post("/sign-in", (req, res) => {
-  return res.status(201);
+  // 1. req. body 받기
+  const { email, password } = req.body;
+
+  // 2. 받은 email과 password가 내 uers에 존재하는지 찾아서 확인하기
+  const foundUser = users.find(
+    (user) => user.email === email && user.password === password
+  );
+  if (!foundUser) {
+    res.status(400).json({ message: "존재하지 않는 사용자입니다." });
+    return;
+  }
+
+  // 3. 토큰 발행하기
+  const token = jwt.sign(foundUser, secretKey);
+
+  res.status(200).json({ message: "로그인이 성공적으로 되었습니다.", token });
+  return;
 });
 
 // 회원가입
@@ -55,14 +84,14 @@ app.post("/sign-up", (req, res) => {
     !name ||
     password !== rePassword
   ) {
-    res.json({ msg: "입력값을 확인해주세요" });
+    res.status(400).json({ message: "입력값을 확인해주세요" });
   }
 
   // 3. 이메일이 이미 존재하는지 확인해야한다.
   const existingUser = users.find((user) => user.email === email);
 
   if (existingUser) {
-    res.status(400).json({ msg: "이미 존재하는 email입니다." });
+    res.status(400).json({ message: "이미 존재하는 email입니다." });
     return;
   }
 
@@ -89,9 +118,10 @@ app.post("/sign-up", (req, res) => {
 
 // 내 정보 가져오기
 app.get("/users/me", (req, res) => {
-  return res.json({ msg: "완료되었습니다." });
+  res.json({ msg: "완료되었습니다." });
+  return;
 });
 
-app.listen(3000, () => {
-  console.log(`"서버가 연결되었습니다."`);
+app.listen(port, () => {
+  console.log(`서버가 연결되었습니다.`);
 });
