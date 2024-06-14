@@ -1,0 +1,49 @@
+
+// 회원가입 API //
+// req.body 를 통해 api spec을 받아서 저장한다.
+// 입력받은 값에 빈칸이 없는지 검증한다.
+// 이메일 중복 없는지 검증한다.
+// id 값을 검증하여 +1, 1 을 준다.
+// 모든로직 통과하면 newUser에 저장하고
+// users에 push 한다.
+// json 으로 newUser를 보여준다.
+
+// 로그인 API //
+// req.body 로 email pass 받음
+// users 에서 email pass 일치하는 user 저장
+// 일치하면jwt.sign으로 json 을 전달함
+
+// Me API //
+// req headers 에서 authorization 을 받아서 token에 저장한다.
+// try catch 를 실행한다.
+// token 과 secretKey 를 사용하여 jwt.verify를 하고, user에 저장한다.
+// 그리고 user를 json으로 보낸다.
+// catch 에서 에러가 나면 실행한다.
+// 권한 없음
+
+// 할일 조회 API
+// req.header를 통해 token을 받아서 저장한다.
+// try 실행
+// user 에 jwt.verify 를 한 정보를 넣는다.
+// res.send를 통해 값을 전달한다.
+// todoItems 를 filter 걸어서 userId와 일치하는 값을 전달한다.
+// catch 실행
+// 권한이 없다고 보낸다.
+
+// 할일 저장 API
+// req.headers 를 통해 token값을 받아서 toekn에 저장한다.
+// req.body 를 통해 title을 전달받아 저장한다.
+// try 실행
+// user 에 jwt.verify 를 하여 user 정보를 저장한다.
+// id를 판별하여 0이면 1, 1이면 +1 하는 로직
+// newTodoItem 을 선언하고
+// id / userId:user.id / title / doneAt / createAt / updateAt 을 저장한다.
+// todoItems 에 push한다
+// newTodoItem을 res로 보낸다.
+// catch 에러실행
+// 권한이 없음 메시지를 반환한다.
+
+// 할일 상세조회 API
+// req.params.id 를 통해 id를 전달받아 저장하는데 숫자형식으로 변환한다.
+// todoItem에 저장하는데, todoItems.find를 걸어 id 가 일치하는 것을 찾는다.
+// 찾은 todiItem을 send로 보낸다.
