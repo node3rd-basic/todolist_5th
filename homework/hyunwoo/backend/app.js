@@ -101,7 +101,7 @@ const getTodoItemById = (id) => {
 
 // todoItem id 지정하기
 const getIncrementedId = (arr) =>
-  arr[todoItems.length - 1] ? arr[todoItems.length - 1].id + 1 : 1;
+  arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
 
 /** 할일 목록들 보여지도록 api 구현 */
 app.get("/todo-items", authMiddleware, (req, res) => {
