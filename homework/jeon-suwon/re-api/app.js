@@ -19,28 +19,30 @@ const authMiddleware = (req, res, next) => {
   next();
 };
 
-const makeid = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const id = data[i].id;
-    if (!id) {
-      return 1;
-    } else if (id !== i + 1) {
+const makeId = (data) => {
+  if (!data.length) return 1;
+
+  const sortdata = data.sort((a, b) => a.id - b.id);
+  for (let i = 0; i < sortdata.length; i++) {
+    const id = sortdata[i].id;
+    if (id !== i + 1) {
       return i + 1;
     }
   }
-  return id + 1;
+  return sortdata.length + 1;
 };
 
 const makeUserId = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const id = data[i].userid;
-    if (!id) {
-      return 1;
-    } else if (id !== i + 1) {
+  if (!data.length) return 1;
+
+  const sortdata = data.sort((a, b) => a.userId - b.userId);
+  for (let i = 0; i < sortdata.length; i++) {
+    const id = sortdata[i].userId;
+    if (id !== i + 1) {
       return i + 1;
     }
   }
-  return id + 1;
+  return sortdata.length + 1;
 };
 
 const todoData = [
@@ -90,9 +92,20 @@ app.get("/todo-items/:id", (req, res) => {
   return;
 });
 
-//할일 목록 등록
-app.post("todo-items", (req, res) => {
+app.post("/todo-items", authMiddleware, (req, res) => {
   const { title } = req.body;
+  const { userId } = req.user;
+
+  const todoitem = {
+    id: makeId(todoData),
+    userId,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  todoData.push(todoitem);
+  res.json(todoitem);
 });
 
 //회원가입
