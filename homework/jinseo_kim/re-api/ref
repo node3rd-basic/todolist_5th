@@ -21,14 +21,9 @@
 // catch 에서 에러가 나면 실행한다.
 // 권한 없음
 
-// 할일 조회 API
-// req.header를 통해 token을 받아서 저장한다.
-// try 실행
-// user 에 jwt.verify 를 한 정보를 넣는다.
-// res.send를 통해 값을 전달한다.
-// todoItems 를 filter 걸어서 userId와 일치하는 값을 전달한다.
-// catch 실행
-// 권한이 없다고 보낸다.
+
+
+
 
 // 할일 저장 API
 // req.headers 를 통해 token값을 받아서 toekn에 저장한다.
