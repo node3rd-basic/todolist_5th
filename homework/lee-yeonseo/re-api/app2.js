@@ -181,7 +181,7 @@ app.post('/sign-in', (req, res) => {
   //req.body에서 email, password 받아오기
   const { email, password } = req.body;
 
-  if (!email && !password) {
+  if (!email || !password) {
     res.status(400).json({ message: '입력값을 확인해주세요.' });
     return;
   }
