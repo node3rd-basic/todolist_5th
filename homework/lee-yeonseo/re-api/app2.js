@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import { getIncrementedId } from './utils.js';
 
 const app = express();
 const port = 3000;
@@ -44,6 +43,9 @@ const todoItemIdValidator = (req, res, next) => {
   req.todoItemId = todoItemId;
   next();
 };
+
+//투두아이템 아이디, 유저 아이디 생성
+const getIncrementedId = (arr) => (arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1);
 
 //해당하는 투두 아이템 아이디의 할일 찾기
 export const findTodoItem = ({ todoItemId, userId }) => {
@@ -145,7 +147,23 @@ app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
 });
 
 //할일 삭제
-app.delete('/todo-items/:id', (req, res) => {});
+app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
+  //투두 아이템 아이디 파싱
+  const { todoItemId } = req;
+  //유저 아이디 파싱
+  const userId = req.user.id;
+
+  //해당하는 아이디의 투두아이템 찾기
+  const selectedTodoItem = findTodoItem({ todoItemId, userId });
+
+  //찾은 투두 아이템의 인덱스 찾기
+  const selectedTodoItemIndex = todoItems.indexOf(selectedTodoItem);
+
+  //splice로 투두 아이템 삭제
+  todoItems.splice(selectedTodoItemIndex, 1);
+
+  res.status(200).json({ result: true });
+});
 
 //로그인
 app.post('/sign-in', (req, res) => {
