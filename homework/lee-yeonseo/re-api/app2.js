@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 const users = [];
+const todoItems = [];
 const tokenSecretKey = '이래서 한번 할 때 잘해야 해';
 
 //사용자 인증 미들웨어
@@ -35,7 +36,37 @@ app.get('/todo-items/:id', (req, res) => {});
 app.get('/todo-item/search/:keyword', (req, res) => {});
 
 //할일 등록
-app.post('/todo-items', (req, res) => {});
+app.post('/todo-items', authMiddleware, (req, res) => {
+  //인증 미들웨어로 userId 받아오기
+  const userId = req.user.id;
+  //req.body에서 title 받아오기
+  const { title } = req.body;
+
+  //title을 입력하지 않았다면 오류 반환
+  if (!title) {
+    res.status(400).json({ message: '할일 내용을 입력해주세요.' });
+    return;
+  }
+
+  //투두 아이템 아이디 생성하기
+  const newTodoItemId = getIncrementedId(todoItems);
+
+  //newTodoItem 생성
+  const newTodoItem = {
+    id: newTodoItemId,
+    userId,
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+
+  //todoItems 목록에 newTodoItem 추가
+  todoItems.push(newTodoItem);
+  console.log(todoItems);
+
+  res.status(201).json(newTodoItem);
+});
 
 //할일 완료 여부 토글
 app.post('/todo-items/:id', (req, res) => {});
@@ -47,6 +78,11 @@ app.delete('/todo-items/:id', (req, res) => {});
 app.post('/sign-in', (req, res) => {
   //req.body에서 email, password 받아오기
   const { email, password } = req.body;
+
+  if (!email && !password) {
+    res.status(400).json({ message: '입력값을 확인해주세요.' });
+    return;
+  }
 
   //유저 배열에 해당하는 이메일과 패스워드와 일치하는 유저가 있는지 검색
   const user = users.find((user) => user.email === email && user.password === password);
