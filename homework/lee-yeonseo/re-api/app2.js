@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 import { getIncrementedId } from './utils.js';
 
 const app = express();
@@ -9,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 const users = [];
+const tokenSecretKey = '이래서 한번 할 때 잘해야 해';
 
 // 할일 목록들 조회
 app.get('/todo-items', (req, res) => {});
@@ -29,7 +31,23 @@ app.post('/todo-items/:id', (req, res) => {});
 app.delete('/todo-items/:id', (req, res) => {});
 
 //로그인
-app.post('/sign-in', (req, res) => {});
+app.post('/sign-in', (req, res) => {
+  //req.body에서 email, password 받아오기
+  const { email, password } = req.body;
+
+  //유저 배열에 해당하는 이메일과 패스워드와 일치하는 유저가 있는지 검색
+  const user = users.find((user) => user.email === email && user.password === password);
+  //일치하는 유저가 없다면 오류 반환
+  if (!user) {
+    res.status(401).json({ message: '이메일 혹은 패스워드를 확인해주세요.' });
+    return;
+  }
+
+  //일치하는 유저가 있다면 패스워드를 제외한 유저 정보를 페이로드로 토큰 발급
+  const token = jwt.sign(user, tokenSecretKey);
+
+  res.status(200).json(token);
+});
 
 //회원가입
 app.post('/sign-up', (req, res) => {
@@ -64,7 +82,7 @@ app.post('/sign-up', (req, res) => {
   //users배열에 newUser 넣어주기
   users.push(newUser);
 
-  res.status(200).json(newUser);
+  res.status(201).json(newUser);
 });
 
 //내 정보 가져오기
