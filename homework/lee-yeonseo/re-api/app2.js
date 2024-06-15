@@ -90,7 +90,18 @@ app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
 });
 
 //할일 목록들 조회 --키워드 검색
-app.get('/todo-item/search/:keyword', (req, res) => {});
+app.get('/todo-items/search/:keyword', authMiddleware, (req, res) => {
+  //유저 아이디 파싱
+  const userId = req.user.id;
+  //검색 키워드 파싱
+  const { keyword } = req.params;
+  //유저아이디와 동일하고, 해당 키워드를 포함하고 있는 할일 목록들 찾기
+  const todoItemsByKeyword = todoItems.filter(
+    (todoItem) => todoItem.userId === userId && todoItem.title.includes(keyword),
+  );
+
+  res.status(200).json(todoItemsByKeyword);
+});
 
 //할일 등록
 app.post('/todo-items', authMiddleware, (req, res) => {
