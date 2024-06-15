@@ -27,7 +27,15 @@ const authMiddleware = (req, res, next) => {
 };
 
 // 할일 목록들 조회
-app.get('/todo-items', (req, res) => {});
+app.get('/todo-items', authMiddleware, (req, res) => {
+  //사용자 인증 미들웨어에서 유저 아이디 받아오기
+  const userId = req.user.id;
+
+  //해당 유저가 작성한 투두 아이템만 찾기
+  const myTodoItems = todoItems.filter((todoItem) => todoItem.userId === userId);
+
+  res.status(200).json(myTodoItems);
+});
 
 //할일 목록 한개 조회
 app.get('/todo-items/:id', (req, res) => {});
