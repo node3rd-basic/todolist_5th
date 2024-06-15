@@ -85,7 +85,7 @@ app.post('/sign-in', (req, res) => {
   }
 
   //유저 배열에 해당하는 이메일과 패스워드와 일치하는 유저가 있는지 검색
-  const user = users.find((user) => user.email === email && user.password === password);
+  const { password: _pw, ...user } = users.find((user) => user.email === email && user.password === password);
   //일치하는 유저가 없다면 오류 반환
   if (!user) {
     res.status(401).json({ message: '이메일 혹은 패스워드를 확인해주세요.' });
