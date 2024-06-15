@@ -12,6 +12,19 @@ app.use(cors());
 const users = [];
 const tokenSecretKey = '이래서 한번 할 때 잘해야 해';
 
+//사용자 인증 미들웨어
+const authMiddleware = (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const user = jwt.verify(token, tokenSecretKey);
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: '인증 정보가 유효하지 않습니다.' });
+  }
+};
+
 // 할일 목록들 조회
 app.get('/todo-items', (req, res) => {});
 
@@ -46,7 +59,7 @@ app.post('/sign-in', (req, res) => {
   //일치하는 유저가 있다면 패스워드를 제외한 유저 정보를 페이로드로 토큰 발급
   const token = jwt.sign(user, tokenSecretKey);
 
-  res.status(200).json(token);
+  res.status(200).json({ token });
 });
 
 //회원가입
@@ -86,7 +99,10 @@ app.post('/sign-up', (req, res) => {
 });
 
 //내 정보 가져오기
-app.get('/users/me', (req, res) => {});
+app.get('/users/me', authMiddleware, (req, res) => {
+  //사용자 인증 미들웨어가 보내준 req.user를 반환
+  res.status(200).json(req.user);
+});
 
 app.listen(port, () => {
   console.log(`${port}번 포트로 서버가 열렸습니다.`);
