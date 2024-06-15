@@ -210,6 +210,13 @@ app.post('/sign-up', (req, res) => {
     res.status(400).json({ message: '입력값을 확인해 주세요' });
     return;
   }
+
+  //비밀번호와 비밀번호 확인이 불일치하면 에러
+  if(password !== rePassword) {
+    res.status(400).json({message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.'})
+    return
+  }
+
   //이메일 중복 확인
   const existedEmail = users.find((user) => user.email === email);
   if (existedEmail) {
