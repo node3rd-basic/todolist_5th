@@ -123,7 +123,26 @@ app.post('/todo-items', authMiddleware, (req, res) => {
 });
 
 //할일 완료 여부 토글
-app.post('/todo-items/:id', (req, res) => {});
+app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
+  //투두 아이템 아이디 파싱
+  const { todoItemId } = req;
+  //유저 아이디 파싱
+  const userId = req.user.id;
+
+  //해당하는 투두 아이템 아이디의 할일 찾기
+  const selectedTodoItem = findTodoItem({ todoItemId, userId });
+
+  //찾은 투두 아이템의 인덱스 찾기
+  const selectedTodoItemIndex = todoItems.indexOf(selectedTodoItem);
+
+  //splice로 투두 아이템의 doneAt 수정
+  todoItems.splice(selectedTodoItemIndex, 1, {
+    ...selectedTodoItem,
+    doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
+  });
+
+  res.status(200).json({ result: true });
+});
 
 //할일 삭제
 app.delete('/todo-items/:id', (req, res) => {});
