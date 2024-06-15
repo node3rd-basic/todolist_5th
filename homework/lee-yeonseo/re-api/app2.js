@@ -13,6 +13,10 @@ const users = [];
 const todoItems = [];
 const tokenSecretKey = '이래서 한번 할 때 잘해야 해';
 
+const errorHandlingMiddleware = (err, req, res, next) => {
+  res.status(500).json({ message: err.message });
+};
+
 //사용자 인증 미들웨어
 const authMiddleware = (req, res, next) => {
   try {
@@ -24,6 +28,39 @@ const authMiddleware = (req, res, next) => {
   } catch (error) {
     res.status(401).json({ message: '인증 정보가 유효하지 않습니다.' });
   }
+};
+
+//투두아이템 아이디 유효성 검증 미들웨어
+const todoItemIdValidator = (req, res, next) => {
+  //req.params에서 투두 아이템 아이디 받아오기
+  const todoItemId = Number(req.params.id);
+
+  //아이디가 숫자 타입이 아니라면 오류 반환
+  if (isNaN(todoItemId)) {
+    res.status(400).json({ message: '할일 id는 숫자 형태로 입력해야 합니다.' });
+    return;
+  }
+
+  req.todoItemId = todoItemId;
+  next();
+};
+
+//해당하는 투두 아이템 아이디의 할일 찾기
+export const findTodoItem = ({ todoItemId, userId }) => {
+  //req.params로 받은 아이디의 할일 찾기
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
+
+  //해당 아이디의 할일이 존재하지 않으면 오류 반환
+  if (!selectedTodoItem) {
+    throw new Error('해당 아이디의 할 일이 존재하지 않습니다.');
+  }
+
+  //찾은 할일의 유저 아이디와 req.user로 받은 유저 아이디가 불일치하면 오류 반환
+  if (selectedTodoItem.userId !== userId) {
+    throw new Error('접근 권한이 없는 할 일입니다.');
+  }
+
+  return selectedTodoItem;
 };
 
 // 할일 목록들 조회
@@ -38,7 +75,17 @@ app.get('/todo-items', authMiddleware, (req, res) => {
 });
 
 //할일 목록 한개 조회
-app.get('/todo-items/:id', (req, res) => {});
+app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, (req, res) => {
+  //req.params에서 투두아이템 아이디 받아오기
+  const { todoItemId } = req;
+  //사용자 인증 미들웨어에서 유저의 id 받아오기
+  const userId = req.user.id;
+
+  //투두아이템 목록에서 req.params에서 받아온 id와 일치하는 아이템 찾기
+  const selectedTodoItem = findTodoItem({ todoItemId, userId });
+
+  res.status(200).json(selectedTodoItem);
+});
 
 //할일 목록들 조회 --키워드 검색
 app.get('/todo-item/search/:keyword', (req, res) => {});
@@ -71,7 +118,6 @@ app.post('/todo-items', authMiddleware, (req, res) => {
 
   //todoItems 목록에 newTodoItem 추가
   todoItems.push(newTodoItem);
-  console.log(todoItems);
 
   res.status(201).json(newTodoItem);
 });
@@ -147,6 +193,8 @@ app.get('/users/me', authMiddleware, (req, res) => {
   //사용자 인증 미들웨어가 보내준 req.user를 반환
   res.status(200).json(req.user);
 });
+
+app.use(errorHandlingMiddleware);
 
 app.listen(port, () => {
   console.log(`${port}번 포트로 서버가 열렸습니다.`);
