@@ -46,9 +46,14 @@ export function postTodoItem(req, res) {
 }
 
 export function getTodoItem(req, res) {
-    const id = validateTodoItemId(req)
-    const todoItem = getTodoItemById(id)
-    res.send(todoItem)
+    try {
+        const id = validateTodoItemId(req)
+        const todoItem = getTodoItemById(id)
+        res.send(todoItem)
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+
 }
 
 export function putTodoItem(req, res) {
