@@ -134,7 +134,36 @@ app.post('/sign-up', (req, res) => {
   console.log(newUser);
 });
 
-//
+// 튜터님의 피드백 내용중...
+// findeUser 가 없음을 먼저 143번째줄위에서 검증해야하지 않을까 합니다.
+// 현코드라면 findUser가 없다면 143번째줄에서 에러가 날거고 있다면 145번째줄에서 if 문에 무조건
+// 들어가게 됩니다.
+// 그리고 if 문 걸리지 않는다면 이 API 는 응답을 계속 내려주지 않습니다. 이 부분 고민 해서 수정
+// 해부세요
+
+// ㄴ 고민해보기로 한다. 로직을 새롭게 작성...
+// req.body 로 email, pass를 받는다.
+// users.email 과 req.body email 그리고, users.password 와 req.body password 와 일치하는 유저를 찾아 저장한다
+// if를 사용하여 일치하는 유저가 없다면 req로 status(404) 와 함께 없는 유저라고 전달한다.
+// 이 로직을 모두 통과하면 findUser 에서 password를 제외하고 새롭게 저장한다.
+// 이 로직을 통과하면 jwt.sign으로 jwt를 전달한다.
+
+app.post('/sign-in', (req, res) => {
+  const { email, password } = req.body;
+  const findUser = users.find((findUsr) => findUsr.email === email);
+  if (!findUser) {
+    res.status(404).send({ message: '사용자가 존재하지 않습니다' });
+    return;
+  }
+  if (findUser.password !== password) {
+    res.status(401).send({ message: '비밀번호가 일치하지 않습니다' });
+    return;
+  }
+  const { password: _password, ...user } = findUser;
+  const token = jwt.sign(user, secretKey);
+  res.status(200).send({ token });
+});
+
 // 로그인 API
 app.post('/sign-in', (req, res) => {
   // req.body 로 email pass 받음
