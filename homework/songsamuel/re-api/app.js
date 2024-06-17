@@ -70,6 +70,8 @@ app.get("/todo-items/:id", (req, res) => {
     const user = jwt.verify(token, secretKey);
     const findItem = todoItems.find((item) => item.id === todoId);
 
+    // 나의 유저랑 아이템에서 찾은 유저 Id랑 같아야지!
+    // 나는 이거 구현 못했다. 한번 더 볼 것
     if (user.id !== findItem.userId) {
       res.status(401).json({ message: "접근 권한이 없습니다." });
       return;
