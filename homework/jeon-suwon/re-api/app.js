@@ -19,32 +19,6 @@ const authMiddleware = (req, res, next) => {
   next();
 };
 
-const makeId = (data) => {
-  if (!data.length) return 1;
-
-  const sortdata = data.sort((a, b) => a.id - b.id);
-  for (let i = 0; i < sortdata.length; i++) {
-    const id = sortdata[i].id;
-    if (id !== i + 1) {
-      return i + 1;
-    }
-  }
-  return sortdata.length + 1;
-};
-
-const makeUserId = (data) => {
-  if (!data.length) return 1;
-
-  const sortdata = data.sort((a, b) => a.userId - b.userId);
-  for (let i = 0; i < sortdata.length; i++) {
-    const id = sortdata[i].userId;
-    if (id !== i + 1) {
-      return i + 1;
-    }
-  }
-  return sortdata.length + 1;
-};
-
 const todoData = [
   {
     id: 1,
@@ -97,8 +71,13 @@ app.post("/todo-items", authMiddleware, (req, res) => {
   const { title } = req.body;
   const { userId } = req.user;
 
+  if (!title) {
+    res.status(400).json({ message: "존재하지않는 게시물입니다." });
+    return;
+  }
+
   const todoitem = {
-    id: makeId(todoData),
+    id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
     userId,
     title,
     doneAt: null,
@@ -128,6 +107,19 @@ app.put("/todo-items/:id", authMiddleware, (req, res) => {
   res.status(200).json(changeTodoItem);
 });
 
+//할일목록삭제
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
+  const { id } = req.params;
+
+  const findData = todoData.findIndex((el) => el.id === +id);
+  if (findData === -1) {
+    res.status(400).json({ message: "존재하지않는 게시물입니다." });
+  }
+
+  todoData.splice(findData, 1);
+  res.status(200).json({ result: true });
+});
+
 //회원가입
 app.post("/sign-up", (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
@@ -143,7 +135,7 @@ app.post("/sign-up", (req, res) => {
   }
 
   const userInfo = {
-    userId: makeUserId(user),
+    userId: user.length > 0 ? user[user.length - 1].userId + 1 : 1,
     email,
     password,
     name,
