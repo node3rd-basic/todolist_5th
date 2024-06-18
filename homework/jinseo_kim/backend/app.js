@@ -6,6 +6,16 @@ const port = 3000;
 const app = express();
 const secretKey = "1a2b3c4b";
 
+const leaveLog = (req, res, next) => {
+  console.log(`
+    ${req.method} ${req.url} [${new Date().toISOString()}] ${
+    req.headers.referer
+  } 
+    `);
+  next();
+};
+
+app.use(leaveLog);
 app.use(cors());
 app.use(express.json());
 app.listen(port, () => {
@@ -96,6 +106,16 @@ const todoItems = [
   },
 ];
 
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization;
+  try {
+    req.user = jwt.verify(token, secretKey);
+    next();
+  } catch (error) {
+    res.status(401).send({ message: "당신은 권한이 없습니다." });
+  }
+};
+
 // 회원가입 API
 app.post("/sign-up", (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
@@ -116,7 +136,6 @@ app.post("/sign-up", (req, res) => {
   const newUser = { email, password, role, name, id };
   users.push(newUser);
   res.send({ message: "회원가입에 성공했습니다." });
-  console.log(newUser);
 });
 
 // 로그인 API
@@ -137,105 +156,75 @@ app.post("/sign-in", (req, res) => {
 });
 
 // 내정보 API
-app.get("/users/me", (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(401).send({ message: "당신은 권한이 없습니다." });
-  }
+app.get("/users/me", authMiddleware, (req, res) => {
+  res.status(200).json(req.user);
 });
 
 // 할일 목록들 조회 API
-app.get("/todo-items", (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    res.send(
-      todoItems.filter((todoItem) => todoItem.userId === Number(user.id))
-    );
-  } catch (error) {
-    res.status(401).send({ message: "당신은 권한이 없습니다." });
-  }
+app.get("/todo-items", authMiddleware, (req, res) => {
+  const user = req.user;
+  res.send(todoItems.filter((todoItem) => todoItem.userId === Number(user.id)));
 });
 
 // 할일 등록 API
-app.post("/todo-items", (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    const { title } = req.body;
-    const newTodoId =
-      todoItems.length === 0 ? 1 : todoItems[todoItems.length - 1].id + 1;
+app.post("/todo-items", authMiddleware, (req, res) => {
+  const user = req.user;
+  const { title } = req.body;
+  const newTodoId =
+    todoItems.length === 0 ? 1 : todoItems[todoItems.length - 1].id + 1;
 
-    const newTodoItem = {
-      id: newTodoId,
-      userId: Number(user.id),
-      title,
-      doneAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    todoItems.push(newTodoItem);
+  const newTodoItem = {
+    id: newTodoId,
+    userId: Number(user.id),
+    title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  todoItems.push(newTodoItem);
 
-    res.send(newTodoItem);
-  } catch (error) {
-    console.log(error);
-    res.status(401).send({ message: "당신은 권한이 없습니다." });
-  }
+  res.send(newTodoItem);
 });
 
 // 할일 삭제 API
-app.delete("/todo-items/:id", (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    const { id } = req.params;
-    const deleteItem = todoItems.findIndex(
-      (todoItem) => todoItem.id === Number(id)
-    );
-    if (deleteItem === -1) {
-      res.status(404).send({ message: "할일을 찾을 수 없습니다." });
-      return;
-    }
-    if (todoItems[deleteItem].userId !== user.id) {
-      res.status(401).send({ message: "당신은 권한이 없습니다." });
-      return;
-    }
-    todoItems.splice(deleteItem, 1);
-    res.send({ result: "true" });
-  } catch (error) {
-    res.status(401).send({ message: "에러가 발생했습니다." });
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
+  const user = req.user;
+  const { id } = req.params;
+  const deleteItem = todoItems.findIndex(
+    (todoItem) => todoItem.id === Number(id)
+  );
+  if (deleteItem === -1) {
+    res.status(404).send({ message: "할일을 찾을 수 없습니다." });
+    return;
   }
+  if (todoItems[deleteItem].userId !== user.id) {
+    res.status(401).send({ message: "당신은 권한이 없습니다." });
+    return;
+  }
+  todoItems.splice(deleteItem, 1);
+  res.send({ result: "true" });
 });
 
 // 할일 완료/미완료 API
-app.put("/todo-items/:id", (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const user = jwt.verify(token, secretKey);
-    const { id } = req.params;
-    const selectItemIndex = todoItems.findIndex((sel) => sel.id === Number(id));
-    if (selectItemIndex === -1) {
-      res.status(404).send({ message: "할일을 찾을 수 없습니다." });
-      return;
-    }
-    if (todoItems[selectItemIndex].userId !== user.id) {
-      res.status(401).send({ message: "당신은 권한이 없습니다." });
-      return;
-    }
-    const selectItem = todoItems.find((sel) => sel.id === Number(id));
-    const putItem = {
-      ...selectItem,
-      doneAt: selectItem.doneAt == null ? new Date() : null,
-    };
-    console.log(selectItem);
-    todoItems.splice(selectItemIndex, 1, putItem);
-    res.status(200).send({ result: "true" });
-  } catch (error) {
-    res.status(401).send({ message: "에러가 발생했습니다." });
+app.put("/todo-items/:id", authMiddleware, (req, res) => {
+  const user = req.user;
+  const { id } = req.params;
+  const selectItemIndex = todoItems.findIndex((sel) => sel.id === Number(id));
+  if (selectItemIndex === -1) {
+    res.status(404).send({ message: "할일을 찾을 수 없습니다." });
+    return;
   }
+  if (todoItems[selectItemIndex].userId !== user.id) {
+    res.status(401).send({ message: "당신은 권한이 없습니다." });
+    return;
+  }
+  const selectItem = todoItems.find((sel) => sel.id === Number(id));
+  const putItem = {
+    ...selectItem,
+    doneAt: selectItem.doneAt == null ? new Date() : null,
+  };
+  todoItems.splice(selectItemIndex, 1, putItem);
+  res.status(200).send({ result: "true" });
 });
 
 // 할일 상세 조회 API
