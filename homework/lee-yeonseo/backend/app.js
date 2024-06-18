@@ -1,29 +1,17 @@
 import express from 'express';
 import cors from 'cors';
+
 import authMiddleware from '../backend/middlewares/auth.middleware.js';
+import { errorHandlingMiddleware } from './middlewares/errorHandling.middleware.js';
+import { todoItemIdValidator } from './middlewares/todoItemIdValidator.middleware.js';
+
 import * as userController from './controllers/user.controller.js';
 
 const app = express();
 const port = 3000;
 
-const errorHandlingMiddleware = (err, req, res, next) => {
-  res.status(500).json({
-    message: err.message,
-  });
-};
-
 app.use(cors());
 app.use(express.json());
-
-//입력 투두 아이디 검증
-const todoItemIdValidator = (req, res, next) => {
-  const id = +req.params.id;
-  if (isNaN(id)) {
-    throw new Error('아이디는 숫자 형태로 입력해야 합니다.');
-  }
-  req.id = id;
-  next();
-};
 
 //투두 아이템 찾기
 const getTodoItemById = (id) => {
