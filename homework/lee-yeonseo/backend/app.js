@@ -13,35 +13,6 @@ const errorHandlingMiddleware = (err, req, res, next) => {
 
 const secretKey = 'aksjhdfjkladhfklhjaskl';
 
-const todoItems = [
-  {
-    id: 1,
-    userId: 1,
-    title: '할일1',
-    doneAt: '2021-08-01',
-    createdAt: '2021-08-01',
-    updatedAt: '2021-08-01',
-  },
-  {
-    id: 2,
-    userId: 1,
-    title: '할일2',
-    doneAt: '2021-08-01',
-    createdAt: '2021-08-01',
-    updatedAt: '2021-08-01',
-  },
-];
-
-const users = [
-  {
-    id: 1,
-    email: 'dldustj0209@naver.com',
-    password: 'd',
-    role: 'student',
-    name: '이연서',
-  },
-];
-
 app.use(cors());
 app.use(express.json());
 
