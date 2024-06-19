@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const port = 3000;
@@ -49,7 +50,6 @@ const todoItems = [
         updatedAt: null
     }
 ];
-
 
 
 const users = [{
