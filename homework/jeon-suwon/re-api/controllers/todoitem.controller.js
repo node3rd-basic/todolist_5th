@@ -1,5 +1,4 @@
 import { todoData } from "../db/todoitem.db.js";
-import { user } from "../db/user.db.js";
 
 //할일 목록 조회 api
 export const getTodolists = (req, res) => {
