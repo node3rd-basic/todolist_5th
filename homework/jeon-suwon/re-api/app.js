@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import { todoData } from "./db/todoitem";
+import { user } from "./db/user";
 
 const app = express();
 const PORT = 3000;
@@ -18,37 +20,6 @@ const authMiddleware = (req, res, next) => {
   req.user = jwt.verify(token, secretKey);
   next();
 };
-
-const todoData = [
-  {
-    id: 1,
-    userId: 1,
-    title: "할일1",
-    doneAt: "2021-08-01",
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 2,
-    userId: 1,
-    title: "할일2",
-    doneAt: "2021-08-01",
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-];
-
-const user = [
-  {
-    userId: 1,
-    email: "aaaa1234@naver.com",
-    password: "1234",
-    name: "전수원",
-    role: "student",
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-];
 
 //할일 목록 조회 api
 app.get("/todo-items", (req, res) => {
@@ -94,7 +65,6 @@ app.put("/todo-items/:id", authMiddleware, (req, res) => {
   const { userId } = req.user;
 
   const findTodoItem = todoData.find((el) => el.id === +id);
-  console.log(findTodoItem);
   const changeTodoItem = {
     id,
     userId,
