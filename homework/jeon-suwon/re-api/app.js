@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import jwt from "jsonwebtoken";
 import * as todoitemController from "./controllers/todoitem.controller.js";
 import * as userController from "./controllers/user.controller.js";
 import { authMiddleware } from "./middleware/auth.middleware.js";

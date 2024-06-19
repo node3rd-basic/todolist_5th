@@ -1,5 +1,9 @@
 import { user } from "../db/user.db.js";
+import jwt from "jsonwebtoken";
 
+const secretKey = "BasicClass";
+
+//회원가입
 export const postSignup = (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
   const emailExist = user.find((el) => el.email === email);
@@ -25,7 +29,7 @@ export const postSignup = (req, res) => {
   user.push(userInfo);
   return res.status(200).send({ message: "회원가입이 완료되었습니다." });
 };
-
+//로그인
 export const postSignin = (req, res) => {
   const { email, password } = req.body;
 
@@ -42,7 +46,7 @@ export const postSignin = (req, res) => {
   res.status(200).json({ token });
   return;
 };
-
+//고객정보조회
 export const getuser = (req, res) => {
   const userInfo = req.user;
 

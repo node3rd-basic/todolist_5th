@@ -10,18 +10,14 @@ export const getTodolist = (req, res) => {
   const { id } = req.params;
 
   const selectData = todoData.find((el) => el.id === +id);
-
+  if (!selectData) throw new Error("존재하는 데이터가 없습니다.");
   return res.status(200).send(selectData);
 };
-
+//todoitem 생성 api
 export const postTodoitem = (req, res) => {
   const { title } = req.body;
   const { userId } = req.user;
-
-  if (!title) {
-    res.status(400).json({ message: "존재하지않는 게시물입니다." });
-    return;
-  }
+  if (!title) throw new Error("제목을 입력해주세요^^");
 
   const todoitem = {
     id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
