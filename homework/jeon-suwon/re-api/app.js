@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { todoData } from "./db/todoitem";
-import { user } from "./db/user";
+import * as todoitemContoller from "./controllers/todoitem.controller.js";
+import { authMiddleware } from "./middleware/auth.middleware.js";
 
 const app = express();
 const PORT = 3000;
@@ -11,84 +11,19 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const secretKey = "BasicClass";
-
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) throw new Error("토큰이 없습니다.");
-
-  req.user = jwt.verify(token, secretKey);
-  next();
-};
-
 //할일 목록 조회 api
-app.get("/todo-items", (req, res) => {
-  res.status(200).send(todoData);
-  return;
-});
+app.get("/todo-items", todoitemContoller.getTodolists);
 
 //할일 목록 한개 조회 api
-app.get("/todo-items/:id", (req, res) => {
-  const { id } = req.params;
-
-  const selectData = todoData.find((el) => el.id === +id);
-
-  res.status.send(selectData);
-  return;
-});
+app.get("/todo-items/:id", todoitemContoller.getTodolist);
 
 //할일 목록 생성 api
-app.post("/todo-items", authMiddleware, (req, res) => {
-  const { title } = req.body;
-  const { userId } = req.user;
-
-  if (!title) {
-    res.status(400).json({ message: "존재하지않는 게시물입니다." });
-    return;
-  }
-
-  const todoitem = {
-    id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
-    userId,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  todoData.push(todoitem);
-  res.status(200).json(todoitem);
-});
+app.post("/todo-items", authMiddleware, todoitemContoller.postTodoitem);
 
 //할일 완료 여부
-app.put("/todo-items/:id", authMiddleware, (req, res) => {
-  const { id } = req.params;
-  const { userId } = req.user;
-
-  const findTodoItem = todoData.find((el) => el.id === +id);
-  const changeTodoItem = {
-    id,
-    userId,
-    title: findTodoItem.title,
-    doneAt: new Date(),
-    createdAt: findTodoItem.createdAt,
-    updatedAt: new Date(),
-  };
-
-  res.status(200).json(changeTodoItem);
-});
-
+app.put("/todo-items/:id", authMiddleware, todoitemContoller.putTodoitem);
 //할일목록삭제
-app.delete("/todo-items/:id", authMiddleware, (req, res) => {
-  const { id } = req.params;
-
-  const findData = todoData.findIndex((el) => el.id === +id);
-  if (findData === -1) {
-    res.status(400).json({ message: "존재하지않는 게시물입니다." });
-  }
-
-  todoData.splice(findData, 1);
-  res.status(200).json({ result: true });
-});
+app.delete("/todo-items/:id", authMiddleware, todoitemContoller.deleteTodoitem);
 
 //회원가입
 app.post("/sign-up", (req, res) => {
