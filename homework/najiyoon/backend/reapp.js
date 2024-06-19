@@ -4,6 +4,8 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import users from "./db/users.js";
+import todoItems from "./db/todoitems.js";
 
 const app = express();
 const PORT = 3000;
@@ -11,30 +13,10 @@ const PORT = 3000;
 app.get("/", (req, res) => {
   res.send("hello");
 });
-
+console.log(users);
+console.log(todoItems);
 app.use(cors());
 app.use(express.json());
-
-//**api 참고 : 필요한것 볼 것 & 할일목록, 회원정보 기입
-const todoItems = [
-  {
-    id: 1,
-    userId: 1,
-    title: "할일목록",
-    doneAt: null,
-    createdAt: "2023-11-11",
-    updatedAt: "2023-11-11",
-  },
-];
-const users = [
-  {
-    id: 1,
-    email: "nana@naver.com",
-    role: "학생",
-    password: "nana",
-    name: "nana",
-  },
-];
 
 const secretkey = "rqjghakrovfdinvczfw";
 
