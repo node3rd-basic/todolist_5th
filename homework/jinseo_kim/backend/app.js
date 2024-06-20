@@ -43,8 +43,8 @@ const getIncrementedId = (arr) => (arr[arr.length - 1] ? arr[arr.length - 1].id 
 // const getIncrementedId = (arr) => (arr.length ? 1 : arr[arr.length - 1].id + 1);
 // const getIncrementedId = (arr) => (arr[arr.length - 1] ? 1 :arr[arr.length - 1].id + 1);
 // const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
-app.use(leaveLogMiddleware);
 app.use(cors());
+app.use(leaveLogMiddleware);
 app.use(express.json());
 
 // 회원가입 API
