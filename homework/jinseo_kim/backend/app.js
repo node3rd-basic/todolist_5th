@@ -3,21 +3,14 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import users from './db/users.js';
 import todoItems from './db/todoItems.js';
+import leaveLogMiddleware from './middlewares/leaveLog.middleware.js';
 
 const port = 3000;
 const app = express();
 const secretKey = '1a2b3c4b';
 
-const leaveLogMiddleware = (req, res, next) => {
-  console.log(`
-    ${req.method} ${req.url} [${new Date().toISOString()}] ${req.headers.referer} `);
-  next();
-};
-
-const errorMiddleware = (err, req, res) => {
-  console.log('error 발생시 해당 middleware 실행됨');
+const errorMiddleware = (err, req, res, next) => {
   res.ststus(500).json({ message: 'Internal Server Error' });
-  return;
 };
 
 const authMiddleware = (req, res, next) => {
@@ -174,7 +167,6 @@ app.get('/todo-items/search/:keyword', (req, res) => {
 });
 
 app.use(errorMiddleware);
-
 app.listen(port, () => {
   console.log(`서버오픈, ${port} 포트`);
 });
