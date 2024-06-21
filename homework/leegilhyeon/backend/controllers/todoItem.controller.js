@@ -15,6 +15,9 @@ const validateTodoId = (req) => {
   return todoId;
 };
 
+const incrementedTodoId = (arr) =>
+  arr[todoItems.length - 1] ? arr[todoItems.length - 1].id + 1 : 1;
+
 //내 할일 목록
 export function getTodoItems(req, res) {
   const user = req.user;
