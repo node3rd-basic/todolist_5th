@@ -1,5 +1,6 @@
 // express 사용할수 있도록 로드
 import express from 'express'
+import 'dotenv/config'
 import cors from 'cors'
 
 // Middleware

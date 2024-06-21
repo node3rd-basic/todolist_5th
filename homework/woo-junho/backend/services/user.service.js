@@ -1,8 +1,6 @@
 import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
 
-const secretKey = "ijklsdf89ufsdjklsdf"
-
 export function getUserByEmail(email) {
     return userRepository.findOne(email)
 }
@@ -34,5 +32,5 @@ export function signIn(email, password) {
     }
 
     const { password: _password, ...user} = selectedUser
-    return jwt.sign(user, secretKey)
+    return jwt.sign(user, process.env.JWT_SECRET_KEY)
 }
