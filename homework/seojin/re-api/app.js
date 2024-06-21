@@ -7,11 +7,7 @@
  app.use(express.json());
  app.use(cors());
 
- const errorMiddleware = (err, req, res, next) => {
-    res.status(500).json({
-        message:"Internal Server Error"
-    })
- }
+ 
 
 const secretKey = "asdfweqghnkd"
 const todoItems = [
@@ -55,34 +51,30 @@ const authMiddleware = (req, res, next) => {
 
 
 app.get('/todo-items', authMiddleware,  (req, res) => {
-    const user = req.user
-        res.send(
-   todoItems.filter(todoItem => todoItem.userId === user.id))
+  const token = req.headers.authorization
+  try{
+    const user = jwt.verify(token, secretKey)
+    res.send(
+        todoItems.fillter(todoItem => todoItem.userId === user.id)
+    )
+  }catch(err){
+    res.status(401).send({ message: '권한이 없습니다.'})
+  }
  
 })
 
-app.get('/todo-items/search/:keyword',authMiddleware, (req, res) => {
-    const { keyword } = req.params
-    if (keyword.trim() === "") {
-        res.status(400).json({ message: "검색어를 입력해주세요."})
-        return
-    }
-    res.json(todoItems.filter(todoItem =>
-        todoItem.title.includes(keyword)
-        && todoItem.userId === req.user.id
-    ))
-})
 
 app.post('/todo-items', authMiddleware, (req, res) => {
    
+    const token = req.headers.authorization
     const { title } = req.body;
-
-   
-        const user = req.user
-        const newId = (todoItems[todoItems.length -1]) ? todoItems[todoItems.length -1].id + 1 : 1
-        const newTodoItem = { 
+    
+    try{
+        const user = jwt.verify(token, secretKey)
+        const newId = (todoItems[todoItems.length - 1]) ? todoItems[todoItems.length - 1].id + 1 : 1
+        const newTodoItem = {
             id: newId,
-            userId: user.id,
+            userId:user.id,
             title: title,
             doneAt: null,
             createAt: new Date(),
@@ -90,8 +82,10 @@ app.post('/todo-items', authMiddleware, (req, res) => {
         };
         todoItems.push(newTodoItem);
         res.send(newTodoItem);
-
-})
+    }catch(err){
+        res.status(401).send({ message: '권한이 없습니다.'})
+    }
+});
 
 app.get('/todo-items/:id', authMiddleware, (req, res) => {
   const id = Number(req.params.id)
@@ -192,14 +186,18 @@ app.post('/sign-in', (req, res) => {
     res.json({ message: "로그인에 성공하였습니다.", token })
 });
 
-app.get("/users/me", authMiddleware, (req, res) => {
- 
+app.get("/users/me",(req, res) => {
+    const token = req.headers.authorization
+    try{
+        const user = jwt.verify(token, secretKey)
+        res.json(user)
 
-        res.json(req.user)
+    }catch(err){
+        res.status(401).send({ message:"권한이 없습니다."})
+    }
+});
 
-    });
 
-app.use(errorMiddleware)
 
 
  app.listen(port, ()=> {
