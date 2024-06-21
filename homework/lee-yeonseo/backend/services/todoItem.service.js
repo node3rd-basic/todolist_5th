@@ -1,12 +1,8 @@
-import todoItems from '../db/todoItems.js';
+import * as todoItemRepository from '../repositories/todoItem.repository.js';
 
-//투두아이템 아이디, 유저 아이디 생성
-const getIncrementedId = (arr) => (arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1);
-
-//해당하는 투두 아이템 아이디의 할일 찾기
+//해당하는 투두 아이템 아이디의 할일 찾기 // 할일 목록 상세 조회
 const findTodoItem = ({ todoItemId, userId }) => {
-  //req.params로 받은 아이디의 할일 찾기
-  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === todoItemId);
+  const selectedTodoItem = todoItemRepository.findTodoItemById(todoItemId);
 
   //해당 아이디의 할일이 존재하지 않으면 오류 반환
   if (!selectedTodoItem) {
@@ -23,24 +19,15 @@ const findTodoItem = ({ todoItemId, userId }) => {
 
 // 할일 목록 조회 (1)
 export const getTodoItemByUserId = (userId) => {
-  //해당 유저가 작성한 투두 아이템만 찾기
-  const myTodoItems = todoItems.filter((todoItem) => todoItem.userId === userId);
+  const myTodoItems = todoItemRepository.findTodoItemByUserId(userId);
 
   return myTodoItems;
-};
-
-// 할일 목록 상세 조회 (2)
-export const getTodoItem = (todoItemId, userId) => {
-  //투두아이템 목록에서 req.params에서 받아온 id와 일치하는 아이템 찾기
-  const selectedTodoItem = findTodoItem({ todoItemId, userId });
-
-  return selectedTodoItem;
 };
 
 // 할일 등록 (3)
 export const postTodoItem = (userId, title) => {
   //투두 아이템 아이디 생성하기
-  const newTodoItemId = getIncrementedId(todoItems);
+  const newTodoItemId = todoItemRepository.getIncrementedId();
 
   //newTodoItem 생성
   const newTodoItem = {
@@ -52,8 +39,7 @@ export const postTodoItem = (userId, title) => {
     updatedAt: null,
   };
 
-  //todoItems 목록에 newTodoItem 추가
-  todoItems.push(newTodoItem);
+  todoItemRepository.postTodoItem(newTodoItem);
 
   return newTodoItem;
 };
@@ -63,14 +49,9 @@ export const todoItemDoneAt = (todoItemId, userId) => {
   //해당하는 투두 아이템 아이디의 할일 찾기
   const selectedTodoItem = findTodoItem({ todoItemId, userId });
 
-  //찾은 투두 아이템의 인덱스 찾기
-  const selectedTodoItemIndex = todoItems.indexOf(selectedTodoItem);
+  const doneAt = selectedTodoItem.doneAt === null ? new Date() : null;
 
-  //splice로 투두 아이템의 doneAt 수정
-  todoItems.splice(selectedTodoItemIndex, 1, {
-    ...selectedTodoItem,
-    doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
-  });
+  todoItemRepository.todoItemDoneAt(selectedTodoItem, doneAt);
 };
 
 // 할일 삭제 (5)
@@ -78,9 +59,5 @@ export const deleteTodoItem = (todoItemId, userId) => {
   //해당하는 아이디의 투두아이템 찾기
   const selectedTodoItem = findTodoItem({ todoItemId, userId });
 
-  //찾은 투두 아이템의 인덱스 찾기
-  const selectedTodoItemIndex = todoItems.indexOf(selectedTodoItem);
-
-  //splice로 투두 아이템 삭제
-  todoItems.splice(selectedTodoItemIndex, 1);
+  todoItemRepository.deleteTodoItem(selectedTodoItem);
 };
