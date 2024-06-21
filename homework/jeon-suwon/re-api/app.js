@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
 //할일 목록 조회 api
 app.get("/todo-items", todoitemController.getTodolists);
 
@@ -36,6 +37,7 @@ app.post("/sign-up", userController.postSignup);
 app.post("/sign-in", userController.postSignin);
 //유저정보조회
 app.get("/users/me", authMiddleware, userController.getuser);
+
 
 app.listen(PORT, () => {
   console.log(`${PORT}번의 포트가 열렸습니다.`);
