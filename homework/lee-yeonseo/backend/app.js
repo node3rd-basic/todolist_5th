@@ -1,4 +1,5 @@
 import express from 'express';
+import 'dotenv/config';
 import cors from 'cors';
 
 import authMiddleware from '../backend/middlewares/auth.middleware.js';

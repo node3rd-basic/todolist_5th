@@ -1,8 +1,6 @@
 import * as userRepository from '../repositories/user.repository.js';
 import jwt from 'jsonwebtoken';
 
-const tokenSecretKey = 'aksjhdfjkladhfklhjaskl';
-
 //회원가입
 export const signUp = (email, password, role, name) => {
   //이메일 중복 확인
@@ -42,7 +40,7 @@ export const signIn = (email, password) => {
   }
 
   //일치하는 유저가 있다면 패스워드를 제외한 유저 정보를 페이로드로 토큰 발급
-  const token = jwt.sign(user, tokenSecretKey);
+  const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
 
   return token;
 };
