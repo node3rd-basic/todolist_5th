@@ -36,6 +36,10 @@ export function postSignUp(req, res) {
 export function postSignIn(req, res) {
     const { email, password } = req.body
     const selectedUser = users.find(user => user.email === email && user.password === password)
+    if (!selectedUser) {
+        res.status(401).send({"message": "사용자를 찾을 수 없습니다."})
+        return
+    }
     const { password: _password, ...user} = selectedUser
 
     if (!user) {
