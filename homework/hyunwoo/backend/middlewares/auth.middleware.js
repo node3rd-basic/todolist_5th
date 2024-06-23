@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const secretKey = "slkfjslkdfjoie";
+export const secretKey = "slkfjslkdfjoie";
 
 // token 인증
 export default (req, res, next) => {

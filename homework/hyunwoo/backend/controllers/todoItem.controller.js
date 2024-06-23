@@ -1,5 +1,9 @@
 import todoItems from "../db/todoItems.js";
 
+// id 지정하기
+const getIncrementedId = (arr) =>
+    arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
+
 // todoItem id 찾기
 const validateTodoItemId = (req) => {
   const idAsNumber = Number(req.params.id);

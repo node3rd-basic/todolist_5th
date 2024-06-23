@@ -1,7 +1,9 @@
 import users from "../db/users.js";
 import jwt from "jsonwebtoken";
 
-// todoItem id 지정하기
+const secretKey = "slkfjslkdfjoie";
+
+// id 지정하기
 const getIncrementedId = (arr) =>
   arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
 
