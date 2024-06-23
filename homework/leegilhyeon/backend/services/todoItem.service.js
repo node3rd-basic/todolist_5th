@@ -1,10 +1,38 @@
-import todoItems from "../db/todoItems.js";
+import * as todoItemRepository from "../repository/todoItem.repository.js";
 
 export function findTodoItemById(id) {
-  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
+  const todoItem = todoItemRepository.findTodoItemById(id);
+  if (!todoItem) {
+    throw new Error("해당 아이디가 가진 todoItem이 없습니다.");
+  }
   return todoItem;
 }
 
 export function todoItemByUserId(userId) {
-  return todoItems.filter((todoItem) => todoItem.userId === userId);
+  return todoItemRepository.findTodoItems(userId);
+}
+
+export function getTodoItem(title, userId) {
+  const newId = todoItemRepository.getNewId();
+  const newTodoItem = {
+    id: newId,
+    userId: userId,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
+  todoItemRepository.pushTodoItem(newTodoItem);
+  return newTodoItem;
+}
+
+export function putTodoItemById(id) {
+  const todoItemFind = findTodoItemById(id);
+  const doneAt = todoItemFind.doneAt == null ? new Date() : null;
+  todoItemRepository.putTodoItem(todoItemFind, doneAt);
+}
+
+export function deleteTodoItemById(id) {
+  const deleteTodoItem = findTodoItemById(id);
+  todoItemRepository.deleteTodoItem(deleteTodoItem);
 }
