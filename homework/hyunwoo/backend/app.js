@@ -50,25 +50,7 @@ const getTodoItemById = (id) => {
 app.get("/todo-items", authMiddleware, todoItemcontroller.getTodoItem);
 
 /** 할일 목록 추가되도록 api 구현 */
-app.post("/todo-items", authMiddleware, (req, res) => {
-  const user = req.user;
-  const { title } = req.body;
-
-  const newId = getIncrementedId(todoItems);
-
-  const newTodoItem = {
-    id: newId,
-    userId: user.id,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-
-  todoItems.push(newTodoItem);
-
-  res.send(newTodoItem);
-});
+app.post("/todo-items", authMiddleware, todoItemcontroller.postTodoItem);
 
 /** 할일 한가지 조회되도록 api 구현 */
 app.get("/todo-items/:id", authMiddleware, (req, res) => {
