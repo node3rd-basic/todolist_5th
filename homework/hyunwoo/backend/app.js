@@ -2,6 +2,16 @@ import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 
+// middleware 가져오기
+// import levelLogMiddleware from "./middlewares/levelLog.middleware";
+
+// controller 가져오기
+import usercontroller from './controller/user.controller.js';
+
+// users, todoitems 가져오기
+import user from './db/users.js'
+import todoItems from "./db/todoItems.js";
+
 const app = express();
 const port = 3000;
 
@@ -16,59 +26,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const todoItems = [
-  {
-    id: 1,
-    userId: 1,
-    title: "베이직반 과제",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 2,
-    userId: 2,
-    title: "팀프로젝트",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 3,
-    userId: 3,
-    title: "알고리즘 코드카타",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 4,
-    userId: 4,
-    title: "Node.js 공부",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-  {
-    id: 5,
-    userId: 5,
-    title: "청소",
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  },
-];
-
 const secretKey = "slkfjslkdfjoie";
-const users = [
-  {
-    id: 1,
-    email: "hyunwoo@example.com",
-    password: "1234",
-    role: "student",
-    name: "이현우",
-  },
-];
 
 // token 인증 미들웨어 함수
 const authMiddleware = (req, res, next) => {
@@ -98,10 +56,6 @@ const getTodoItemById = (id) => {
   }
   return todoItem;
 };
-
-// todoItem id 지정하기
-const getIncrementedId = (arr) =>
-  arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
 
 /** 할일 목록들 보여지도록 api 구현 */
 app.get("/todo-items", authMiddleware, (req, res) => {
@@ -174,48 +128,7 @@ app.delete("/todo-items/:id", authMiddleware, (req, res) => {
 });
 
 /** 회원가입 api 구현 */
-app.post("/sign-up", (req, res) => {
-  const { email, password, rePassword, role, name } = req.body;
-
-  if (!email || !password || !rePassword || !role || !name) {
-    res.status(400).send({
-      result: false,
-      message: "모든 항목을 입력해주세요.",
-    });
-    return;
-  }
-
-  if (password !== rePassword) {
-    res.status(400).send({
-      resule: false,
-      message: "입력한 비밀번호가 일치하지 않습니다.",
-    });
-    return;
-  }
-
-  const existingEmail = users.find((user) => user.email === email);
-
-  if (existingEmail) {
-    res.status(409).send({
-      result: false,
-      message: "이미 등록된 이메일입니다.",
-    });
-  }
-
-  const id = getIncrementedId(users);
-
-  const newUser = {
-    id,
-    email,
-    password,
-    role,
-    name,
-  };
-  console.log(newUser);
-  users.push(newUser);
-  console.log(users);
-  res.status(200).json(newUser);
-});
+app.post("/sign-up", usercontroller.postSignUp);
 
 /** 로그인 api 구현 */
 app.post("/sign-in", (req, res) => {
