@@ -152,7 +152,7 @@ app.put("/todo-items/:id", authMiddleware, (req, res, next) => {
 
 // 할 일 목록들 중 하나 삭제 API
 
-app.delete("/todo-items/:id", authMiddleware, (req, res, next) => {
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
   const id = validateTodoItemId(req);
   const selectedTodoItem = getTodoItemById(id);
   const indexTodoItem = todoItems.indexOf(selectedTodoItem);
