@@ -53,3 +53,22 @@ export function getTodoItem(req, res, next) {
 
   res.send(todoItem);
 }
+
+// 할일 수정하기
+export function putTodoItem(req, res, nexr) {
+  // 할일 id 가져오기
+  const id = validateTodoItemId(req);
+
+  // id에 맞는 todoItem 조회
+  const existTodoItem = getTodoItemById(id);
+
+  // id에 해당하는 todoItem의 인덱스를 확인
+  const todoItemIndex = todoItems.indexOf(existTodoItem);
+  // 해당 todoItem에서 doneAt을 수정
+  todoItems.splice(todoItemIndex, 1, {
+    ...existTodoItem,
+    doneAt: existTodoItem.doneAt == null ? new Date() : null, // 삼항연산자로 표시
+  });
+
+  res.send({ result: true });
+}
