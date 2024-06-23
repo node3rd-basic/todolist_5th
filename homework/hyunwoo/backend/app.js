@@ -42,19 +42,7 @@ app.get("/todo-items/:id", authMiddleware, todoItemcontroller.getTodoItem);
 app.put("/todo-items/:id", authMiddleware, todoItemcontroller.putTodoItem);
 
 /** 할일 삭제 api 구현 */
-app.delete("/todo-items/:id", authMiddleware, (req, res) => {
-  // 할일 id 가져오기
-  const id = validateTodoItemId(req);
-
-  // id에 해당하는 인덱스 찾기
-  const existTodoItem = getTodoItemById(id);
-  const indexToDelete = todoItems.indexOf(existTodoItem);
-
-  // 해당 인덱스에 있는 할일 삭제
-  todoItems.splice(indexToDelete, 1);
-
-  res.send({ result: true });
-});
+app.delete("/todo-items/:id", authMiddleware, todoItemcontroller.deleteTodoItem);
 
 /** 회원가입 api 구현 */
 app.post("/sign-up", usercontroller.postSignUp);

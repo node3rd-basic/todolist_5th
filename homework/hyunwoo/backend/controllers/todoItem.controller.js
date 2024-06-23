@@ -55,7 +55,7 @@ export function getTodoItem(req, res, next) {
 }
 
 // 할일 수정하기
-export function putTodoItem(req, res, nexr) {
+export function putTodoItem(req, res, next) {
   // 할일 id 가져오기
   const id = validateTodoItemId(req);
 
@@ -69,6 +69,21 @@ export function putTodoItem(req, res, nexr) {
     ...existTodoItem,
     doneAt: existTodoItem.doneAt == null ? new Date() : null, // 삼항연산자로 표시
   });
+
+  res.send({ result: true });
+}
+
+// 할일 삭제하기
+export function deleteTodoItem(req, res, next) {
+  // 할일 id 가져오기
+  const id = validateTodoItemId(req);
+
+  // id에 해당하는 인덱스 찾기
+  const existTodoItem = getTodoItemById(id);
+  const indexToDelete = todoItems.indexOf(existTodoItem);
+
+  // 해당 인덱스에 있는 할일 삭제
+  todoItems.splice(indexToDelete, 1);
 
   res.send({ result: true });
 }
