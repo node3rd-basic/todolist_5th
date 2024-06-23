@@ -4,10 +4,11 @@ import jwt from "jsonwebtoken";
 
 // middleware 가져오기
 import authMiddleware from "./middlewares/auth.middleware.js";
-// import levelLogMiddleware from "./middlewares/levelLog.middleware";
+import levelLogMiddleware from "./middlewares/levelLog.middleware.js";
 
 // controller 가져오기
 import * as usercontroller from './controllers/user.controller.js';
+import * as todoItemcontroller from './controllers/todoItem.controller.js';
 
 // users, todoitems 가져오기
 import user from './db/users.js'
@@ -46,10 +47,7 @@ const getTodoItemById = (id) => {
 };
 
 /** 할일 목록들 보여지도록 api 구현 */
-app.get("/todo-items", authMiddleware, (req, res) => {
-  const user = req.user;
-  res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-});
+app.get("/todo-items", authMiddleware, todoItemcontroller.getTodoItem);
 
 /** 할일 목록 추가되도록 api 구현 */
 app.post("/todo-items", authMiddleware, (req, res) => {
