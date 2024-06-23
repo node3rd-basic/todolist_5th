@@ -3,10 +3,11 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 
 // middleware 가져오기
+import authMiddleware from "./middlewares/auth.middleware.js";
 // import levelLogMiddleware from "./middlewares/levelLog.middleware";
 
 // controller 가져오기
-import usercontroller from './controller/user.controller.js';
+import * as usercontroller from './controllers/user.controller.js';
 
 // users, todoitems 가져오기
 import user from './db/users.js'
@@ -25,19 +26,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-
-const secretKey = "slkfjslkdfjoie";
-
-// token 인증 미들웨어 함수
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization;
-  try {
-    req.user = jwt.verify(token, secretKey);
-    next();
-  } catch (error) {
-    res.status(401).send({ messagae: "권한이 없습니다." });
-  }
-};
 
 // todoItem id 찾기
 const validateTodoItemId = (req) => {
@@ -131,36 +119,10 @@ app.delete("/todo-items/:id", authMiddleware, (req, res) => {
 app.post("/sign-up", usercontroller.postSignUp);
 
 /** 로그인 api 구현 */
-app.post("/sign-in", (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(400).send({
-      result: false,
-      message: "모든 항목을 입력해주세요",
-    });
-  }
-
-  const { password: _password, ...user } = users.find(
-    (user) => user.email === email && user.password === password
-  );
-
-  if (!user) {
-    res.status(404).send({
-      result: false,
-      message: "회원 정보가 존재하지 않습니다",
-    });
-    return;
-  }
-
-  const token = jwt.sign(user, secretKey);
-  res.status(200).json({ token });
-});
+app.post("/sign-in", authMiddleware, usercontroller.postSignIn);
 
 /** 토큰 검증 api 구현 */
-app.get("/users/me", authMiddleware, (req, res) => {
-  res.json(req.user);
-});
+app.get("/users/me", authMiddleware, usercontroller.getUserMe);
 
 app.use(errorMiddleware);
 

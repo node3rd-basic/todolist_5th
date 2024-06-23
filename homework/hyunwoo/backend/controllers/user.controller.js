@@ -1,10 +1,12 @@
-import users from '../db/users.js'
+import users from '../db/users.js';
+import jwt from 'jsonwebtoken';
 
 // todoItem id 지정하기
 const getIncrementedId = (arr) =>
   arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
 
-function postSignUp (req, res, next) {
+// 회원가입
+export function postSignUp (req, res, next) {
     const { email, password, rePassword, role, name } = req.body;
 
     if (!email || !password || !rePassword || !role || !name) {
@@ -45,4 +47,34 @@ function postSignUp (req, res, next) {
     res.status(200).json(newUser);
 }
 
-export default { postSignUp }
+// 로그인
+export function postSignIn (req, res, next) {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send({
+      result: false,
+      message: "모든 항목을 입력해주세요",
+    });
+  }
+
+  const { password: _password, ...user } = users.find(
+    (user) => user.email === email && user.password === password
+  );
+
+  if (!user) {
+    res.status(404).send({
+      result: false,
+      message: "회원 정보가 존재하지 않습니다",
+    });
+    return;
+  }
+
+  const token = jwt.sign(user, secretKey);
+  res.status(200).json({ token });
+}
+
+// 토큰 검증
+export function getUserMe (req, res, next) {
+  res.json(req.user);
+}
