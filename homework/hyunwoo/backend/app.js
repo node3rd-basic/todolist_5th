@@ -28,38 +28,15 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// todoItem id 찾기
-const validateTodoItemId = (req) => {
-  const idAsNumber = Number(req.params.id);
-  if (isNaN(idAsNumber)) {
-    throw new Error("ID는 숫자여야 합니다.");
-  }
-  return idAsNumber;
-};
-
-// id에 맞는 todoItem 찾기
-const getTodoItemById = (id) => {
-  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
-  if (!todoItem) {
-    throw new Error("해당 아이디를 가진 todoItem이 없습니다.");
-  }
-  return todoItem;
-};
 
 /** 할일 목록들 보여지도록 api 구현 */
-app.get("/todo-items", authMiddleware, todoItemcontroller.getTodoItem);
+app.get("/todo-items", authMiddleware, todoItemcontroller.getTodoItems);
 
 /** 할일 목록 추가되도록 api 구현 */
 app.post("/todo-items", authMiddleware, todoItemcontroller.postTodoItem);
 
 /** 할일 한가지 조회되도록 api 구현 */
-app.get("/todo-items/:id", authMiddleware, (req, res) => {
-  const id = validateTodoItemId(req);
-
-  const todoItem = getTodoItemById(id);
-
-  res.send(todoItem);
-});
+app.get("/todo-items/:id", authMiddleware, todoItemcontroller.getTodoItem);
 
 /** 할일 수정 api 구현 */
 app.put("/todo-items/:id", authMiddleware, (req, res) => {
