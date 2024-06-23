@@ -29,7 +29,7 @@ const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
   try {
     req.user = jwt.verify(token, secretKey);
-    console.log(req.user);
+
     next();
   } catch (error) {
     res.status(401).send({ message: "권한이 없습니다." });
@@ -46,7 +46,7 @@ const validateTodoItemId = (req) => {
 };
 
 const getTodoItemById = (id) => {
-  const todoItem = todoItems.find((todoItem) => todoItems.id === id);
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
   if (!todoItem) {
     throw new Error("Todo item not found");
   }
@@ -155,6 +155,7 @@ app.put("/todo-items/:id", authMiddleware, (req, res, next) => {
 app.delete("/todo-items/:id", authMiddleware, (req, res) => {
   const id = validateTodoItemId(req);
   const selectedTodoItem = getTodoItemById(id);
+  console.log("selectedTodoItem", selectedTodoItem);
   const indexTodoItem = todoItems.indexOf(selectedTodoItem);
 
   todoItems.splice(indexTodoItem, 1);
