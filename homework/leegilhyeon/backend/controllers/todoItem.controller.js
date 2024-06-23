@@ -21,7 +21,6 @@ const incrementedTodoId = (arr) =>
 //내 할일 목록
 export function getTodoItems(req, res) {
   const user = req.user;
-
   res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 }
 
@@ -56,7 +55,7 @@ export function postTodoItem(req, res) {
 
 // 할일 수정
 export function putTodoItem(req, res) {
-  const id = validateIdMiddleware(req);
+  const id = validateTodoId(req);
   //해당 id를 가지고 있는 todoitem 찾기
   const todoItemFind = todoItemById(id);
   const todoItemIndex = todoItems.indexOf(todoItemFind);
@@ -69,7 +68,7 @@ export function putTodoItem(req, res) {
 
 // 할일 삭제
 export function deleteTodoItem(req, res) {
-  const id = validateIdMiddleware(req);
+  const id = validateTodoId(req);
   const deleteTodoItem = todoItemById(id);
   todoItems.splice(deleteTodoItem, 1);
   res.send({ message: "todoItem이 삭제되었습니다." });
