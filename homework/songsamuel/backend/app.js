@@ -203,7 +203,6 @@ app.post("/sign-up", (req, res) => {
     res.status(409).send("이미 존재하는 이메일입니다.");
   }
 
-  // 배열의 요소가 0개야? 맞으면 1이라고 해 : 아니면 맨 마지막에서 +1을 해
   const id = getIncrementedId(users);
 
   const newUser = {
