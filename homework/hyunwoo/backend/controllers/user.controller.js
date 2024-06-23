@@ -1,7 +1,6 @@
 import users from "../db/users.js";
 import jwt from "jsonwebtoken";
-
-const secretKey = "slkfjslkdfjoie";
+import { secretKey } from "../middlewares/auth.middleware.js";
 
 // id 지정하기
 const getIncrementedId = (arr) =>
