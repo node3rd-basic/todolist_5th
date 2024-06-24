@@ -1,9 +1,9 @@
-import { todoData } from "../db/todoitem.db.js";
 import * as todoitemRepository from "../repositories/todoitem.repository.js";
 
 //할일 목록 조회 api
 export const getTodolists = (req, res) => {
-  return res.status(200).send(todoData);
+  const data = todoitemRepository.getTodolists();
+  return res.status(200).send(data);
 };
 
 //할일 목록 한개 조회 api
@@ -18,6 +18,8 @@ export const postTodoitem = (req, res) => {
   const { title } = req.body;
   const { userId } = req.user;
   if (!title) throw new Error("제목을 입력해주세요^^");
+
+  const data = todoitemRepository.postTodoitem(title, userId);
 
   const todoitem = {
     id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
