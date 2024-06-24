@@ -1,12 +1,12 @@
 import todoItems from "../db/todoitems.js";
-
+import * as todoItemsService from "../service/todoitems.service.js";
 ///할일목록 조회
 export function getTodoItems(req, res, next) {
   try {
     const user = req.user;
-    //인증했다면 해당 유저의 아이디로userid 만들어진 할일todoitem 목록 찾아서filter 보내기res
-    res.send(todoItems.filter((todoItems) => todoItems.userId === user.id));
+    const todoItems = todoItemsService.getTodoItemsByUserId(user.id);
 
+    res.send(todoItems);
     // res.status(200).json({
     //   message: "목록조회에 성공했습니다.",
     // });
@@ -22,22 +22,23 @@ export function postTodoItem(req, res) {
   const { title } = req.body;
 
   //새로운 할일이 없다면 1, 있다면 할일목록 +1 한 아이디
-  const newId = todoItems[todoItems.length - 1]
-    ? todoItems[todoItems.length - 1].id + 1
-    : 1;
+  // const newId = todoItems[todoItems.length - 1]
+  //   ? todoItems[todoItems.length - 1].id + 1
+  //   : 1;
 
-  const newTodoItem = {
-    id: newId,
-    userId: user.id,
-    title: title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: "2021-08-01",
-  };
+  // const newTodoItem = {
+  //   id: newId,
+  //   userId: user.id,
+  //   title: title,
+  //   doneAt: null,
+  //   createdAt: new Date(),
+  //   updatedAt: "2021-08-01",
+  // };
 
-  //등록  :푸쉬할 곳.push(푸쉬할 것)
-  todoItems.push(newTodoItem);
+  // //등록  :푸쉬할 곳.push(푸쉬할 것)
+  // todoItems.push(newTodoItem);
   //결과반환 : 클라이언트에게 전달
+  const newTodoItem = todoItemsService.postTodoItem(user.id, title);
   res.send(newTodoItem);
 }
 
