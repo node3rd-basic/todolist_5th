@@ -14,15 +14,23 @@ export function SignUp(req, res) {
     res.status(400).send({ message: "입력 값을 확인 해 주세요." });
     return;
   }
-  const newUser = userService.signUpUser(email, password, role, name);
-  res.json(newUser);
+  try {
+    const newUser = userService.signUpUser(email, password, role, name);
+    res.json(newUser);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
 }
 
 //로그인
 export function SignIn(req, res) {
   const { email, password } = req.body;
-  const token = userService.signInUser(email, password);
-  res.json({ token });
+  try {
+    const token = userService.signInUser(email, password);
+    res.json({ token });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
 }
 
 //토큰검증

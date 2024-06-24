@@ -10,7 +10,7 @@ export function findUser(email) {
 
 export function pushUser(newUser) {
   usersDB.push({
-    newUser,
+    ...newUser,
     id: incrementedTodoId(usersDB),
   });
 }

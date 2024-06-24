@@ -1,8 +1,6 @@
 import * as userRepository from "../repository/user.repository.js";
 import jwt from "jsonwebtoken";
 
-const secretKey = "wewqsfaserafgf";
-
 export function signUpUser(email, password, role, name) {
   const existedUser = userRepository.findUser(email);
   if (existedUser) {
@@ -19,10 +17,10 @@ export function signInUser(email, password) {
     throw new Error("해당하는 사용자가 없습니다.");
   }
   if (findUser.password !== password) {
-    throw new Error("해당하는 사용자가 없습니다.");
+    throw new Error("비밀번호가 일치하지 않습니다.");
   }
   const { password: _password, ...user } = findUser;
 
-  const token = jwt.sign(user, secretKey);
+  const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
   return token;
 }
