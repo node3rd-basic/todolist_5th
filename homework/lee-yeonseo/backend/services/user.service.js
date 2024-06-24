@@ -32,12 +32,14 @@ export const signUp = (email, password, role, name) => {
 //로그인
 export const signIn = (email, password) => {
   //유저 배열에 해당하는 이메일과 패스워드와 일치하는 유저가 있는지 검색
-  const { password: _pw, ...user } = userRepository.findUser(email, password);
+  const findUser = userRepository.findUser(email, password);
 
   //일치하는 유저가 없다면 오류 반환
-  if (!user) {
+  if (!findUser) {
     throw new Error('유저 정보가 없습니다.');
   }
+
+  const { password: _pw, ...user } = findUser;
 
   //일치하는 유저가 있다면 패스워드를 제외한 유저 정보를 페이로드로 토큰 발급
   const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
