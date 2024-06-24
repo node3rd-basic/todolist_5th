@@ -1,4 +1,5 @@
 import { todoData } from "../db/todoitem.db.js";
+import * as todoitemRepository from "../repositories/todoitem.repository.js";
 
 //할일 목록 조회 api
 export const getTodolists = (req, res) => {
@@ -9,9 +10,8 @@ export const getTodolists = (req, res) => {
 export const getTodolist = (req, res) => {
   const { id } = req.params;
 
-  const selectData = todoData.find((el) => el.id === +id);
-  if (!selectData) throw new Error("존재하는 데이터가 없습니다.");
-  return res.status(200).send(selectData);
+  const data = todoitemRepository.getTodolist(id);
+  return res.status(200).send(data);
 };
 //todoitem 생성 api
 export const postTodoitem = (req, res) => {
