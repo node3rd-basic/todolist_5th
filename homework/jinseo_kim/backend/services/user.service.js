@@ -31,5 +31,5 @@ export function singUser(email, password) {
     return;
   }
   const { password: _password, ...user } = selectedUser;
-  return jwt.sign(user, secretKey);
+  return jwt.sign(user, process.env.JWT_SECRET_KEY);
 }
