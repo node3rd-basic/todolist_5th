@@ -79,7 +79,6 @@ app.post("/todo-items", authMiddleware, (req, res, next) => {
   const user = req.user;
 
   const items = {
-
     id: tododata.length > 0 ? tododata[tododata.length - 1].id + 1 : 1,
     userId: user.userId,
     title: title,
