@@ -57,20 +57,6 @@ const users = [
   },
 ];
 
-//id 생성
-const makeid = (data) => {
-  if (!data.length) return 1;
-
-  const sortdata = data.sort((a, b) => a.id - b.id);
-  for (let i = 0; i < sortdata.length; i++) {
-    const id = sortdata[i].id;
-    if (id !== i + 1) {
-      return i + 1;
-    }
-  }
-  return sortdata.length + 1;
-};
-
 //인증
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
@@ -93,7 +79,7 @@ app.post("/todo-items", authMiddleware, (req, res, next) => {
   const user = req.user;
 
   const items = {
-    id: makeid(tododata),
+    id: tododata.length > 0 ? tododata[tododata.length - 1].id + 1 : 1,
     userId: user.userId,
     title: title,
     doneAt: null,
@@ -173,7 +159,7 @@ app.post("/sign-up", (req, res) => {
   if (existUser)
     res.status(409).send({ message: "이미 존재하는 이메일입니다." });
   const user = {
-    userId: makeuserid(users),
+    userId: tododata.length > 0 ? tododata[tododata.length - 1].userId + 1 : 1,
     email,
     name,
     password,
