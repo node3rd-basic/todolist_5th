@@ -7,9 +7,6 @@ export function getTodoItems(req, res, next) {
     const todoItems = todoItemsService.getTodoItemsByUserId(user.id);
 
     res.send(todoItems);
-    // res.status(200).json({
-    //   message: "목록조회에 성공했습니다.",
-    // });
   } catch (err) {
     res.status(404).send(err.message);
   }
@@ -48,12 +45,12 @@ export function getTodoItem(req, res, next) {
   //근데 아이디는 숫자이고, :id에서 가져옴
   const id = Number(req.params.id);
 
-  const oneTodoItem = todoItems.filter((todoItem) => todoItem.id === id);
+  const TodoItem = todoItemsService.oneTodoItem(id);
   //결과반환
-  res.send(oneTodoItem);
+  res.send(TodoItem);
 }
 
-//수정
+//수정/여기부터 하기 : 발리데이터 만들까?
 export function putTodoItem(req, res, next) {
   //내가 원하는 할일 목록 아이디 찾기, 아이디는 숫자
   const id = Number(req.params.id);
@@ -66,10 +63,8 @@ export function putTodoItem(req, res, next) {
   }
 
   //원하는 목록 중 todoItems.id할일 1개 찾기 : 내 할일목록에서 내가 원하는 번호의 목록 하나 수정하기
-  const reInPutTodoItem = todoItems.find((todoItems) => todoItems.id === id);
-  if (!reInPutTodoItem) {
-    res.send({ message: "해당하는 게시글이 없습니다." });
-  }
+  const reInPutTodoItem = todoItemsService.findTodoItemById;
+
   //수정할 수식 : 내가 원하는 투두아이템 필요함 : reInPutTodoItem /
   //indexof사용 이유 : 내가 수정할 위치에 splice로 수정하기 위함
   //할일 완료 여부 : done / null이면 날짜로, 날짜면 null로
