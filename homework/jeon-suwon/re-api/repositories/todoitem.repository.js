@@ -27,3 +27,19 @@ export const postTodolist = (title, userId) => {
   todoData.push(todoitem);
   return todoitem;
 };
+
+export const findTodoItem = (id) => {
+  todoData.find((el) => el.id === +id);
+};
+
+export const changeTodoItem = (id, userId, findTodoItem) => {
+  const changeTodoItem = {
+    id,
+    userId,
+    title: findTodoItem.title,
+    doneAt: new Date(),
+    createdAt: findTodoItem.createdAt,
+    updatedAt: new Date(),
+  };
+  return changeTodoItem;
+};

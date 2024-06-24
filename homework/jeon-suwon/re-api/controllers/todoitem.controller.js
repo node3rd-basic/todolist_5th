@@ -19,35 +19,18 @@ export const postTodoitem = (req, res) => {
   const { userId } = req.user;
   if (!title) throw new Error("제목을 입력해주세요^^");
 
-  const data = todoitemRepository.postTodoitem(title, userId);
+  const data = todoitemRepository.postTodolist(title, userId);
 
-  const todoitem = {
-    id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
-    userId,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  todoData.push(todoitem);
-  res.status(201).json(todoitem);
+  res.status(201).json(data);
 };
 
 export const putTodoitem = (req, res) => {
   const { id } = req.params;
   const { userId } = req.user;
 
-  const findTodoItem = todoData.find((el) => el.id === +id);
-  const changeTodoItem = {
-    id,
-    userId,
-    title: findTodoItem.title,
-    doneAt: new Date(),
-    createdAt: findTodoItem.createdAt,
-    updatedAt: new Date(),
-  };
+  const data = todoitemService.putTodoitem(id, userId);
 
-  res.status(201).json(changeTodoItem);
+  res.status(201).json(data);
 };
 
 export const deleteTodoitem = (req, res) => {
