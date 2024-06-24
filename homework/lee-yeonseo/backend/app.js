@@ -4,8 +4,10 @@ import cors from 'cors';
 
 import authMiddleware from '../backend/middlewares/auth.middleware.js';
 import { errorHandlingMiddleware } from './middlewares/errorHandling.middleware.js';
-import { todoItemIdValidator } from './middlewares/todoItemIdValidator.middleware.js';
-import { signUpInputValidator } from './middlewares/inputValidator.middleware.js';
+import { todoItemIdValidator } from './middlewares/validators/todoItemId.validator.middleware.js';
+import { signUpInputValidator } from './middlewares/validators/signUpInput.validator.middleware.js';
+import { signInInputValidator } from './middlewares/validators/signInInput.validator.middleware.js';
+import { createPostValidator } from './middlewares/validators/createPost.validator.middleware.js';
 
 import * as userController from './controllers/user.controller.js';
 import * as todoItemController from './controllers/todoItem.controller.js';
@@ -21,7 +23,7 @@ app.get('/todo-items', authMiddleware, todoItemController.getTodoItems);
 //할 일 상세 조회 api
 app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.getTodoItem);
 //할 일 등록 api
-app.post('/todo-items', authMiddleware, todoItemController.postTodoItem);
+app.post('/todo-items', authMiddleware, createPostValidator, todoItemController.postTodoItem);
 //할 일 수정 api
 app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.putTodoItem);
 //할 일 삭제 api
@@ -30,7 +32,7 @@ app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemContr
 //회원가입 api
 app.post('/sign-up', signUpInputValidator, userController.postSignUp);
 //로그인 api
-app.post('/sign-in', userController.postSignIn);
+app.post('/sign-in', signInInputValidator, userController.postSignIn);
 //토큰 검증 api
 app.get('/users/me', authMiddleware, userController.getUserMe);
 

@@ -1,5 +1,4 @@
 export const signUpInputValidator = (req, res, next) => {
-  //req.params에서 투두 아이템 아이디 받아오기
   const { email, password, rePassword, role, name } = req.body;
 
   //받아온 값 중에 빠진 내용이 있다면 에러 띄우기
