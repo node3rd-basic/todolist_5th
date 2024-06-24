@@ -5,6 +5,7 @@ import cors from 'cors';
 import authMiddleware from '../backend/middlewares/auth.middleware.js';
 import { errorHandlingMiddleware } from './middlewares/errorHandling.middleware.js';
 import { todoItemIdValidator } from './middlewares/todoItemIdValidator.middleware.js';
+import { signUpInputValidator } from './middlewares/inputValidator.middleware.js';
 
 import * as userController from './controllers/user.controller.js';
 import * as todoItemController from './controllers/todoItem.controller.js';
@@ -27,7 +28,7 @@ app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemControll
 app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.deleteTodoItem);
 
 //회원가입 api
-app.post('/sign-up', userController.postSignUp);
+app.post('/sign-up', signUpInputValidator, userController.postSignUp);
 //로그인 api
 app.post('/sign-in', userController.postSignIn);
 //토큰 검증 api
