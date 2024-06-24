@@ -79,7 +79,7 @@ app.post("/todo-items", authMiddleware, (req, res, next) => {
   const user = req.user;
 
   const items = {
-    id: todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1,
+    id: tododata.length > 0 ? tododata[tododata.length - 1].id + 1 : 1,
     userId: user.userId,
     title: title,
     doneAt: null,
@@ -159,7 +159,7 @@ app.post("/sign-up", (req, res) => {
   if (existUser)
     res.status(409).send({ message: "이미 존재하는 이메일입니다." });
   const user = {
-    userId: todoData.length > 0 ? todoData[todoData.length - 1].userId + 1 : 1,
+    userId: tododata.length > 0 ? tododata[tododata.length - 1].userId + 1 : 1,
     email,
     name,
     password,
