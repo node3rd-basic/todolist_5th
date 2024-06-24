@@ -4,6 +4,7 @@ const secretKey = "돈 많이 벌고 싶다.";
 
 export default (req, res, next) => {
   const token = req.headers.authorization;
+
   try {
     req.user = jwt.verify(token, secretKey);
 
