@@ -7,59 +7,65 @@ const port = 3000;
 
 app.use(cors());
 app.use(express.json()); // 브라우져나 express에서 받은 데이터들을 (ex) req.body 데이터들 ) json으로 바꾸기 위해서 사용
+// app.use(leaveLog); // 모든 요청에 대해서 로그가 찍히게 만든다.
 // 이것을 안쓰면 데이터를 읽지 못한다.
 
-// app.get("/", (req, res) => {
-//   res.send("연습만이 살 길이다.1");
-// });
+const leaveLog = (req, res, next) => {
+  console.log(`
+      ${req.method} ${req.url} [${new Date().toISOString()}] ${
+    req.headers.referer
+  }`);
+  next();
+};
 
-// app.get('/', (req,res) => {
-//   res.send('연습만이 살길이다.2')
-// })
+// 에러처리 미들웨어!
+const errorMiddleware = (err, req, res, next) => {
+  res.status(500).json({
+    message: "Internal Server Error",
+  });
+};
 
-// app.get('/', (req, res) => {
-//     res.send('연습만이 살길이다.3')
-// })
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization;
+  try {
+    req.user = jwt.verify(token, secretKey);
 
-// app.get('/', (req, res) => {
-//     res.send('연습만이 살길이다.4')
-// })
+    next();
+  } catch (error) {
+    res.status(401).send({ message: "권한이 없습니다." });
+  }
+};
 
-// app.get('/', (req, res) => {
-//     res.send('연습만이 살길이다.5')
-// })
+const validateTodoItemId = (req) => {
+  const idAsNumber = Number(req.params.id);
+  if (isNaN(idAsNumber)) {
+    throw new Error("Id는 숫자여야합니다.");
+  }
 
-// app.get("/todolists", (req, res, next) => {
-//   const todolists = [
-//     { id: 1, task: "숨쉬기" },
-//     { id: 2, task: "먹기" },
-//     { id: 3, task: "자기" },
-//     { id: 4, task: "공부하기" },
-//     { id: 5, task: "영화보기" },
-//     { id: 6, task: "게임하기" },
-//   ];
+  return idAsNumber;
+};
 
-//   return res.send(todolists);
-// });
+const getTodoItemById = (id) => {
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
+  if (!todoItem) {
+    throw new Error("Todo item not found");
+  }
 
-// app.get("/todolists/:todolistId", (req, res, next) => {
-//   const todolistId = Number(req.params.todolistId); // 여기서 숫자형으로 바꾸는 이유는 아래의 todo.id와 타입과 정보가 일치해야하기 때문에 숫자형으로 바꾸는 것이다.
-//   // 또한 .todolistId를 작성하는 이유는 URL에 :todolistId에서 받아오는 값이랑 일치해야하기 때문이다.
-//   const todolists = [
-//     { id: 1, task: "숨쉬기" },
-//     { id: 2, task: "먹기" },
-//     { id: 3, task: "자기" },
-//     { id: 4, task: "공부하기" },
-//     { id: 5, task: "영화보기" },
-//     { id: 6, task: "게임하기" },
-//   ];
+  return todoItem;
+};
 
-//   const findtodo = todolists.find((todo) => {
-//     return todo.id === todolistId;
-//   });
+// 사실 속에 return문도 들어 있다.
+// 화살표 함수의 축약형 형태로 작성되었기 때문에 {}랑 같이 생략된 것
+// 설명 arr[todoItems.length - 1] 에서 todoItems.length = 2, 2 - 1은 1 => arr[1]요소
+// 즉 arr이 가지고 있는 마지막 요소가 존재하는가?
+// 배열에 마지막 요소가 있어? (todoItems[todoItems.length - 1])
+// ? 있으면 +1을 해!
+// : 아니면 1 이라고 해!    <- 이렇게 이해해야 한다.
+// 정확히는 todoItems[0]은 { id: 1, ...}을 의미 따라서 [0 - 1] => [-1] 은 애초에 todoItems 속 요소가 없다는 것을 의미
+// 그렇기 때문에 [todoItems.length - 1] 의 값이 -1이 아니라면 id 값에 + 1을 하고 아니라면 id 를 1이라고 해서 id 값 위치에 넣어서 요소를 탄생 시켜라가 된다.
 
-//   return res.send(findtodo);
-// });
+const getIncrementedId = (arr) =>
+  arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
 
 // 할일 목록 전역 변수 설정 // 그리고 이게 DB 대신에 쓰는 것이다.
 const todoItems = [
@@ -68,48 +74,13 @@ const todoItems = [
     userId: 1,
     title: "할일1",
     doneAt: null,
-    doneAt: null,
     createdAt: "2021-08-01",
     updatedAt: "2021-08-01",
   },
   {
     id: 2,
     userId: 2,
-    userId: 2,
     title: "할일2",
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 3,
-    userId: 3,
-    title: "할일3",
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 4,
-    userId: 4,
-    title: "할일4",
-    doneAt: null,
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 3,
-    userId: 3,
-    title: "할일3",
-    doneAt: null,
-    createdAt: "2021-08-01",
-    updatedAt: "2021-08-01",
-  },
-  {
-    id: 4,
-    userId: 4,
-    title: "할일4",
     doneAt: null,
     createdAt: "2021-08-01",
     updatedAt: "2021-08-01",
@@ -117,65 +88,49 @@ const todoItems = [
 ];
 
 // 목록 조회 API 만들기
-app.get("/todo-items", (req, res, next) => {
-  // 내 정보가 들어있는 jwt를 가져온다.
-  const token = req.headers.authorization;
+app.get("/todo-items", authMiddleware, (req, res) => {
+  const user = req.user;
 
-  // 가져온 토큰(jwt)을 검증해야지 안의 내용물(내 정보)을 볼 수 있다.
-  try {
-    const user = jwt.verify(token, secretKey);
-
-    // todoItems에서 내 Id로 작성한 것만 봐야한다.
-    res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-  } catch (error) {
-    res.send("권한이 없습니다.");
-  }
+  res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
 });
 
 // 목록 추가 API
-app.post("/todo-items", (req, res, next) => {
+app.post("/todo-items", authMiddleware, (req, res) => {
   const { title } = req.body;
-  const token = req.headers.authorization;
 
-  try {
-    const user = jwt.verify(token, secretKey);
+  const user = req.user;
 
-    // 배열에 마지막 요소가 있어? (todoItems[todoItems.length - 1])
-    // ? 있으면 +1을 해!
-    // : 아니면 1 이라고 해!    <- 이렇게 이해해야 한다.
-    const newId = todoItems[todoItems.length - 1]
-      ? todoItems[todoItems.length - 1].id + 1
-      : 1;
+  const newId = getIncrementedId(todoItems);
 
-    const newItem = {
-      id: newId,
-      userId: user.id,
-      title: title,
-      doneAt: null,
-      createdAt: new Date(),
-      updatedAt: null,
-    };
+  const newItem = {
+    id: newId,
+    userId: user.id,
+    title: title,
+    doneAt: null,
+    createdAt: new Date(),
+    updatedAt: null,
+  };
 
-    todoItems.push(newItem);
-    res.send(newItem);
-  } catch (error) {
-    return res.status(401).json({ message: "인증정보가 유효하지 않습니다." });
-  }
+  todoItems.push(newItem);
+  res.send(newItem);
+});
+
+// 목록 상세 조회 API
+
+app.get("/todo-items/:id", authMiddleware, (req, res) => {
+  const id = validateTodoItemId(req);
+  const todoItem = getTodoItemById(id);
+  res.send(todoItem);
 });
 
 // 목록 수정 APi (7차 강의)
 
-app.put("/todo-items/:id", (req, res, next) => {
-  const { id } = req.params;
-  const todoId = Number(id);
+app.put("/todo-items/:id", authMiddleware, (req, res, next) => {
+  const id = validateTodoItemId(req);
 
   // :id로 입력 받은 값이 todoItems에 있는지 확인 작업
   // 여기서 이걸 쓰는 이유! const AddtodoItem에서 ...을 쓸 때 뽑아 쓸 {} 전체를 가져와야하니까 찾는 것!
-  const checkTodoItem = todoItems.find((할일) => 할일.id === todoId);
-  if (!checkTodoItem) {
-    res.send({ message: "존재하지 않는 Id입니다." });
-    return;
-  }
+  const checkTodoItem = getTodoItemById(id);
 
   // 수정될 id값이 어디인지 todoItems에서 찾는 작업 ex) :id가 3이면 3번위치 자리
   // 여기는 실질적인 객체{} 데이터가 아닌 위치만 찾는다.
@@ -195,46 +150,18 @@ app.put("/todo-items/:id", (req, res, next) => {
   });
 });
 
-// 목록 삭제 API (7차 강의)
-app.delete("/todo-items/:id", (req, res, next) => {
-  const { id } = req.params;
-  const delId = Number(id);
+// 할 일 목록들 중 하나 삭제 API
 
-  const delTodoItem = todoItems.find((삭제할_일) => 삭제할_일.id === delId);
+app.delete("/todo-items/:id", authMiddleware, (req, res) => {
+  const id = validateTodoItemId(req);
+  const selectedTodoItem = getTodoItemById(id);
+  console.log("selectedTodoItem", selectedTodoItem);
+  const indexTodoItem = todoItems.indexOf(selectedTodoItem);
 
-  if (!delTodoItem) {
-    res.send("해당 할 일이 없습니다.");
-    return;
-  }
-
-  const delTodoItemIndex = todoItems.indexOf(delTodoItem);
-
-  const clearTodoItem = todoItems.splice(delTodoItemIndex, 1);
+  todoItems.splice(indexTodoItem, 1);
 
   res.send({
     result: true,
-    date: clearTodoItem,
-  });
-});
-
-// 할 일 목록들 중 하나 삭제 API 2 (7차 강의)
-app.delete("/todo-items/:id", (req, res, next) => {
-  const { id } = req.params;
-  const todoId = Number(id);
-
-  const indexTodoItem = todoItems.findIndex(
-    (삭제할_일) => 삭제할_일.id === todoId
-  );
-  if (indexTodoItem === -1) {
-    res.send("존재하지 않는 할 일 입니다.");
-    return;
-  }
-
-  const clearTodoItem = todoItems.splice(indexTodoItem, 1);
-
-  res.send({
-    result: true,
-    date: clearTodoItem,
   });
 });
 
@@ -277,11 +204,10 @@ app.post("/sign-up", (req, res) => {
     res.status(409).send("이미 존재하는 이메일입니다.");
   }
 
-  // 배열의 요소가 0개야? 맞으면 1이라고 해 : 아니면 맨 마지막에서 +1을 해
-  const newId = users.length === 0 ? 1 : users[users.length - 1].id + 1;
+  const id = getIncrementedId(users);
 
   const newUser = {
-    id: newId,
+    id,
     email,
     password,
     role,
@@ -303,6 +229,12 @@ app.post("/sign-in", (req, res) => {
     (user) => user.email === email && user.password === password
   );
 
+  // const selectedUser = users.find(
+  //   (user) => user.email === email && user.password === password
+  // )
+
+  // const { password: _password, ...user } = selectedUser
+
   if (!user) {
     res.send("존재하지 않는 유저입니다.");
     return;
@@ -315,18 +247,13 @@ app.post("/sign-in", (req, res) => {
 });
 
 // 내 정보 조회
-app.get("/users/me", (req, res) => {
-  // 내 정보들은 전부 header의 들어 있다.
-  const token = req.headers.authorization;
-
-  // 가져온 토큰을 검증해야지 안의 내용물을 볼 수 있다.
-  try {
-    const user = jwt.verify(token, secretKey);
-    res.send(user);
-  } catch (error) {
-    res.send("권한이 없습니다.");
-  }
+app.get("/users/me", authMiddleware, (req, res) => {
+  // user에 관해서는 이미 authMiddleware에서 확인 및 정의를 함.
+  res.send(req.user);
 });
+
+// 여기에 app.use가 있는 이유 위의 코드들이 에러가 발생했을 때 순차적으로 아래로 향해서 코드가 실행 되어야 쓸모없는 움직임이 덜하기 때문
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
