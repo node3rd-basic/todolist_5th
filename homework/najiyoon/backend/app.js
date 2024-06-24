@@ -120,6 +120,13 @@ app.put("/todo-items/:id", (req, res) => {
   const todoItemIndex = todoItems.indexOf(selectedTodoItem);
   todoItems.splice(todoItemIndex, 1, {
     ...selectedTodoItem,
+    //할일을 다했는지 아닌지 확인수식 : 삼항연산자로 들어감
+    // let newDoneAt
+    // if (selectedTodoItem.doneAt == null) {
+    //     newDoneAt = new Date()
+    // } else {
+    //     newDoneAt = null
+    // }
     doneAt: selectedTodoItem.doneAt == null ? new Date() : null,
   });
   res.send({ result: true });
@@ -238,8 +245,3 @@ app.get("/users/me", (req, res) => {
 app.listen(port, () => {
   console.log(port, "포트로 서버가 열렸어요!");
 });
-
-// - 요청자가 값을 전달 하고 백엔드 프로그램이 값을 받는 3가지 방법 정리
-// - frontend/index.html 할일 목록들 보여지도록 api 구현
-// - frontend/index.html 할밀 목록 추가되도록 api 구현
-//[나지윤/remove-modify-todo-item]
