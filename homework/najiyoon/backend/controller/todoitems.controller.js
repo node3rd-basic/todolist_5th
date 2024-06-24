@@ -2,13 +2,17 @@ import todoItems from "../db/todoitems.js";
 
 ///할일목록 조회
 export function getTodoItems(req, res, next) {
-  const user = req.user;
-  //인증했다면 해당 유저의 아이디로userid 만들어진 할일todoitem 목록 찾아서filter 보내기res
-  res.send(todoItems.filter((todoItems) => todoItems.userId === user.id));
+  try {
+    const user = req.user;
+    //인증했다면 해당 유저의 아이디로userid 만들어진 할일todoitem 목록 찾아서filter 보내기res
+    res.send(todoItems.filter((todoItems) => todoItems.userId === user.id));
 
-  // res.status(200).json({
-  //   message: "목록조회에 성공했습니다.",
-  // });
+    // res.status(200).json({
+    //   message: "목록조회에 성공했습니다.",
+    // });
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 }
 
 //할일등록
