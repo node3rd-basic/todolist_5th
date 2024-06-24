@@ -1,7 +1,4 @@
-import jwt from "jsonwebtoken";
 import * as userService from "../services/user.service.js";
-
-const secretKey = "BasicClass";
 
 //회원가입
 export const postSignup = (req, res) => {
