@@ -1,6 +1,6 @@
 import * as userRepository from "../repositories/user.repository.js";
-
-const secretKey = "BasicClass";
+import jwt from "jsonwebtoken";
+import { ENV_KEY } from "../constants/env.constants.js";
 
 export const signUp = (email, password, rePassword, role, name) => {
   const emailExist = userRepository.findEmailById(email);
@@ -17,7 +17,6 @@ export const token = (email, password) => {
   if (!findUser) throw new Error("존재하는 않는 사용자입니다.");
   if (findUser.password !== password)
     throw new Error("일치하지않는 비밀번호입니다.");
-
-  const token = jwt.sign(findUser, secretKey);
+  const token = jwt.sign(findUser, ENV_KEY.SECRET_KEY);
   return token;
 };

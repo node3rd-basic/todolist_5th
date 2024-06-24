@@ -1,5 +1,9 @@
 import { user } from "../db/user.db.js";
 
+export const newId = () => {
+  user.length > 0 ? user[user.length - 1].userId + 1 : 1;
+};
+
 export const signUp = (email, password, role, name) => {
   const userInfo = {
     userId: newId(),
@@ -16,10 +20,6 @@ export const signUp = (email, password, role, name) => {
 
 export const findEmailById = (email) => {
   user.find((el) => el.email === email);
-};
-
-export const newId = () => {
-  user.length > 0 ? user[user.length - 1].userId + 1 : 1;
 };
 
 export const findUser = (email) => {
