@@ -10,24 +10,24 @@ export function findTodoItems(userId) {
 }
 
 export function getNewId() {
-  const incrementedTodoId = (arr) =>
-    arr[todoItemsDB.length - 1] ? arr[todoItemsDB.length - 1].id + 1 : 1;
-  return incrementedTodoId;
+  return todoItemsDB.length === 0
+    ? 1
+    : todoItemsDB[todoItemsDB.length - 1].id + 1;
 }
 
-export function pushTodoItem(TodoItem) {
-  todoItemsDB.push(TodoItem);
+export function pushTodoItem(newTodoItem) {
+  todoItemsDB.push(newTodoItem);
 }
 
-export function putTodoItem(todoItem, doneAt) {
-  const todoItemIndex = todoItemsDB.indexOf(todoItem);
+export function putTodoItem(todoItemFind, doneAt) {
+  const todoItemIndex = todoItemsDB.indexOf(todoItemFind);
   todoItemsDB.splice(todoItemIndex, 1, {
-    ...todoItem,
+    ...todoItemFind,
     doneAt,
   });
 }
 
-export function deleteTodoItem(todoItem) {
+export function deleteById(todoItem) {
   const deleteTodoItem = todoItemsDB.indexOf(todoItem);
   todoItemsDB.splice(deleteTodoItem, 1);
 }

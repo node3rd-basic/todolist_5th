@@ -34,5 +34,5 @@ export function putTodoItemById(id) {
 
 export function deleteTodoItemById(id) {
   const deleteTodoItem = findTodoItemById(id);
-  todoItemRepository.deleteTodoItem(deleteTodoItem);
+  todoItemRepository.deleteById(deleteTodoItem);
 }
