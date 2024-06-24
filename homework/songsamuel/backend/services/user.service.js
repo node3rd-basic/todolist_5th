@@ -1,6 +1,9 @@
 import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
 
+// // 토큰 시크릿 키
+// const secretKey = "돈 많이 벌고 싶다.";
+
 // 회원가입 API
 export function SignUp(email, password, rePassword, role, name) {
   if (
@@ -40,9 +43,6 @@ export function SignUp(email, password, rePassword, role, name) {
   return newUser;
 }
 
-// 토큰 시크릿 키
-const secretKey = "돈 많이 벌고 싶다.";
-
 export function SignIn(email, password) {
   // DB에서 일치하는 녀석을 foundUser라고 한다.
   const foundUser = userRepository.findUser(email, password);
@@ -56,7 +56,7 @@ export function SignIn(email, password) {
   const { password: _password, ...userData } = foundUser;
 
   // 로그인을 성공하면 토큰을 발급한다.
-  const token = jwt.sign(userData, secretKey);
+  const token = jwt.sign(userData, process.env.JWT_SECRET_KEY);
 
   return token;
 }
