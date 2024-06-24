@@ -1,4 +1,4 @@
-import todoData from "../db/todoitem.db";
+import { todoData } from "../db/todoitem.db.js";
 
 export const newId = () => {
   todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1;
@@ -29,7 +29,8 @@ export const postTodolist = (title, userId) => {
 };
 
 export const findTodoItem = (id) => {
-  todoData.find((el) => el.id === +id);
+  const data = todoData.find((el) => el.id === +id);
+  return data;
 };
 
 export const changeTodoItem = (id, userId, findTodoItem) => {
@@ -42,4 +43,16 @@ export const changeTodoItem = (id, userId, findTodoItem) => {
     updatedAt: new Date(),
   };
   return changeTodoItem;
+};
+
+export const findIndexTodoItem = (id) => {
+  const data = todoData.findIndex((el) => el.id === +id);
+
+  if (data === -1) throw new Error("존재하지않는 데이터입니다^^");
+  return data;
+};
+
+export const deleteTodoitem = (findTodoItem) => {
+  todoData.splice(findTodoItem, 1);
+  return true;
 };

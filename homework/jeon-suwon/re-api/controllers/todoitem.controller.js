@@ -1,4 +1,5 @@
 import * as todoitemRepository from "../repositories/todoitem.repository.js";
+import * as todoitemService from "../services/todoitem.service.js";
 
 //할일 목록 조회 api
 export const getTodolists = (req, res) => {
@@ -36,11 +37,7 @@ export const putTodoitem = (req, res) => {
 export const deleteTodoitem = (req, res) => {
   const { id } = req.params;
 
-  const findData = todoData.findIndex((el) => el.id === +id);
-  if (findData === -1) {
-    res.status(400).json({ message: "존재하지않는 게시물입니다." });
+  if (todoitemService.deleteTodoitem(id)) {
+    res.status(200).json({ message: "정상적으로 삭제되었습니다." });
   }
-
-  todoData.splice(findData, 1);
-  res.status(200).json({ result: true });
 };
