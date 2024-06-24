@@ -1,7 +1,7 @@
 import { user } from "../db/user.db.js";
 
 export const newId = () => {
-  user.length > 0 ? user[user.length - 1].userId + 1 : 1;
+  return user.length > 0 ? user[user.length - 1].userId + 1 : 1;
 };
 
 export const signUp = (email, password, role, name) => {

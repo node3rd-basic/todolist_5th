@@ -1,7 +1,7 @@
 import { todoData } from "../db/todoitem.db.js";
 
 export const newId = () => {
-  todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1;
+  return todoData.length > 0 ? todoData[todoData.length - 1].id + 1 : 1;
 };
 
 export const getTodolists = () => {
@@ -42,6 +42,7 @@ export const changeTodoItem = (id, userId, findTodoItem) => {
     createdAt: findTodoItem.createdAt,
     updatedAt: new Date(),
   };
+  console.log(changeTodoItem);
   return changeTodoItem;
 };
 
