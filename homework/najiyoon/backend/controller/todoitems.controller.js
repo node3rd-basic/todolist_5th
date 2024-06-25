@@ -61,23 +61,21 @@ export function putTodoItem(req, res, next) {
     });
     return;
   }
-
-  //원하는 목록 중 todoItems.id할일 1개 찾기 : 내 할일목록에서 내가 원하는 번호의 목록 하나 수정하기
-  const reInPutTodoItem = todoItemsService.findTodoItemById;
-
   //수정할 수식 : 내가 원하는 투두아이템 필요함 : reInPutTodoItem /
   //indexof사용 이유 : 내가 수정할 위치에 splice로 수정하기 위함
   //할일 완료 여부 : done / null이면 날짜로, 날짜면 null로
-  const putItemIndex = todoItems.indexOf(reInPutTodoItem);
-  console.log("putItemIndex--", putItemIndex);
-  console.log("reInPutTodoItem-->", reInPutTodoItem);
-  todoItems.splice(putItemIndex, 1, {
-    ...reInPutTodoItem,
-    doneAt: reInPutTodoItem.doneAt === null ? new Date() : null,
-  });
+  // const putItemIndex = todoItemsService.putItemIndex(id);
+  // //반환
+  // res.send({ putItemIndex, result: true });
 
-  //반환
-  res.send({ result: true });
+  try {
+    const updatedItem = todoItemsService.toggleTodoItemDone(id);
+    res.send({ result: true, item: updatedItem });
+  } catch (error) {
+    res.status(404).send({
+      result: false,
+    });
+  }
 }
 
 //삭제
@@ -91,12 +89,7 @@ export function delTodoItem(req, res) {
     });
   }
   //삭제하기: 할일이 없을 경우 -1 반환하는 것 생각
-  const delTodoItem = todoItems.findIndex((todoItems) => todoItems.id === id);
-  if (delTodoItem === -1) {
-    res.status(400).json({ message: "해당하는 할일이 없습니다." });
-  }
+  const delTodoItem = todoItemsService.findDelById(id);
 
-  //할일이 있다면 반환 : 자르기
-  todoItems.splice(delTodoItem, 1);
   res.send({ result: true });
 }
