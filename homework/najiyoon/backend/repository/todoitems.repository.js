@@ -40,8 +40,10 @@ export function update(id, updatedTodoItem) {
   return null;
 }
 //삭제
-
-export function spliceIndex(id) {
-  const index = todoItemsDB.findIndex(todoitems);
+//삭제할 인덱스 : 서비스에서 정의한 아이디
+export function spliceIndex(delTodoItem) {
+  const index = todoItemsDB.findIndex(
+    (todoItems) => todoItems.id === delTodoItem
+  );
   todoItemsDB.splice(index, 1);
 }

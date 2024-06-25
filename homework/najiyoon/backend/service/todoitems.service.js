@@ -50,6 +50,7 @@ export function toggleTodoItemDone(id) {
 }
 //삭제
 export function findDelById(id) {
+  //삭제할 투두아이템을 투두아이템에 있는지 확인
   const delTodoItem = todoItemsRepository.spliceIndex(
     (todoItems) => todoItems.id === id
   );
@@ -57,7 +58,7 @@ export function findDelById(id) {
     res.status(400).json({ message: "해당하는 할일이 없습니다." });
   }
 
-  //할일이 있다면 반환 : 자르기
-  todoItemsRepository.spliceIndex(delTodoItem, 1);
-  return todoitems;
+  //할일이 있다면 : 자르기
+  // todoItemsRepository.spliceIndex(delTodoItem, 1);
+  return;
 }

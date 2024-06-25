@@ -88,7 +88,7 @@ export function delTodoItem(req, res) {
       message: "id 는 숫자여야 합니다.",
     });
   }
-  //삭제하기: 할일이 없을 경우 -1 반환하는 것 생각
+  //삭제하기: 할일이 없을 경우
   const delTodoItem = todoItemsService.findDelById(id);
 
   res.send({ result: true });
