@@ -1,3 +1,4 @@
+import { CustomError } from "../common/custom.error.js";
 import { todoData } from "../db/todoitem.db.js";
 
 export const newId = () => {
@@ -11,7 +12,7 @@ export const getTodolists = () => {
 
 export const getTodolist = (id) => {
   const data = todoData.find((el) => el.id === +id);
-  if (!data) throw new Error("존재하는 데이터가 없습니다.");
+  if (!data) throw new CustomError("존재하는 데이터가 없습니다.", 404);
   return data;
 };
 
@@ -49,7 +50,7 @@ export const changeTodoItem = (id, userId, findTodoItem) => {
 export const findIndexTodoItem = (id) => {
   const data = todoData.findIndex((el) => el.id === +id);
 
-  if (data === -1) throw new Error("존재하지않는 데이터입니다^^");
+  if (data === -1) throw new CustomError("존재하는 데이터가 없습니다.", 404);
   return data;
 };
 
