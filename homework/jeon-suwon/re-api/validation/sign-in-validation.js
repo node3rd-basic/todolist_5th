@@ -1,4 +1,6 @@
-export const signInvalidation = (email, password, rePassword, role, name) => {
+import { CustomError } from "../common/custom.error.js";
+
+export const signUpvalidation = (email, password, rePassword, role, name) => {
   if (
     !email ||
     !password ||
@@ -7,6 +9,6 @@ export const signInvalidation = (email, password, rePassword, role, name) => {
     !name ||
     password !== rePassword
   ) {
-    throw new Error("입력 값을 확인해주세요.");
+    throw new CustomError("입력 값을 확인해주세요.", 409);
   }
 };

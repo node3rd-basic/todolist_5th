@@ -3,6 +3,7 @@ import cors from "cors";
 import * as todoitemController from "./controllers/todoitem.controller.js";
 import * as userController from "./controllers/user.controller.js";
 import { authMiddleware } from "./middleware/auth.middleware.js";
+import { errorMiddleware } from "./middleware/error.middleware.js";
 
 const app = express();
 const PORT = 3000;
@@ -36,6 +37,8 @@ app.post("/sign-up", userController.postSignup);
 app.post("/sign-in", userController.postSignin);
 //유저정보조회
 app.get("/users/me", authMiddleware, userController.getuser);
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`${PORT}번의 포트가 열렸습니다.`);
