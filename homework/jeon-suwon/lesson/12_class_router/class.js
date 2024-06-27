@@ -31,3 +31,9 @@ class Cat extends Pet {
 //Pet class에서 name과 age를 가져오고싶어서 상속을 받았지만, 원하지않은 gender까지 상속받았음..
 const cat1 = new Cat("단비", 9);
 console.log(cat1);
+
+console.log(Cat instanceof Pet); //false
+console.log(pet1 instanceof Pet); //true
+console.log(pet1 instanceof Cat); //false
+console.log(cat1 instanceof Pet); //true
+console.log(cat1 instanceof Cat); //true
