@@ -1,12 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-const tokenSecretKey = 'aksjhdfjkladhfklhjaskl';
-
 //사용자 인증 미들웨어
 export default (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const user = jwt.verify(token, tokenSecretKey);
+    const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     req.user = user;
     next();

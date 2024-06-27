@@ -1,12 +1,11 @@
 import express from 'express';
+import 'dotenv/config';
 import cors from 'cors';
 
-import authMiddleware from '../backend/middlewares/auth.middleware.js';
 import { errorHandlingMiddleware } from './middlewares/errorHandling.middleware.js';
-import { todoItemIdValidator } from './middlewares/todoItemIdValidator.middleware.js';
 
-import * as userController from './controllers/user.controller.js';
-import * as todoItemController from './controllers/todoItem.controller.js';
+import userRouter from './routers/user.router.js';
+import todoItemRouter from './routers/todoItem.router.js';
 
 const app = express();
 const port = 3000;
@@ -14,23 +13,8 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-//할 일 목록 조회 api
-app.get('/todo-items', authMiddleware, todoItemController.getTodoItems);
-//할 일 상세 조회 api
-app.get('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.getTodoItem);
-//할 일 등록 api
-app.post('/todo-items', authMiddleware, todoItemController.postTodoItem);
-//할 일 수정 api
-app.put('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.putTodoItem);
-//할 일 삭제 api
-app.delete('/todo-items/:id', authMiddleware, todoItemIdValidator, todoItemController.deleteTodoItem);
-
-//회원가입 api
-app.post('/sign-up', userController.postSignUp);
-//로그인 api
-app.post('/sign-in', userController.postSignIn);
-//토큰 검증 api
-app.get('/users/me', authMiddleware, userController.getUserMe);
+app.use('/', userRouter);
+app.use('/todo-items', todoItemRouter);
 
 app.use(errorHandlingMiddleware);
 
