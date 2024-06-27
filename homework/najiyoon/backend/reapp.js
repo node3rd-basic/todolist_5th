@@ -58,6 +58,7 @@
 
 //**기본세팅1 : import , app
 import express from "express";
+import "dotenv/config";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import authMiddleware from "./middlewares/authMiddleware.js";
@@ -99,9 +100,6 @@ app.use(express.json());
 //     name: "nana",
 //   },
 // ];
-
-const secretkey = "rqjghakrovfdinvczfw";
-// const secretkey = "rqjghakrovfdinvczfw";
 
 // const authMiddleware = (req, res, next) => {
 //   const token = req.headers.authorization;

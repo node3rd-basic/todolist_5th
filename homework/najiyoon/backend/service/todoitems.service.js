@@ -1,5 +1,5 @@
 // import todoItems from "../db/todoitems.js";
-import todoitems from "../db/todoitems.js";
+import todoItemsDB from "../db/todoitems.js";
 import * as todoItemsRepository from "../repository/todoitems.repository.js";
 //userId를 가져왔으니 user.id에서 userId로
 //인증했다면 해당 유저의 아이디로userid 만들어진 할일todoitem 목록 찾아서filter 보내기res
@@ -30,7 +30,7 @@ export function oneTodoItem(id) {
   }
   return todoItem;
 }
-
+//할일수정//
 export function findTodoItemById(id) {
   return todoItemsRepository.findById(id);
 }

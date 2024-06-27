@@ -1,5 +1,5 @@
 import todoitems from "../db/todoitems.js";
-import todoItemsDB from "../db/todoitems.js";
+import * as todoItemsDB from "../db/todoitems.js";
 //목록조회
 export function findMany(userId) {
   return todoItemsDB.filter((todoitems) => (todoitems.userId = userId));
