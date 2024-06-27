@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import 'dotenv/config';
 // 미들웨어 (로그, 인증, 에러핸들러)
 import leaveLogMiddleware from './middlewares/leaveLog.middleware.js';
 import authMiddleware from './middlewares/auth.middleware.js';
