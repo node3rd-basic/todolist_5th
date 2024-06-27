@@ -43,7 +43,6 @@ export const changeTodoItem = (id, userId, findTodoItem) => {
     createdAt: findTodoItem.createdAt,
     updatedAt: new Date(),
   };
-  console.log(changeTodoItem);
   return changeTodoItem;
 };
 
