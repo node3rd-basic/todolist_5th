@@ -1,6 +1,6 @@
 import usersDB from "../db/users.js";
 
-const incrementedTodoId = (arr) =>
+const incrementedTodoId = () =>
   usersDB.length === 0 ? 1 : usersDB[usersDB.length - 1].id + 1;
 
 export function findUser(email) {
