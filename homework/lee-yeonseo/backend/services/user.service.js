@@ -1,5 +1,6 @@
 import * as userRepository from '../repositories/user.repository.js';
 import jwt from 'jsonwebtoken';
+import CustomError from '../common/custom.error.js';
 
 //회원가입
 export const signUp = (email, password, role, name) => {
@@ -7,7 +8,7 @@ export const signUp = (email, password, role, name) => {
   const existedEmail = userRepository.findUserByEmail(email);
 
   if (existedEmail) {
-    throw new Error('이미 가입된 이메일입니다.');
+    throw new CustomError(409, '이미 가입된 이메일입니다.');
   }
 
   //유저 아이디 만들어주기
@@ -36,7 +37,7 @@ export const signIn = (email, password) => {
 
   //일치하는 유저가 없다면 오류 반환
   if (!findUser) {
-    throw new Error('유저 정보가 없습니다.');
+    throw new CustomError(404, '유저 정보가 없습니다.');
   }
 
   const { password: _pw, ...user } = findUser;
