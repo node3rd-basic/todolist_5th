@@ -1,20 +1,15 @@
 import * as todoItemRepository from "../repositories/todoItem.repository.js"
 
-export function getTodoItemsByUserId(userId) {
-    return todoItemRepository.findMany(userId)
+export async function getTodoItemsByUserId(userId) {
+    return await todoItemRepository.findMany(userId)
 }
 
-export function saveTodoItem(title, userId) {
-    const newId = todoItemRepository.getNewId()
+export async function saveTodoItem(title, userId) {
     const newTodoItem = {
-        "id": newId,
         "userId": userId,
         "title": title,
-        "doneAt": null,
-        "createdAt": new Date(),
-        "updatedAt": null
     }
-    todoItemRepository.saveTodoItem(newTodoItem)
+    await todoItemRepository.saveTodoItem(newTodoItem)
     return newTodoItem
 }
 

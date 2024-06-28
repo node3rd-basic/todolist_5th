@@ -1,16 +1,15 @@
-import usersFromDB from "../db/users.js";
+import conn from "../common/conn.js";
 
-export function findOne(email) {
-    return usersFromDB.find(user => user.email === email)
+export async function findOne(email) {
+    const [users] = await conn.execute(`SELECT * FROM users WHERE email = '${email}'`)
+    return users[0]
 }
 
-export function save(user) {
-    usersFromDB.push({
-        ...user,
-        id: getIncrementedId(usersFromDB)
-    })
+export async function save(user) {
+    const sql = `INSERT INTO users (email, password, name, role) VALUES ('${user.email}', '${user.password}', '${user.name}', '${user.role}')`
+    const result = await conn.execute(sql)
+    return {
+        id: result[0].insertId,
+        ...user
+    }
 }
-
-const getIncrementedId = arr => usersFromDB.length === 0
-    ? 1
-    : usersFromDB[usersFromDB.length - 1].id + 1
