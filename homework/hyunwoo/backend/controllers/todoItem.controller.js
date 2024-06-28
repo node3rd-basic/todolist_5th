@@ -1,8 +1,4 @@
-import todoItems from "../db/todoItems.js";
-
-// id 지정하기
-const getIncrementedId = (arr) =>
-    arr[arr.length - 1] ? arr[arr.length - 1].id + 1 : 1;
+import * as todoItemService from "../services/todoItem.service.js";
 
 // todoItem id 찾기
 const validateTodoItemId = (req) => {
@@ -13,81 +9,42 @@ const validateTodoItemId = (req) => {
   return idAsNumber;
 };
 
-// id에 맞는 todoItem 찾기
-const getTodoItemById = (id) => {
-  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
-  if (!todoItem) {
-    throw new Error("해당 아이디를 가진 todoItem이 없습니다.");
-  }
-  return todoItem;
-};
-
 // 할일 목록 조회
-export function getTodoItems(req, res, next) {
+export function getTodoItems(req, res) {
   const user = req.user;
-  res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
+  const todoItems = todoItemService.findTodoItems(user.id);
+  res.send(todoItems);
 }
 
 // 할일 목록 추가
-export function postTodoItem(req, res, next) {
+export function postTodoItem(req, res) {
   const user = req.user;
   const { title } = req.body;
-
-  const newId = getIncrementedId(todoItems);
-
-  const newTodoItem = {
-    id: newId,
-    userId: user.id,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-
-  todoItems.push(newTodoItem);
+  const newTodoItem = todoItemService.postTodoItemById(title, user.id);
 
   res.send(newTodoItem);
 }
 
 // 할일 한가지 조회
-export function getTodoItem(req, res, next) {
+export function getTodoItem(req, res) {
   const id = validateTodoItemId(req);
-
-  const todoItem = getTodoItemById(id);
+  const todoItem = todoItemService.findTodoItemById(id);
 
   res.send(todoItem);
 }
 
 // 할일 수정하기
-export function putTodoItem(req, res, next) {
-  // 할일 id 가져오기
+export function putTodoItem(req, res) {
   const id = validateTodoItemId(req);
-
-  // id에 맞는 todoItem 조회
-  const existTodoItem = getTodoItemById(id);
-
-  // id에 해당하는 todoItem의 인덱스를 확인
-  const todoItemIndex = todoItems.indexOf(existTodoItem);
-  // 해당 todoItem에서 doneAt을 수정
-  todoItems.splice(todoItemIndex, 1, {
-    ...existTodoItem,
-    doneAt: existTodoItem.doneAt == null ? new Date() : null, // 삼항연산자로 표시
-  });
+  const existTodoItem = todoItemService.putTodoItemById(id);
 
   res.send({ result: true });
 }
 
 // 할일 삭제하기
-export function deleteTodoItem(req, res, next) {
-  // 할일 id 가져오기
+export function deleteTodoItem(req, res) {
   const id = validateTodoItemId(req);
-
-  // id에 해당하는 인덱스 찾기
-  const existTodoItem = getTodoItemById(id);
-  const indexToDelete = todoItems.indexOf(existTodoItem);
-
-  // 해당 인덱스에 있는 할일 삭제
-  todoItems.splice(indexToDelete, 1);
+  const existTodoItem = todoItemService.deleteTodoItemById(id);
 
   res.send({ result: true });
 }
