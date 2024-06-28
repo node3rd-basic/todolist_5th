@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
-
-const secretkey = "rqjghakrovfdinvczfw";
+import "dotenv/config";
 
 export default (req, res, next) => {
   const token = req.headers.authorization;
 
   try {
-    req.user = jwt.verify(token, secretkey);
+    req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
     next();
   } catch (error) {
     res.status(400).json({ message: "등록실패" });
