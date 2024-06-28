@@ -7,14 +7,94 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const todoitems = [];
-
-const users = [];
-
 const secretKey = "1234567890";
+
+const todoitems = [
+  {
+    id: 1,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 2,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 3,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 4,
+    userId: 1,
+    title: "할일1",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 5,
+    userId: 2,
+    title: "할일2",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 6,
+    userId: 2,
+    title: "할일2",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 7,
+    userId: 2,
+    title: "할일2",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+  {
+    id: 8,
+    userId: 2,
+    title: "할일2",
+    doneAt: null,
+    createdAt: "2021-08-01",
+    updatedAt: "2021-08-01",
+  },
+];
+const users = [
+  {
+    id: 1,
+    email: "1111",
+    password: "1111",
+    role: "student",
+    name: "1111",
+  },
+  {
+    id: 2,
+    email: "2222",
+    password: "2222",
+    role: "student",
+    name: "2222",
+  },
+];
 
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
+
   try {
     req.user = jwt.verify(token, secretKey);
     next();
@@ -22,6 +102,99 @@ const authMiddleware = (req, res, next) => {
     res.status(401).json({ message: "잘못된 접근입니다." });
   }
 };
+
+//회원가입 기능
+app.post("/sign-up", (req, res) => {
+  const { email, name, role, password, rePassword } = req.body;
+
+  //값 전부 입력됐는지 확인, 안 들어왔으면 err(400)
+  if (!email || !name || !role || !password || !rePassword) {
+    res.status(400).json({
+      status: 400,
+      message: "필수 입력 정보가 누락되었습니다. 확인 후 다시 입력해주세요.",
+    });
+    return;
+  }
+
+  //비밀번호와 비밀번호 확인 일치여부 체크, 일치하지 않으면 err(400)
+  if (password !== rePassword) {
+    res.status(400).json({
+      status: 400,
+      message: "비밀번호 확인이 비밀번호와 다릅니다. 다시 한 번 확인해주세요.",
+    });
+    return;
+  }
+
+  //이메일 중복인지 확인, 중복이면 err(409)
+  const isExistUser = users.find((user) => user.email === email);
+
+  if (isExistUser) {
+    res.status(409).json({
+      status: 409,
+      message: "이미 가입된 이력이 있는 회원입니다. 다시 한 번 확인해주세요.",
+    });
+    return;
+  }
+
+  //user id 생성
+  const newUser = {
+    id: users[users.length - 1] ? users[users.length - 1].id + 1 : 1,
+    email: email,
+    name: name,
+    role: role,
+    password: password,
+  };
+  users.push(newUser);
+
+  res.status(201).json({ message: "회원가입 성공!" });
+});
+
+//로그인 기능
+app.post("/sign-in", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).json({
+      status: 400,
+      message: "누락된 값이 있습니다. 다시 한 번 확인해주세요.",
+    });
+    return;
+  }
+  const user = users.find(
+    (user) => user.email === email && user.password === password
+  );
+
+  user.password = undefined;
+
+  if (!user) {
+    res.status(400).json({
+      message:
+        "이메일 혹은 비밀번호가 잘못되었습니다. 다시 한 번 확인해주세요.",
+    });
+    return;
+  }
+  // user = { password: _pw, ...user };
+  const token = jwt.sign(user, secretKey);
+
+  res.status(201).json({ status: 201, message: "로그인 성공!", token });
+});
+
+//내 정보 조회
+app.get("/users/me", authMiddleware, (req, res) => {
+  const user = req.user;
+  console.log(req.user);
+
+  res.status(200).json(user);
+});
+
+//게시글 전체 조회
+app.get("/todo-items", authMiddleware, (req, res) => {
+  const user = req.user;
+  console.log(user);
+
+  //유저 아이디와 동일한 값을 아이디로 가지는 아이템만 반환
+  res.send(todoitems.filter((item) => item.userId === user.id));
+});
 
 //게시글 작성
 app.post("/todo-items", authMiddleware, (req, res) => {
@@ -46,30 +219,30 @@ app.post("/todo-items", authMiddleware, (req, res) => {
   res.send(newTodoitem);
 });
 
-//게시글 전체 조회
-app.get("/todo-items", authMiddleware, (req, res) => {
-  //유저 아이디 정의
-  const userId = users.find((user) => user.id);
-
-  //유저 아이디와 동일한 값을 아이디로 가지는 아이템만 반환
-  res.send(todoitems.filter((todoitem) => todoitem.userId === userId));
-});
-
 //게시글 하나만 id로 조회
 app.get("/todo-items/:id", authMiddleware, (req, res) => {
+  const user = req.user;
+
   //아이템 아이디를 파람스로 불러옴 => 파람스는 문자열인거 기억하기
   const { id } = req.params;
-  res.send(todoitems.find((todoitem) => todoitem.id === +id));
+  const selectItem = todoitems.find((item) => item.id === +id);
+
+  //로그인한 유저의 id값과 todoitem의 userId값이 일치하는지 확인하고, 불일치 시 401 반환
+  if (user.id !== selectItem.userId) {
+    res.status(401).json({ message: "유저 정보가 일치하지 않습니다." });
+    return;
+  }
+  res.send(selectItem);
 });
 
-//게시글을 keyword로 검색(회원 이름, 할 일 이름 등)
-app.get("/todo-items/search/:keyword", (req, res) => {
-  const { keyword } = req.params;
+// //게시글을 keyword로 검색(회원 이름, 할 일 이름 등)
+// app.get("/todo-items/search/:keyword", (req, res) => {
+//   const { keyword } = req.params;
 
-  res
-    .status(200)
-    .json({ status: 200, message: `${keyword}로 게시글 검색 성공!` });
-});
+//   res
+//     .status(200)
+//     .json({ status: 200, message: `${keyword}로 게시글 검색 성공!` });
+// });
 
 //게시글 수정
 app.put("/todo-items/:id", authMiddleware, (req, res) => {
@@ -101,82 +274,6 @@ app.delete("/todo-items/:id", authMiddleware, (req, res) => {
 
   todoitems.splice(deleteItem, 1);
   res.status(201).json({ status: 201, message: "게시글 삭제 성공!" });
-});
-
-//회원가입 기능
-app.post("/sign-up", (req, res) => {
-  const { email, name, role, password, rePassword } = req.body;
-
-  //값 전부 입력됐는지 확인, 안 들어왔으면 err(400)
-  if (!email || !name || !role || !password || !rePassword) {
-    res.status(400).json({
-      status: 400,
-      message: "필수 입력 정보가 누락되었습니다. 확인 후 다시 입력해주세요.",
-    });
-    return;
-  }
-  //이메일 중복인지 확인, 중복이면 err(409)
-  const isExistUser = users.find((user) => user.email === email);
-
-  if (isExistUser) {
-    res.status(409).json({
-      status: 409,
-      message: "이미 가입된 이력이 있는 회원입니다. 다시 한 번 확인해주세요.",
-    });
-    return;
-  }
-
-  //비밀번호와 비밀번호 확인 일치여부 체크, 일치하지 않으면 err(400)
-  if (password !== rePassword) {
-    res.status(400).json({
-      status: 400,
-      message: "비밀번호 확인이 비밀번호와 다릅니다. 다시 한 번 확인해주세요.",
-    });
-    return;
-  }
-  //user id 생성
-  const newUser = {
-    id: users[users.length - 1] ? users[users.length - 1].id + 1 : 1,
-    email: email,
-    name: name,
-    role: role,
-    password: password,
-  };
-  users.push(newUser);
-
-  res.status(201).json({ message: "회원가입 성공!" });
-});
-
-//로그인 기능
-app.post("/sign-in", authMiddleware, (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(400).json({
-      status: 400,
-      message: "누락된 값이 있습니다. 다시 한 번 확인해주세요.",
-    });
-    return;
-  }
-  const user = users.find(
-    (user) => user.email === email && user.password === password
-  );
-
-  if (!user) {
-    res.status(400).json({
-      message:
-        "이메일 혹은 비밀번호가 잘못되었습니다. 다시 한 번 확인해주세요.",
-    });
-  }
-  const token = jwt.sign({ id: user.id }, secretKey);
-  res.status(201).json({ status: 201, message: "로그인 성공!", token });
-});
-
-//내 정보 조회
-app.get("/users/me", (req, res) => {
-  const { userId } = req.user;
-
-  res.status(200).json({ status: 200, message: "내 정보 조회 성공!" });
 });
 
 const PORT = 3000;
