@@ -9,31 +9,9 @@ import jwt from "jsonwebtoken";
 
 const app = express();
 const port = 3000;
-//모든 요청은 cors 함수가 실행된 결과가 함수
+
 app.use(cors());
 app.use(express.json());
-// app.use((req, res, next) => {
-//   console.log(
-//     //요청한 메서드, api, 날짜, 주소
-//     ` ${req.method} ${req.url} [${new Date().toISOString()}] ${req.headers.referer}`
-//   );
-//   next();
-// });
-//위의 코드에 const 넣고 app.use(함수명 넣기)
-
-const leaveLogMiddleware = (req, res, next) => {
-  console.log(
-    //요청한 메서드, api, 날짜, 주소
-    ` ${req.method} ${req.url} [${new Date().toISOString()}] ${req.headers.referer}`
-  );
-  next();
-};
-const errorMiddleware = (err, req, res, next) => {
-  console.log("에러메세지");
-  res.status(500).json({ message: "error 발생" });
-};
-
-app.use(leaveLogMiddleware);
 
 const secretKey = "dljbhkiodgse";
 
@@ -68,108 +46,77 @@ const users = [
   },
 ];
 
-const authMiddleware = (req, res, next) => {
+//할일목록조회: 내꺼 목록조회할 수 있도록
+app.get("/todo-items", (req, res) => {
   //토큰을 활용하여 인증하기
   //토큰선언 : 토큰받아오는 곳
   const token = req.headers.authorization;
+  //에러날시 서버꺼지지않게 잡아주기?
   try {
-    //값 전달하려면 요청에 넣어주기
-    req.user = jwt.verify(token, secretKey);
-    next();
+    const user = jwt.verify(token, secretKey);
+    res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
   } catch (err) {
     res.status(401).send({
       message: "권한이 없습니다.",
     });
   }
-};
-
-const validateTodoitemId = (req) => {
-  const idAsNumber = Number(req.params.id);
-  if (isNaN(idAsNumber)) {
-    throw new Error("id는 숫자여야합니다");
-  }
-  return validateTodoitemId;
-};
-
-const getTodoItemById = (id) => {
-  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
-  if (!todoItem) {
-    throw new Error("todo item not found");
-  }
-  return todoItem;
-};
-
-const getIncrementedId = (arr) => {
-  return arr[todoItems.length - 1] ? arr[todoItems.length - 1].id + 1 : 1;
-};
-
-//할일목록조회: 내꺼 목록조회할 수 있도록
-app.get(
-  "/todo-items",
-  authMiddleware,
-  //주석처리 된 부분은 자주 사용. 미들웨어는 함수이므로 밖으로 꺼내서 쓰면 됨
-  // (req, res, next) => {
-  //   //토큰을 활용하여 인증하기
-  //   //토큰선언 : 토큰받아오는 곳
-  //   const token = req.headers.authorization;
-  //   try {
-  //     //값 전달하려면 요청에 넣어주기
-  //     req.user = jwt.verify(token, secretKey);
-  //     next();
-  //   } catch (err) {
-  //     res.status(401).send({
-  //       message: "권한이 없습니다.",
-  //     });
-  //   }
-  // },
-  (req, res) => {
-    console.log("req.user-->", req.user);
-    const user = req.user;
-    res.send(todoItems.filter((todoItem) => todoItem.userId === user.id));
-  }
-);
+});
 
 //내꺼에 등록할 수 있도록
-app.post("/todo-items", authMiddleware, (req, res) => {
+app.post("/todo-items", (req, res) => {
   //타이틀이라고 지정한 것을 바디에 넣어줌
-  //미들웨어로 인증했으므로 const token = req.headers.authorization; 지우고
-  //아래의 user를 req.body에 담아주기
-  const user = req.user;
+  const token = req.headers.authorization;
   const { title } = req.body;
-  // try {
-  // 미들웨어로 인증했으므로 지우기const user = jwt.verify(token, secretKey);
-  const newId = getIncrementedId(todoItems);
-  const newTodoItem = {
-    //고유값을 가져야함. 3번이라고 지정하면 3번 수정할 때 여러개가 나오므로
-    //마지막 아이디 +1
-    id: newId,
-    userId: user.id,
-    //타이틀: 위에서 선언한 타이틀
-    title: title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: "2024-06-01",
-  };
-  todoItems.push(newTodoItem);
-  res.send(newTodoItem);
-  //try catch도 필요없음
-  // } catch (err) {
-  //   res.status(401).send({ message: "권한이 없습니다." });
-  // }
+  try {
+    const user = jwt.verify(token, secretKey);
+    const newId = todoItems[todoItems.length - 1]
+      ? todoItems[todoItems.length - 1].id + 1
+      : 1;
+    const newTodoItem = {
+      //고유값을 가져야함. 3번이라고 지정하면 3번 수정할 때 여러개가 나오므로
+      //마지막 아이디 +1
+      id: newId,
+      userId: user.id,
+      //타이틀: 위에서 선언한 타이틀
+      title: title,
+      doneAt: null,
+      createdAt: new Date(),
+      updatedAt: "2024-06-01",
+    };
+    todoItems.push(newTodoItem);
+    res.send(newTodoItem);
+  } catch (err) {
+    res.status(401).send({ message: "권한이 없습니다." });
+  }
 });
 
 //할일목록 1개 조회 & 중복 수정하기
-app.get("/todo-itmes/:id", authMiddleware, (req, res) => {
-  const id = validateTodoitemId(req);
-  const todoItem = getTodoItemById(id);
+app.get("/todo-itmes/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const todoItem = todoItems.find((todoItem) => todoItem.id === id);
   res.send(todoItem);
 });
 //수정
-app.put("/todo-items/:id", authMiddleware, (req, res) => {
+app.put("/todo-items/:id", (req, res) => {
   //파라미터에서 아이디 가져온다
-  const id = validateTodoitemId(req);
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).send({
+      result: false,
+      message: "id 는 숫자여야 합니다.",
+    });
+    return;
+  }
   //todoItems에서 아이디 찾아서 putdoneat에 넣기
-  const selectedTodoItem = getTodoItemById(id);
+  const selectedTodoItem = todoItems.find((todoItem) => todoItem.id === id);
+  if (!selectedTodoItem) {
+    res.status(404).send({
+      result: false,
+      message: "해당 아이디를 가진 todo item 이 없습니다.",
+    });
+    return;
+  }
+
   const todoItemIndex = todoItems.indexOf(selectedTodoItem);
   todoItems.splice(todoItemIndex, 1, {
     ...selectedTodoItem,
@@ -186,15 +133,31 @@ app.put("/todo-items/:id", authMiddleware, (req, res) => {
 });
 
 //삭제
-app.delete("/todo-items/:id", authMiddleware, (req, res) => {
-  const id = validateTodoitemId(req);
+app.delete("/todo-items/:id", (req, res) => {
+  const { id } = req.params;
   //매번 +를 쓰는게 더 일을 많이 하는 것이므로.. 숫자라고 지정
-
-  const selectedTodoItem = getTodoItemById(id);
-  return (indexToDelete = todoItems.indexOf(selectedTodoItem));
-
-  todoItems.splice(indexToDelete, 1);
-  res.send({ result: true });
+  const idAsNumber = Number(id);
+  if (!idAsNumber === NaN) {
+    res.status(400).send({
+      result: false,
+      message: "id는 숫자여야합니다.",
+    });
+    return;
+  }
+  const indexToDelete = todoItems.findIndex(
+    (todoItems) => todoItems.id === idAsNumber
+  );
+  if (indexToDelete === -1) {
+    res.status(404).send({
+      result: false,
+      message: "해당 아이디를 가진 todo item이 없습니다",
+    });
+    return;
+  }
+  todoItems.slice(indexToDelete, 1);
+  res.send({
+    result: true,
+  });
 });
 
 //회원가입
@@ -226,7 +189,7 @@ app.post("/sign-up", (req, res) => {
     });
   }
   //id = 0이면 1, 아니면 +1 할 수 있도록
-  const id = getIncrementedId(users);
+  const id = users.length === 0 ? 1 : users[users.length - 1].id + 1;
   const newUser = { id, email, password, role, name };
 
   users.push(newUser);
@@ -268,31 +231,17 @@ app.post("/sign-in", (req, res) => {
   });
 });
 
-app.get("/users/me", authMiddleware, (req, res) => {
-  // const token = req.headers.authorization;
-  // console.log(token);
-  // try {
-  //   const user = jwt.verify(token, secretKey);
-  res.status(200).json(req.user);
-  // } catch (err) {
-  //   res.status(401).send({ message: "권한이 없습니다." });
-  // }
+app.get("/users/me", (req, res) => {
+  const token = req.headers.authorization;
+  console.log(token);
+  try {
+    const user = jwt.verify(token, secretKey);
+    res.status(200).json({ ...user });
+  } catch (err) {
+    res.status(401).send({ message: "권한이 없습니다." });
+  }
 });
-
-//에러처리 미들웨어 : 컨트롤러 뒤에서 실행시켜야 할 애들은 밑에서
-app.use(
-  errorMiddleware
-  // (err, req, res, next) => {
-  // console.log("에러메세지");
-  // res.status(500).json({ message: "error 발생" });
-  // }
-);
 
 app.listen(port, () => {
   console.log(port, "포트로 서버가 열렸어요!");
 });
-
-// - 요청자가 값을 전달 하고 백엔드 프로그램이 값을 받는 3가지 방법 정리
-// - frontend/index.html 할일 목록들 보여지도록 api 구현
-// - frontend/index.html 할밀 목록 추가되도록 api 구현
-//[나지윤/middleware]
