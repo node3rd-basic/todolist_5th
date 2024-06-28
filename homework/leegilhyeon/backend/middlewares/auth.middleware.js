@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken";
 
-const secretKey = "wewqsfaserafgf";
-
 export default (req, res, next) => {
   const token = req.headers.authorization;
   try {
-    req.user = jwt.verify(token, secretKey);
+    req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
     next();
   } catch (error) {
     res.status(401).send({ message: "권한이 없습니다." });
