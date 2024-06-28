@@ -18,7 +18,7 @@ export function SignUp(req, res) {
     const newUser = userService.signUpUser(email, password, role, name);
     res.json(newUser);
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(e.status).send({ message: error.message });
   }
 }
 
@@ -29,7 +29,7 @@ export function SignIn(req, res) {
     const token = userService.signInUser(email, password);
     res.json({ token });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(e.status).send({ message: error.message });
   }
 }
 
