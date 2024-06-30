@@ -3,29 +3,17 @@ import jwt from 'jsonwebtoken';
 import CustomError from '../common/custom.error.js';
 
 //회원가입
-export const signUp = (email, password, role, name) => {
+export const signUp = async (email, password, role, name) => {
   //이메일 중복 확인
-  const existedEmail = userRepository.findUserByEmail(email);
+  const existedEmail = await userRepository.findUserByEmail(email);
 
   if (existedEmail) {
     throw new CustomError(409, '이미 가입된 이메일입니다.');
   }
 
-  //유저 아이디 만들어주기
-  const newUserId = userRepository.getIncrementedId();
+  const userData = { email, password, role, name };
 
-  //newUser 생성
-  const newUser = {
-    id: newUserId,
-    email,
-    password,
-    name,
-    role,
-    createdAt: new Date(),
-  };
-
-  //users배열에 newUser 넣어주기
-  userRepository.createUser(newUser);
+  const newUser = await userRepository.createUser(userData);
 
   return newUser;
 };
