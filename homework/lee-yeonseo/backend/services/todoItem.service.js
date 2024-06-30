@@ -2,7 +2,7 @@ import * as todoItemRepository from '../repositories/todoItem.repository.js';
 import CustomError from '../common/custom.error.js';
 
 //해당하는 투두 아이템 아이디의 할일 찾기 // 할일 목록 상세 조회
-const findTodoItem = async ({ todoItemId, userId }) => {
+export const findTodoItem = async (todoItemId, userId) => {
   const selectedTodoItem = await todoItemRepository.findTodoItemById(todoItemId);
 
   //해당 아이디의 할일이 존재하지 않으면 오류 반환
@@ -11,7 +11,7 @@ const findTodoItem = async ({ todoItemId, userId }) => {
   }
 
   //찾은 할일의 유저 아이디와 req.user로 받은 유저 아이디가 불일치하면 오류 반환
-  if (selectedTodoItem.userId !== userId) {
+  if (selectedTodoItem.user_id !== userId) {
     throw new CustomError(403, '접근 권한이 없는 할 일입니다.');
   }
 

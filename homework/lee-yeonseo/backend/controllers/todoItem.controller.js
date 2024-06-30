@@ -15,15 +15,19 @@ export const getTodoItems = async (req, res, next) => {
 };
 
 //할일 목록 상세 조회 (2)
-export const getTodoItem = (req, res) => {
-  //req.params에서 투두아이템 아이디 받아오기
-  const { todoItemId } = req;
-  //사용자 인증 미들웨어에서 유저의 id 받아오기
-  const userId = req.user.id;
+export const getTodoItem = async (req, res, next) => {
+  try {
+    //req.params에서 투두아이템 아이디 받아오기
+    const { todoItemId } = req;
+    //사용자 인증 미들웨어에서 유저의 id 받아오기
+    const userId = req.user.id;
 
-  const selectedTodoItem = todoItemService.getTodoItem(todoItemId, userId);
+    const selectedTodoItem = await todoItemService.findTodoItem(todoItemId, userId);
 
-  res.status(200).json(selectedTodoItem);
+    res.status(200).json(selectedTodoItem);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //할일 등록 (3)
