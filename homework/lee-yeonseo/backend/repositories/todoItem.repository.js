@@ -2,10 +2,10 @@ import todoItemsDB from '../db/todoItems.js';
 import conn from '../common/conn.js';
 
 //할일 찾기
-export const findTodoItemById = (todoItemId) => {
-  const selectedTodoItem = todoItemsDB.find((todoItem) => todoItem.id === todoItemId);
+export const findTodoItemById = async (todoItemId) => {
+  const [selectedTodoItem] = await conn.execute(`SELECT * FROM todo_items WHERE id = ${todoItemId}`);
 
-  return selectedTodoItem;
+  return selectedTodoItem[0];
 };
 
 //할일 목록 조회
@@ -23,6 +23,7 @@ export const findTodoItemByUserId = async (userId) => {
 //할일 등록
 export const postTodoItem = async (userId, title) => {
   const [newTodoItem] = await conn.execute(`INSERT INTO todo_items (user_id, title) VALUES ('${userId}','${title}')`);
+
   return { id: newTodoItem.insertId, userId, title };
 };
 

@@ -2,8 +2,8 @@ import * as todoItemRepository from '../repositories/todoItem.repository.js';
 import CustomError from '../common/custom.error.js';
 
 //해당하는 투두 아이템 아이디의 할일 찾기 // 할일 목록 상세 조회
-const findTodoItem = ({ todoItemId, userId }) => {
-  const selectedTodoItem = todoItemRepository.findTodoItemById(todoItemId);
+const findTodoItem = async ({ todoItemId, userId }) => {
+  const selectedTodoItem = await todoItemRepository.findTodoItemById(todoItemId);
 
   //해당 아이디의 할일이 존재하지 않으면 오류 반환
   if (!selectedTodoItem) {
