@@ -26,21 +26,8 @@ export const getTodoItemByUserId = (userId) => {
 };
 
 // 할일 등록 (3)
-export const postTodoItem = (userId, title) => {
-  //투두 아이템 아이디 생성하기
-  const newTodoItemId = todoItemRepository.getIncrementedId();
-
-  //newTodoItem 생성
-  const newTodoItem = {
-    id: newTodoItemId,
-    userId,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-
-  todoItemRepository.postTodoItem(newTodoItem);
+export const postTodoItem = async (userId, title) => {
+  const newTodoItem = await todoItemRepository.postTodoItem(userId, title);
 
   return newTodoItem;
 };

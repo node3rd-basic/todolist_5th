@@ -23,15 +23,19 @@ export const getTodoItem = (req, res) => {
 };
 
 //할일 등록 (3)
-export const postTodoItem = (req, res) => {
-  //인증 미들웨어로 userId 받아오기
-  const userId = req.user.id;
-  //req.body에서 title 받아오기
-  const { title } = req.body;
+export const postTodoItem = async (req, res, next) => {
+  try {
+    //인증 미들웨어로 userId 받아오기
+    const userId = req.user.id;
+    //req.body에서 title 받아오기
+    const { title } = req.body;
 
-  const newTodoItem = todoItemService.postTodoItem(userId, title);
+    const newTodoItem = await todoItemService.postTodoItem(userId, title);
 
-  res.status(201).json(newTodoItem);
+    res.status(201).json(newTodoItem);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //할일 완료 여부 토글 (4)

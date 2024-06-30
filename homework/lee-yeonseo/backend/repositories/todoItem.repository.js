@@ -1,8 +1,5 @@
 import todoItemsDB from '../db/todoItems.js';
-
-//투두아이템 아이디, 유저 아이디 생성
-export const getIncrementedId = () =>
-  todoItemsDB[todoItemsDB.length - 1] ? todoItemsDB[todoItemsDB.length - 1].id + 1 : 1;
+import conn from '../common/conn.js';
 
 //할일 찾기
 export const findTodoItemById = (todoItemId) => {
@@ -18,10 +15,10 @@ export const findTodoItemByUserId = (userId) => {
   return myTodoItems;
 };
 
-//할일 등록 (3)
-export const postTodoItem = (newTodoItem) => {
-  //todoItems 목록에 newTodoItem 추가
-  todoItemsDB.push(newTodoItem);
+//할일 등록
+export const postTodoItem = async (userId, title) => {
+  const [newTodoItem] = await conn.execute(`INSERT INTO todo_items (user_id, title) VALUES ('${userId}','${title}')`);
+  return { id: newTodoItem.insertId, ...newTodoItem };
 };
 
 //할일 완료 여부 토글 (4)

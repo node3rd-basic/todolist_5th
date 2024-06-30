@@ -1,12 +1,12 @@
 import * as userService from '../services/user.service.js';
 
 //회원가입 (1)
-export const postSignUp = (req, res, next) => {
+export const postSignUp = async (req, res, next) => {
   try {
     //req.body에서 email, password, rePassword, role, name 받아오기
     const { email, password, role, name } = req.body;
 
-    const newUser = userService.signUp(email, password, role, name);
+    const newUser = await userService.signUp(email, password, role, name);
 
     res.status(201).json(newUser);
   } catch (error) {
