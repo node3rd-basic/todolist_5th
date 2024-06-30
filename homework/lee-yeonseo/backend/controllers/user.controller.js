@@ -1,23 +1,31 @@
 import * as userService from '../services/user.service.js';
 
 //회원가입 (1)
-export const postSignUp = (req, res) => {
-  //req.body에서 email, password, rePassword, role, name 받아오기
-  const { email, password, role, name } = req.body;
+export const postSignUp = (req, res, next) => {
+  try {
+    //req.body에서 email, password, rePassword, role, name 받아오기
+    const { email, password, role, name } = req.body;
 
-  const newUser = userService.signUp(email, password, role, name);
+    const newUser = userService.signUp(email, password, role, name);
 
-  res.status(201).json(newUser);
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //로그인 (2)
-export const postSignIn = (req, res) => {
-  //req.body에서 email, password 받아오기
-  const { email, password } = req.body;
+export const postSignIn = async (req, res, next) => {
+  try {
+    //req.body에서 email, password 받아오기
+    const { email, password } = req.body;
 
-  const token = userService.signIn(email, password);
+    const token = await userService.signIn(email, password);
 
-  res.status(200).json({ token });
+    res.status(200).json({ token });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //내정보 가져오기 (3)

@@ -2,15 +2,21 @@ import * as userRepository from '../repositories/user.repository.js';
 import jwt from 'jsonwebtoken';
 import CustomError from '../common/custom.error.js';
 
+//해당 이메일의 유저 찾기
+export const findUserByEmail = async (email) => {
+  return await userRepository.findUserByEmail(email);
+};
+
 //회원가입
 export const signUp = async (email, password, role, name) => {
   //이메일 중복 확인
-  const existedEmail = await userRepository.findUserByEmail(email);
+  const existingEmail = await findUserByEmail(email);
 
-  if (existedEmail) {
+  if (existingEmail) {
     throw new CustomError(409, '이미 가입된 이메일입니다.');
   }
 
+  //repository에 넘길 userData 정의
   const userData = { email, password, role, name };
 
   const newUser = await userRepository.createUser(userData);
@@ -19,19 +25,21 @@ export const signUp = async (email, password, role, name) => {
 };
 
 //로그인
-export const signIn = (email, password) => {
-  //유저 배열에 해당하는 이메일과 패스워드와 일치하는 유저가 있는지 검색
-  const findUser = userRepository.findUser(email, password);
+export const signIn = async (email, password) => {
+  const existingUser = await findUserByEmail(email);
 
-  //일치하는 유저가 없다면 오류 반환
-  if (!findUser) {
+  if (!existingUser) {
     throw new CustomError(404, '유저 정보가 없습니다.');
   }
 
-  const { password: _pw, ...user } = findUser;
+  if (existingUser.password !== password) {
+    throw new CustomError(404, '유저 정보가 없습니다.');
+  }
+
+  const { password: _pw, ...payload } = existingUser;
 
   //일치하는 유저가 있다면 패스워드를 제외한 유저 정보를 페이로드로 토큰 발급
-  const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
 
   return token;
 };
