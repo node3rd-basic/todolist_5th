@@ -10,10 +10,14 @@ export const findTodoItemById = (todoItemId) => {
 
 //할일 목록 조회
 export const findTodoItemByUserId = async (userId) => {
-  const [myTodoItems] = await conn.execute(`SELECT * FROM todo_items WHERE user_id = '${userId}'`);
+  const [myTodoItems] = await conn.execute(`SELECT * FROM todo_items WHERE user_id = ${userId}`);
 
-  console.log(myTodoItems);
-  return myTodoItems;
+  return myTodoItems.map((myTodoItem) => {
+    return {
+      ...myTodoItem,
+      doneAt: myTodoItem.done_at,
+    };
+  });
 };
 
 //할일 등록
