@@ -47,15 +47,19 @@ export const postTodoItem = async (req, res, next) => {
 };
 
 //할일 완료 여부 토글 (4)
-export const putTodoItem = (req, res) => {
-  //투두 아이템 아이디 파싱
-  const { todoItemId } = req;
-  //유저 아이디 파싱
-  const userId = req.user.id;
+export const putTodoItem = async (req, res, next) => {
+  try {
+    //투두 아이템 아이디 파싱
+    const { todoItemId } = req;
+    //유저 아이디 파싱
+    const userId = req.user.id;
 
-  todoItemService.todoItemDoneAt(todoItemId, userId);
+    todoItemService.todoItemDoneAt(todoItemId, userId);
 
-  res.status(200).json({ result: true });
+    res.status(200).json({ result: true });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //할일 삭제 (5)

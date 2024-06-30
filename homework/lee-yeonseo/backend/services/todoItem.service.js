@@ -33,13 +33,11 @@ export const postTodoItem = async (userId, title) => {
 };
 
 // 할일 완료 여부 토글 (4)
-export const todoItemDoneAt = (todoItemId, userId) => {
-  //해당하는 투두 아이템 아이디의 할일 찾기
-  const selectedTodoItem = findTodoItem({ todoItemId, userId });
+export const todoItemDoneAt = async (todoItemId, userId) => {
+  // //해당하는 투두 아이템 아이디의 할일 찾기
+  await findTodoItem(todoItemId, userId);
 
-  const doneAt = selectedTodoItem.doneAt === null ? new Date() : null;
-
-  todoItemRepository.todoItemDoneAt(selectedTodoItem, doneAt);
+  await todoItemRepository.todoItemDoneAt(todoItemId);
 };
 
 // 할일 삭제 (5)
