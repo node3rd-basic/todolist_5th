@@ -7,18 +7,18 @@ import jwt from "jsonwebtoken";
 
 export function getNewUser(email, role, name, password, rePassword) {
   // 정보를 다 기입했는지
-  if (!email || !password || !rePassword || !role || !name) {
-    res.status(400).json({
-      message: "정보를 다 기입해주세요",
-    });
-  }
+  // if (!email || !password || !rePassword || !role || !name) {
+  //   res.status(400).json({
+  //     message: "정보를 다 기입해주세요",
+  //   });
+  // }
 
-  //패스워드 맞는지
-  if (password !== rePassword) {
-    res.status(400).json({
-      message: "패스워드가 일치하지 않습니다.",
-    });
-  }
+  // //패스워드 맞는지
+  // if (password !== rePassword) {
+  //   res.status(400).json({
+  //     message: "패스워드가 일치하지 않습니다.",
+  //   });
+  // }
   //이메일 중복확인 유저의 이메일을 찾는다. 유저정보에서 찾은 정보의 이메일과 받은 이메일이 같은지
   //레파지토리에 다녀오는 통로 : 이메일 매개변수로 넘겨주고
   const alreadyEmail = usersRepository.findUserByEmail(email);
