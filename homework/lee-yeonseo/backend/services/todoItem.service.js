@@ -19,8 +19,8 @@ const findTodoItem = ({ todoItemId, userId }) => {
 };
 
 // 할일 목록 조회 (1)
-export const getTodoItemByUserId = (userId) => {
-  const myTodoItems = todoItemRepository.findTodoItemByUserId(userId);
+export const getTodoItemByUserId = async (userId) => {
+  const myTodoItems = await todoItemRepository.findTodoItemByUserId(userId);
 
   return myTodoItems;
 };

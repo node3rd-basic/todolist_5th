@@ -8,17 +8,18 @@ export const findTodoItemById = (todoItemId) => {
   return selectedTodoItem;
 };
 
-//할일 목록 조회 (1)
-export const findTodoItemByUserId = (userId) => {
-  const myTodoItems = todoItemsDB.filter((todoItem) => todoItem.userId === userId);
+//할일 목록 조회
+export const findTodoItemByUserId = async (userId) => {
+  const [myTodoItems] = await conn.execute(`SELECT * FROM todo_items WHERE user_id = '${userId}'`);
 
+  console.log(myTodoItems);
   return myTodoItems;
 };
 
 //할일 등록
 export const postTodoItem = async (userId, title) => {
   const [newTodoItem] = await conn.execute(`INSERT INTO todo_items (user_id, title) VALUES ('${userId}','${title}')`);
-  return { id: newTodoItem.insertId, ...newTodoItem };
+  return { id: newTodoItem.insertId, userId, title };
 };
 
 //할일 완료 여부 토글 (4)

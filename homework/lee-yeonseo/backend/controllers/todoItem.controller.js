@@ -1,13 +1,17 @@
 import * as todoItemService from '../services/todoItem.service.js';
 
 //할일 목록 조회 (1)
-export const getTodoItems = (req, res) => {
-  //사용자 인증 미들웨어에서 유저 아이디 받아오기
-  const userId = req.user.id;
+export const getTodoItems = async (req, res, next) => {
+  try {
+    //사용자 인증 미들웨어에서 유저 아이디 받아오기
+    const userId = req.user.id;
 
-  const myTodoItems = todoItemService.getTodoItemByUserId(userId);
+    const myTodoItems = await todoItemService.getTodoItemByUserId(userId);
 
-  res.status(200).json(myTodoItems);
+    res.status(200).json(myTodoItems);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //할일 목록 상세 조회 (2)
