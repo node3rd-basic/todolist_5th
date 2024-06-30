@@ -59,13 +59,17 @@ export const putTodoItem = (req, res) => {
 };
 
 //할일 삭제 (5)
-export const deleteTodoItem = (req, res) => {
-  //투두 아이템 아이디 파싱
-  const { todoItemId } = req;
-  //유저 아이디 파싱
-  const userId = req.user.id;
+export const deleteTodoItem = async (req, res, next) => {
+  try {
+    //투두 아이템 아이디 파싱
+    const { todoItemId } = req;
+    //유저 아이디 파싱
+    const userId = req.user.id;
 
-  todoItemService.deleteTodoItem(todoItemId, userId);
+    todoItemService.deleteTodoItem(todoItemId, userId);
 
-  res.status(200).json({ result: true });
+    res.status(200).json({ result: true });
+  } catch (error) {
+    next(error);
+  }
 };

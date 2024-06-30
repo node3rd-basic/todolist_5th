@@ -39,11 +39,7 @@ export const todoItemDoneAt = (selectedTodoItem, doneAt) => {
   });
 };
 
-//할일 삭제 (5)
-export const deleteTodoItem = (selectedTodoItem) => {
-  //찾은 투두 아이템의 인덱스 찾기
-  const selectedTodoItemIndex = todoItemsDB.indexOf(selectedTodoItem);
-
-  //splice로 투두 아이템 삭제
-  todoItemsDB.splice(selectedTodoItemIndex, 1);
+//할일 삭제
+export const deleteTodoItem = async (todoItemId) => {
+  await conn.execute(`DELETE FROM todo_items WHERE id = ${todoItemId}`);
 };

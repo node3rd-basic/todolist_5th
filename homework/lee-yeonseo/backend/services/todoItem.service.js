@@ -43,9 +43,9 @@ export const todoItemDoneAt = (todoItemId, userId) => {
 };
 
 // 할일 삭제 (5)
-export const deleteTodoItem = (todoItemId, userId) => {
+export const deleteTodoItem = async (todoItemId, userId) => {
   //해당하는 아이디의 투두아이템 찾기
-  const selectedTodoItem = findTodoItem({ todoItemId, userId });
+  await findTodoItem(todoItemId, userId);
 
-  todoItemRepository.deleteTodoItem(selectedTodoItem);
+  await todoItemRepository.deleteTodoItem(todoItemId);
 };
