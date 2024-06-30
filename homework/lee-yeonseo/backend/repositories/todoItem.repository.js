@@ -28,7 +28,9 @@ export const postTodoItem = async (userId, title) => {
 
 //할일 완료 여부 토글
 export const todoItemDoneAt = async (todoItemId) => {
-  await conn.execute(`UPDATE todo_items SET done_at = current_timestamp WHERE id = ${todoItemId}`);
+  await conn.execute(
+    `UPDATE todo_items SET done_at = CASE WHEN done_at IS NULL THEN current_timestamp  ELSE NULL END WHERE id = ${todoItemId}`,
+  );
 };
 
 //할일 삭제
