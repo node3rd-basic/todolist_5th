@@ -1,4 +1,4 @@
-import * as todoItemService from "../services/todoitem.service.js";
+import * as todoItemService from "../services/todoItem.service.js";
 
 const validateTodoItemId = (req) => {
   const idAsNumber = Number(req.params.id);
@@ -9,6 +9,7 @@ const validateTodoItemId = (req) => {
   return idAsNumber;
 };
 
+// 목록 조회 api
 // user.id가 어디서 받아 온 것 인지 확인하기
 // app.js에서 app.get("/todo-items", authMiddleware, todoItemController.getTodoItems);에서
 // 그 중 authMiddleware에서 가져옴.
@@ -19,6 +20,7 @@ export function getTodoItems(req, res) {
   res.send(todoItems);
 }
 
+// 할 일 등록 api
 export function postTodoItem(req, res) {
   const { title } = req.body;
   const user = req.user;
@@ -26,6 +28,7 @@ export function postTodoItem(req, res) {
   res.send(newItem);
 }
 
+// 목록 상세 조회 api
 export function getTodoItem(req, res) {
   const id = validateTodoItemId(req);
   const todoItem = todoItemService.getTodoItemById(id);
@@ -42,6 +45,7 @@ export function putTodoItem(req, res) {
   });
 }
 
+// 삭제 api
 export function deleteTodoItem(req, res) {
   const id = validateTodoItemId(req);
   todoItemService.deleteTodoItemById(id);

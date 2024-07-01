@@ -1,31 +1,29 @@
 import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
+import CustomError from "../common/custom.error.js";
 
 // // 토큰 시크릿 키
 // const secretKey = "돈 많이 벌고 싶다.";
 
 // 회원가입 API
 export function SignUp(email, password, rePassword, role, name) {
-  if (
-    !email ||
-    !password ||
-    !rePassword ||
-    !role ||
-    !name ||
-    password !== rePassword
-  ) {
-    throw new Error("입력을 확인해주세요.");
+  if (!email || !password || !rePassword || !role || !name) {
+    throw new CustomError("입력을 확인해주세요.", 404);
   }
 
   if (password !== rePassword) {
-    throw new Error("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+    throw new CustomError("비밀번호와 비밀번호 확인이 일치하지 않습니다.", 401);
   }
 
   const existingUser = userRepository.findUserByEmail(email);
 
+  console.log(email);
+
   if (existingUser) {
-    throw new Error("이미 존재하는 이메일입니다.");
+    throw new CustomError("이미 존재하는 이메일입니다.", 409);
   }
+
+  console.log(existingUser);
 
   // 신규 id 입력하기
   const newId = userRepository.getIncrementedId();
@@ -48,7 +46,7 @@ export function SignIn(email, password) {
   const foundUser = userRepository.findUser(email, password);
 
   if (!foundUser) {
-    res.send("존재하지 않는 유저입니다.");
+    throw new CustomError("존재하지 않는 유저입니다.", 404);
     return;
   }
 

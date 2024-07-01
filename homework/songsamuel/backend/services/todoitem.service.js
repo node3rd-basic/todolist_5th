@@ -1,4 +1,4 @@
-import * as todoItemRepository from "../repositories/todoitem.repository.js";
+import * as todoItemRepository from "../repositories/todoItem.repository.js";
 
 // 조회 API
 export function getTodoItemsById(userId) {
@@ -26,7 +26,7 @@ export function getTodoItemById(id) {
   const todoItem = todoItemRepository.findOneById(id);
 
   if (!todoItem) {
-    throw new Error("Todo item not found");
+    throw new CustomError("할 일 목록 상세 조회를 실패하였습니다.", 404);
   }
 
   return todoItem;
@@ -40,6 +40,7 @@ export function toggleDontAtById(id) {
   const doneAt = checkTodoItem.doneAt ? null : new Date();
   todoItemRepository.update(checkTodoItem, doneAt);
 }
+
 // 삭제 API
 export function deleteTodoItemById(id) {
   const selectedTodoItem = getTodoItemById(id);

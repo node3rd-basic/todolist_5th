@@ -1,7 +1,7 @@
 import userDB from "../db/users.js";
 
 export function findUserByEmail(email) {
-  return userDB.email === email;
+  return userDB.find((obj) => obj.email === email);
 }
 
 export function getIncrementedId() {
