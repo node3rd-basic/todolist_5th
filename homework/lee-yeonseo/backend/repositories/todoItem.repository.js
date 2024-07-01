@@ -23,7 +23,7 @@ export const findTodoItemByUserId = async (userId) => {
 export const postTodoItem = async (userId, title) => {
   const [newTodoItem] = await conn.execute(`INSERT INTO todo_items (user_id, title) VALUES ('${userId}','${title}')`);
 
-  return { id: newTodoItem.insertId, userId, title };
+  return { id: newTodoItem.insertId, userId, title, doneAt: null };
 };
 
 //할일 완료 여부 토글
