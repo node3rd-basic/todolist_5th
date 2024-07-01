@@ -1,4 +1,3 @@
-import todoItems from "../db/todoItems.js";
 import * as todoItemService from "../services/todoItem.service.js";
 
 const validateTodoId = (req) => {
@@ -23,7 +22,7 @@ export function getTodoItem(req, res) {
     const todoItem = todoItemService.findTodoItemById(id);
     res.send(todoItem);
   } catch (error) {
-    res.status(400).send(e.message);
+    res.status(e.status).send({ message: e.message });
   }
 }
 
