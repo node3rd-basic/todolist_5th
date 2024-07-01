@@ -1,30 +1,30 @@
-import todoItemsFromDB from "../db/todoItems.js";
+import conn from "../common/conn.js";
 
-export function findMany(userId) {
-    return todoItemsFromDB.filter(todoItem => todoItem.userId === userId)
+export async function findMany(userId) {
+    const sql = `SELECT * FROM todo_items WHERE userId = ${userId}`
+    const [rows] = await conn.execute(sql)
+    return rows
 }
 
-export function getNewId() {
-    return todoItemsFromDB.length === 0
-        ? 1
-        : todoItemsFromDB[todoItemsFromDB.length - 1].id + 1
+export async function saveTodoItem(todoItem) {
+    const sql = `INSERT INTO todo_items (user_id, title) VALUES (${todoItem.userId}, '${todoItem.title}')`
+    const [result] = await conn.execute(sql)
+    return {
+        ...todoItem,
+        id: result.insertId,
+    }
 }
 
-export function saveTodoItem(todoItem) {
-    todoItemsFromDB.push(todoItem)
+export function findOneById(id)  {
+    const sql = `SELECT * FROM todo_items WHERE id = ${id}`
+    const [rows] = conn.execute(sql)
+    return rows[0] ? rows[0] : null
 }
 
-export function findOneById(id) {
-    return todoItemsFromDB.find(todoItem => todoItem.id === id)
-}
-
-export function update(todoItem, doneAt) {
-    const todoItemIndex = todoItemsFromDB.indexOf(todoItem)
-    todoItemsFromDB.splice(todoItemIndex, 1,
-        {
-            ...todoItem,
-            doneAt
-        })
+export function update(todoItem) {
+    const sql = `UPDATE todo_items SET doneAt = NOW() WHERE id = ${todoItem.id}`
+    conn.execute(sql)
+    todoItem.doneAt = doneAt
 }
 
 export function deleteOne(todoItem) {

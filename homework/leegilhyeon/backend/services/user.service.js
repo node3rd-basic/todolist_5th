@@ -2,6 +2,7 @@ import * as userRepository from "../repository/user.repository.js";
 import jwt from "jsonwebtoken";
 import CustomError from "../common/custom.error.js";
 
+
 export function signUpUser(email, password, role, name) {
   const existedUser = userRepository.findUser(email);
   if (existedUser) {

@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import 'dotenv/config';
 
 // middleware 가져오기
 import authMiddleware from "./middlewares/auth.middleware.js";
