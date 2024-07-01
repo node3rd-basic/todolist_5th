@@ -19,9 +19,13 @@ export function postNewUser(id, email, role, name, password) {
 
 //로그인//
 export function postUser(email, password) {
-  const { password: _password, ...user } = usersDB.find(
+  const foundUser = usersDB.find(
     (userDB) => userDB.email === email && userDB.password === password
   );
+  if (!foundUser) {
+    return null;
+  }
+  const { password: _password, ...user } = foundUser;
 
   return user;
 }
