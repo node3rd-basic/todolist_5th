@@ -2,17 +2,23 @@ import * as userService from "../services/user.service.js";
 import { signUpvalidation } from "../validation/sign-in-validation.js";
 
 //회원가입
-export const postSignup = (req, res) => {
+export const postSignup = async (req, res) => {
   const { email, password, rePassword, role, name } = req.body;
   signUpvalidation(email, password, rePassword, role, name);
-  const data = userService.signUp(email, password, rePassword, role, name);
+  const data = await userService.signUp(
+    email,
+    password,
+    rePassword,
+    role,
+    name
+  );
 
   return res.status(200).send({ message: "회원가입이 완료되었습니다.", data });
 };
 //로그인
-export const postSignin = (req, res) => {
+export const postSignin = async (req, res) => {
   const { email, password } = req.body;
-  const token = userService.token(email, password);
+  const token = await userService.token(email, password);
   res.status(200).json({ token });
   return;
 };
