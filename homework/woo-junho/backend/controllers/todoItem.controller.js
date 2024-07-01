@@ -9,16 +9,17 @@ const validateTodoItemId = (req) => {
     return idAsNumber
 }
 
-export function getTodoItems(req, res) {
+export async function getTodoItems(req, res) {
     const user = req.user
-    const todoItems = todoItemService.getTodoItemsByUserId(user.id)
+    const todoItems = await todoItemService.getTodoItemsByUserId(user.id)
+    console.log(todoItems)
     res.send(todoItems)
 }
 
-export function postTodoItem(req, res) {
+export async function postTodoItem(req, res) {
     const { title } = req.body
     const user = req.user
-    const newTodoItem = todoItemService.saveTodoItem(title, user.id)
+    const newTodoItem = await todoItemService.saveTodoItem(title, user.id)
     res.send(newTodoItem)
 }
 
@@ -32,15 +33,15 @@ export function getTodoItem(req, res) {
     }
 }
 
-export function putTodoItem(req, res) {
+export async function putTodoItem(req, res) {
     const id = validateTodoItemId(req)
-    todoItemService.toggleDontAtById(id)
+    await todoItemService.toggleDontAtById(id)
     res.send({result: true})
 }
 
-export function deleteTodoItem(req, res) {
+export async function deleteTodoItem(req, res) {
     const id = validateTodoItemId(req)
-    todoItemService.deleteTodoItemById(id)
+    await todoItemService.deleteTodoItemById(id)
     res.send({
         "result": true
     })

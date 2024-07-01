@@ -1,33 +1,44 @@
 import * as todoItemRepository from "../repositories/todoItem.repository.js"
 
 export async function getTodoItemsByUserId(userId) {
-    return await todoItemRepository.findMany(userId)
+    const todoItems = await todoItemRepository.findMany(userId)
+    return todoItems.map(todoItem => dbModelToObject(todoItem))
 }
 
 export async function saveTodoItem(title, userId) {
-    const newTodoItem = {
+    const todoItemToSave = {
         "userId": userId,
         "title": title,
     }
-    await todoItemRepository.saveTodoItem(newTodoItem)
-    return newTodoItem
+    const newTodoItemId = await todoItemRepository.saveTodoItem(todoItemToSave)
+    const newTodoItem = await getTodoItemById(newTodoItemId)
+
+    return dbModelToObject(newTodoItem)
 }
 
-export function getTodoItemById(id) {
-    const todoItem = todoItemRepository.findOneById(id)
+export async function getTodoItemById(id) {
+    const todoItem = await todoItemRepository.findOneById(id)
     if (!todoItem) {
         throw new Error("Todo item not found")
     }
-    return todoItem
+    return dbModelToObject(todoItem)
 }
 
-export function toggleDontAtById(id) {
-    const selectedTodoItem = getTodoItemById(id)
-    const doneAt = selectedTodoItem.doneAt ? null : new Date()
-    todoItemRepository.update(selectedTodoItem, doneAt)
+export async function toggleDontAtById(id) {
+    await todoItemRepository.update(id)
 }
 
-export function deleteTodoItemById(id) {
-    const selectedTodoItem = getTodoItemById(id)
-    todoItemRepository.deleteOne(selectedTodoItem)
+export async function deleteTodoItemById(id) {
+    await todoItemRepository.deleteOne(id)
+}
+
+function dbModelToObject(dbModel) {
+    return {
+        id: dbModel.id,
+        title: dbModel.title,
+        doneAt: dbModel.done_at,
+        userId: dbModel.user_id,
+        createdAt: dbModel.created_at,
+        updatedAt: dbModel.updated_at
+    }
 }
