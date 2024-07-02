@@ -21,6 +21,5 @@ export const findUser = async (email) => {
   const [findUser] = await conn.execute(
     `SELECT * FROM users WHERE email = "${email}"`
   );
-  console.log(findUser);
-  return findUser;
+  return findUser[0];
 };

@@ -10,10 +10,10 @@ const connection = await mysql.createConnection({
 const [show] = await connection.execute("show tables");
 console.log(show);
 
-// const [insert] = await connection.execute(
-//   "INSERT INTO users (email, password, name, role) VALUES ('sw0330@example.com','1234','홍길동','tutor')"
-// );
-// console.log(insert);
+const [insert] = await connection.execute(
+  "INSERT INTO users (email, password, name, role) VALUES ('sw0330@example.com','1234','홍길동','tutor')"
+);
+console.log(insert);
 
 const [select] = await connection.execute(
   "select * from users where email = 'swjeon0330@example.com'"
