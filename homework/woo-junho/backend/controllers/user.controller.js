@@ -1,6 +1,7 @@
 import * as userService from "../services/user.service.js";
+import {getUserByEmail} from "../services/user.service.js";
 
-export function postSignUp(req, res) {
+export async function postSignUp(req, res) {
     const {email, password, rePassword, role, name} = req.body
     if (!email ||
         !password ||
@@ -13,7 +14,7 @@ export function postSignUp(req, res) {
     }
 
     try {
-        const newUser = userService.saveUser(email, password, role, name)
+        const newUser = await userService.saveUser(email, password, role, name)
         res.json(newUser)
     } catch (e) {
         console.error(e)
@@ -21,10 +22,10 @@ export function postSignUp(req, res) {
     }
 }
 
-export function postSignIn(req, res) {
+export async function postSignIn(req, res) {
     const { email, password } = req.body
     try {
-        const token = userService.signIn(email, password)
+        const token = await userService.signIn(email, password)
         res.json({token})
     } catch (e) {
         console.error(e)
@@ -34,4 +35,10 @@ export function postSignIn(req, res) {
 
 export function getUserMe(req, res) {
     res.json(req.user)
+}
+
+export async function getUserById(req, res) {
+    const id = req.params.id
+    const user = await userService.getUserById(id)
+    res.json(user)
 }

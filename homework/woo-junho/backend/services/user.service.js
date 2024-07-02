@@ -4,12 +4,16 @@ import * as userRepository from "../repositories/user.repository.js";
 import CustomError from "../common/custom.error.js";
 
 
-export function getUserByEmail(email) {
-    return userRepository.findOne(email)
+export async function getUserByEmail(email) {
+    return await userRepository.findOne(email)
 }
 
-export function saveUser(email, password, role, name) {
-    const existingUser = getUserByEmail(email)
+export async function getUserById(id) {
+    return await userRepository.findOneById(id)
+}
+
+export async function saveUser(email, password, role, name) {
+    const existingUser = await getUserByEmail(email)
 
     if (existingUser) {
         throw new CustomError("이미 가입된 이메일 입니다.", 409)
@@ -20,12 +24,12 @@ export function saveUser(email, password, role, name) {
         role,
         name
     }
-    userRepository.save(newUser)
+    await userRepository.save(newUser)
     return newUser
 }
 
-export function signIn(email, password) {
-    const selectedUser = getUserByEmail(email)
+export async function signIn(email, password) {
+    const selectedUser =  await getUserByEmail(email)
     if (!selectedUser) {
         throw new CustomError("사용자를 찾을 수 없습니다.", 401)
     }

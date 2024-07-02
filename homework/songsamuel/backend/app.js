@@ -1,9 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 
 // middleware
 import authMiddleware from "./middlewares/auth.Middleware.js";
-import leaveLog from "./middlewares/leaveLogMiddleware.js";
+// import leaveLog from "./middlewares/leaveLogMiddleware.js";
 
 //Controller
 import * as todoItemController from "./controllers/todoitem.controller.js";
@@ -14,9 +15,10 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
-app.use(express.json()); // 브라우져나 express에서 받은 데이터들을 (ex) req.body 데이터들 ) json으로 바꾸기 위해서 사용
+// 브라우져나 express에서 받은 데이터들을 (ex) req.body 데이터들 ) json으로 바꾸기 위해서 사용
+app.use(express.json());
 
-app.use(leaveLog); // 모든 요청에 대해서 로그가 찍히게 만든다.
+// app.use(leaveLog); // 모든 요청에 대해서 로그가 찍히게 만든다.
 // 이것을 안쓰면 데이터를 읽지 못한다.
 
 // 에러처리 미들웨어!
