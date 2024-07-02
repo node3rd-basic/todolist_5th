@@ -6,15 +6,7 @@ import "dotenv/config";
 import cors from "cors";
 import userRouter from "./router/user.router.js";
 import todoitemRouter from "./router/todoitem.router.js";
-// import jwt from "jsonwebtoken";
-// import authMiddleware from "./middlewares/authMiddleware.js";
 
-// //db
-// import users from "./db/users.js";
-// import todoItems from "./db/todoitems.js";
-// //controller
-// import * as todoItemsController from "./controller/todoitems.controller.js";
-// import * as usersController from "./controller/users.controller.js";
 import errorMiddleware from "./middlewares/error.Middleware.js";
 
 const app = express();
@@ -26,11 +18,11 @@ app.get("/", (req, res) => {
 
 app.use(cors());
 app.use(express.json());
-app.use(errorMiddleware);
 
 app.use("/", userRouter);
 app.use("/todo-items", todoitemRouter);
-//미들웨어 하나 만들기
+//라우터에서 에러가 나면 뒤늦게 실행되므로 라우터 밑에 넣기
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(PORT, "포트열림:)");
