@@ -1,14 +1,18 @@
 import * as todoitemRepository from "../repositories/todoitem.repository.js";
 
-export const putTodoitem = (id, userId) => {
-  const findTodoItem = todoitemRepository.findTodoItem(id);
+export const putTodoitem = async (id, userId) => {
+  const findTodoItem = await todoitemRepository.getTodolists(id);
 
-  const data = todoitemRepository.changeTodoItem(id, userId, findTodoItem);
+  const data = await todoitemRepository.changeTodoItem(
+    id,
+    userId,
+    findTodoItem
+  );
   return data;
 };
 
-export const deleteTodoitem = (id) => {
-  const findTodoItem = todoitemRepository.findIndexTodoItem(id);
+export const deleteTodoitem = async (id, userId) => {
+  const data = await todoitemRepository.deleteTodoitem(id, userId);
 
-  if (todoitemRepository.deleteTodoitem(findTodoItem)) return true;
+  return data;
 };
