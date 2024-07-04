@@ -27,3 +27,23 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(PORT, "포트열림:)");
 });
+
+//
+// import mysql from 'mysql2/promise'
+// import "dotenv/config"
+//접속정보 넣을 것
+// const connection = await mysql.createConnection({
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//     })
+// const [rows] = await connection.execute("select * from users where email = 'noggong@example.com'")
+// console.log(rows)
+
+//
+// host: nodejs-basic.cv6qc6w2icjd.ap-northeast-2.rds.amazonaws.com
+// port: 3306
+//database: nodejs_edu
+// user : admin
+// password: node5thbasic
