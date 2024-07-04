@@ -6,9 +6,9 @@ import conn from "../common/conn.js";
 // export function findUserByEmail(email) {
 //   const data = usersDB.find((usersDB) => usersDB.email === email);
 export async function findUserByEmail(email) {
-  const [users] = await conn.execute(
-    `SELECT * FROM users WHERE email = '${email}'`
-  );
+  const [users] = await conn.execute(`SELECT * FROM users WHERE email = ?`, [
+    email,
+  ]);
 
   // return data;
   return users[0];
@@ -20,9 +20,9 @@ export async function findUserByEmail(email) {
 // }
 //id지움
 export async function postNewUser(email, role, name, password) {
-  const sql = `INSERT INTO users (email, role, name, password) VALUES ('${email}','${role}', '${name}', '${password}')`;
+  const sql = `INSERT INTO users (email, role, name, password) VALUES (:email, :role, :name, :password)`;
   console.log("sql->", sql);
-  const result = await conn.execute(sql);
+  const result = await conn.execute(sql, { email, role, name, password });
   console.log("result->", result);
 
   //user는 테이블.  INSERT INTO는 명령어 (어떤필드)에 /어떤 데이터를 각각 넣는지
