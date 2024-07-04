@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import * as userRepository from '../repositories/user.repository.js';
-import { secretKey } from '../constants/env.constant.js';
 
 export function getUserByEmail(email) {
   return userRepository.findUser(email);
