@@ -5,9 +5,9 @@ import { Router } from "express";
 const router = Router()
 
 router.use(authMiddleware)
-router.get('/todo-items', todoItemsController.getTodoItems);
-router.post('/todo-items', todoItemsController.postTodoItem);
-router.delete('/todo-items/:id', todoItemsController.deleteTodoItem);
-router.put('/todo-items/:id', todoItemsController.putTodoItem);
+router.get('/', todoItemsController.getTodoItems);
+router.post('/', todoItemsController.postTodoItem);
+router.delete('/:id', todoItemsController.deleteTodoItem);
+router.put('/:id', todoItemsController.putTodoItem);
 
 export default router
