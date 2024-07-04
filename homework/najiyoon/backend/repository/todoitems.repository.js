@@ -40,27 +40,10 @@ export async function update(id) {
   const sql = `update todo_items set done_at = if(done_at is null, now(), null) where id = ?`;
   await conn.execute(sql, [id]);
 }
-// const index = await todoItemsDB.findIndex((todoItems) => todoItems.id === id);
-// if (index !== -1) {
-//   todoItemsDB[index] = updatedTodoItem;
-//   return updatedTodoItem;
-// }
-// UPDATE table_name
-// SET column1 = value1, column2 = value2, ...
-// WHERE condition;
-//예시 UPDATE users SET age = 21 WHERE id = 1;
 
-// return null;
-
-//삭제
 //삭제할 인덱스 : 서비스에서 정의한 아이디
 export async function deleteItem(id) {
   console.log("id->", id);
   const sql = `delete from todo_items where id = ?`;
   const [rows] = await conn.execute(sql, [id]);
-
-  // todoItemsDB.findIndex(
-  //   (todoItems) => todoItems.id === delTodoItem
-  // );
-  // todoItemsDB.splice(index, 1);
 }
