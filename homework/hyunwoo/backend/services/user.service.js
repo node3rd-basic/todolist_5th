@@ -17,14 +17,14 @@ export function validateSignUp(email, password, rePassword, role, name) {
 }
 
 // email 찾기
-export function getUserByEmail(email) {
-  return userRepository.findOne(email);
+export async function getUserByEmail(email) {
+  console.log("이메일 가져오기", email);
+  return await userRepository.findOne(email);
 }
 
 // user 저장하기
-export function saveUser(email, password, role, name) {
-  const existingEmail = getUserByEmail(email);
-
+export async function saveUser(email, password, role, name) {
+  const existingEmail = await getUserByEmail(email);
   if (existingEmail) {
     throw new CustomError("이미 등록 된 이메일입니다.", 400);
   }
@@ -36,14 +36,13 @@ export function saveUser(email, password, role, name) {
     name,
   };
 
-  userRepository.save(newUser);
+  await userRepository.createUser(newUser);
   return newUser;
 }
 
 // user 찾기
-export function signIn(email, password) {
-  const findUser = getUserByEmail(email);
-
+export async function signIn(email, password) {
+  const findUser = await getUserByEmail(email);
   if (!findUser) {
     throw new CustomError("사용자를 찾을 수 없습니다.", 400);
   }

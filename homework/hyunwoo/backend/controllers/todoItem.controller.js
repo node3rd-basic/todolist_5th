@@ -10,9 +10,9 @@ const validateTodoItemId = (req) => {
 };
 
 // 할일 목록 조회
-export function getTodoItems(req, res) {
+export async function getTodoItems(req, res) {
   const user = req.user;
-  const todoItems = todoItemService.findTodoItems(user.id);
+  const todoItems = await todoItemService.findTodoItems(user.id);
   res.send(todoItems);
 }
 

@@ -1,4 +1,4 @@
-import todoItemsDB from "../db/todoItems.js";
+import conn from '../common/conn.js';
 
 // id 지정하기
 export function getIncrementedId() {
@@ -14,13 +14,18 @@ function findTodoItemIndex(existTodoItem) {
 }
 
 // id에 맞는 todoItem 찾기
-export function getTodoItemById(id) {
-  const todoItem = todoItemsDB.find((todoItem) => todoItem.id === id);
-  if (!todoItem) {
-    throw new Error("해당 아이디를 가진 todoItem이 없습니다.");
-  }
-  return todoItem;
+export async function getTodoItemById (todoItemId) {
+  const [selectedTodoItem] = await conn.execute(`SELECT * FROM todo_items WHERE id = ${todoItemId}`);
+  return selectedTodoItem[0];
 }
+
+// export function getTodoItemById(id) {
+//   const todoItem = todoItemsDB.find((todoItem) => todoItem.id === id);
+//   if (!todoItem) {
+//     throw new Error("해당 아이디를 가진 todoItem이 없습니다.");
+//   }
+//   return todoItem;
+// }
 
 // todoItems 찾기
 export function findMany(userId) {

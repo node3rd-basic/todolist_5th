@@ -22,8 +22,8 @@ export function postTodoItemById(title, userId) {
 }
 
 // 할일 한가지 조회
-export function findTodoItemById(id) {
-  return todoItemRepository.getTodoItemById(id);
+export async function findTodoItemById(id) {
+  return await todoItemRepository.getTodoItemById(id);
 }
 
 // 할일 수정하기
