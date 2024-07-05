@@ -44,3 +44,6 @@ yarn add @prisma/clien
 ```bash
 npx prisma generate
 ```
+
+### 테스트 
+-- app.js
