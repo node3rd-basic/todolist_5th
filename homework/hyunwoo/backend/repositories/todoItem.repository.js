@@ -7,6 +7,12 @@ export function getIncrementedId() {
     : todoItemsDB[todoItemsDB.length - 1].id + 1;
 }
 
+// todoItem index 찾기
+function findTodoItemIndex(existTodoItem) {
+  const todoItemIndex = todoItemsDB.indexOf(existTodoItem);
+  return todoItemIndex;
+}
+
 // id에 맞는 todoItem 찾기
 export function getTodoItemById(id) {
   const todoItem = todoItemsDB.find((todoItem) => todoItem.id === id);
@@ -28,7 +34,7 @@ export function save(todoItem) {
 
 // todoItem index 찾아서 수정하기
 export function update(existTodoItem, doneAt) {
-  const todoItemIndex = todoItemsDB.indexOf(existTodoItem);
+  const todoItemIndex = findTodoItemIndex(existTodoItem);
 
   todoItemsDB.splice(todoItemIndex, 1, {
     ...existTodoItem,
@@ -38,7 +44,7 @@ export function update(existTodoItem, doneAt) {
 
 // todoItem index 찾아서 삭제하기
 export function deleteOne(existTodoItem) {
-  const todoItemIndex = todoItemsDB.indexOf(existTodoItem);
+  const todoItemIndex = findTodoItemIndex(existTodoItem);
 
   todoItemsDB.splice(todoItemIndex, 1);
 }
