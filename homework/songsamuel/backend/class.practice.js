@@ -25,7 +25,7 @@ class Dog extends Animal {
 class Cat extends Animal {
   constructor(name, color) {
     super(name);
-    this.color == color;
+    this.color = color;
   }
 
   animalColor() {
@@ -43,17 +43,27 @@ console.log(catAnimal);
 
 anyAnimal.makeSound();
 dogAnimal.animalSize();
+dogAnimal.makeSound(); // 가능
 //catAnimal.animalSize(); // 오류 발생 왜?? animalSize는 dog에 있는 함수니까!
 
 console.log(Cat instanceof Animal); // 예상 False
-console.log("anyAnimal1", anyAnimal instanceof Animal); // 예상 true
-console.log("anyAnimal2", anyAnimal instanceof Dog); // 예상 False
-console.log("anyAnimal3", anyAnimal instanceof Cat); // 예상 False
-console.log("dogAnimal1", dogAnimal instanceof Animal); // 예상  true
-console.log("dogAnimal2", dogAnimal instanceof Dog); // 예상  true
-console.log("dogAnimal3", dogAnimal instanceof Cat); // 예상 False
-console.log("catAnimal1", catAnimal instanceof Animal); // 예상  true
-console.log("catAnimal2", catAnimal instanceof Dog); // 예상  False
-console.log("catAnimal3", catAnimal instanceof Cat); // 예상  true
+console.log(
+  "anyAnimal is an instance of Animal? :",
+  anyAnimal instanceof Animal
+); // 예상 true
+console.log("anyAnimal is an instance of Dog? :", anyAnimal instanceof Dog); // 예상 False
+console.log("anyAnimal is an instance of Cat? :", anyAnimal instanceof Cat); // 예상 False
+console.log(
+  "dogAnimal is an instance of Animal? :",
+  dogAnimal instanceof Animal
+); // 예상  true
+console.log("dogAnimal is an instance of Dog? :", dogAnimal instanceof Dog); // 예상  true
+console.log("dogAnimal is an instance of Cat? :", dogAnimal instanceof Cat); // 예상 False
+console.log(
+  "catAnimal is an instance of Animal? :",
+  catAnimal instanceof Animal
+); // 예상  true
+console.log("catAnimal is an instance of Dog? :", catAnimal instanceof Dog); // 예상  False
+console.log("catAnimal is an instance of Cat? :", catAnimal instanceof Cat); // 예상  true
 
 // 모두 정답
