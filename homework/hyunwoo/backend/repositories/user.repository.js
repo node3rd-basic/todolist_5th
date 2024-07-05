@@ -1,7 +1,7 @@
 import usersDB from "../db/users.js";
 
 // id 지정하기
-const getIncrementedId = (arr) =>
+const getIncrementedId = (user) =>
   usersDB.length === 0 ? 1 : usersDB[usersDB.length - 1].id + 1;
 
 // user email 찾기
