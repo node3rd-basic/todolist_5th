@@ -1,5 +1,6 @@
 import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
+import CustomError from "../common/custom.error.js";
 
 // 입력값 유효성 검사
 export function validateSignUp(email, password, rePassword, role, name) {
@@ -11,7 +12,7 @@ export function validateSignUp(email, password, rePassword, role, name) {
     !name ||
     password !== rePassword
   ) {
-    throw new Error("입력값이 올바르지 않습니다.");
+    throw new CustomError("입력값이 올바르지 않습니다.", 400);
   }
 }
 
@@ -25,7 +26,7 @@ export function saveUser(email, password, role, name) {
   const existingEmail = getUserByEmail(email);
 
   if (existingEmail) {
-    throw new Error("이미 등록 된 이메일입니다.");
+    throw new CustomError("이미 등록 된 이메일입니다.", 400);
   }
 
   const newUser = {
@@ -44,15 +45,15 @@ export function signIn(email, password) {
   const findUser = getUserByEmail(email);
 
   if (!findUser) {
-    throw new Error("사용자를 찾을 수 없습니다.");
+    throw new CustomError("사용자를 찾을 수 없습니다.", 400);
   }
 
   if (!email || !password) {
-    throw new Error("모든 항목을 입력해주세요.");
+    throw new CustomError("모든 항목을 입력해주세요.", 400);
   }
 
   if (findUser.password !== password) {
-    throw new Error("입력 값을 확인해주세요.");
+    throw new CustomError("입력 값을 확인해주세요.", 401);
   }
 
   const { password: _password, ...user } = findUser;
