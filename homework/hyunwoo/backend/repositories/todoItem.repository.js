@@ -1,18 +1,5 @@
 import conn from '../common/conn.js';
 
-// id 지정하기
-export function getIncrementedId() {
-  return todoItemsDB.length === 0
-    ? 1
-    : todoItemsDB[todoItemsDB.length - 1].id + 1;
-}
-
-// todoItem index 찾기
-function findTodoItemIndex(existTodoItem) {
-  const todoItemIndex = todoItemsDB.indexOf(existTodoItem);
-  return todoItemIndex;
-}
-
 // id에 맞는 todoItem 찾기
 export async function getTodoItemById (todoItemId) {
   const [selectedTodoItem] = await conn.execute(`SELECT * FROM todo_items WHERE id = ${todoItemId}`);
