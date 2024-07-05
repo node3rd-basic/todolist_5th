@@ -15,21 +15,23 @@ export const findTodoItem = async (todoItemId, userId) => {
     throw new CustomError(403, '접근 권한이 없는 할 일입니다.');
   }
 
-  return selectedTodoItem;
+  return todoDataFormatter(selectedTodoItem);
 };
 
 // 할일 목록 조회 (1)
 export const getTodoItemByUserId = async (userId) => {
   const myTodoItems = await todoItemRepository.findTodoItemByUserId(userId);
 
-  return myTodoItems;
+  return myTodoItems.map((todoItem) => todoDataFormatter(todoItem));
 };
 
 // 할일 등록 (3)
 export const postTodoItem = async (userId, title) => {
-  const newTodoItem = await todoItemRepository.postTodoItem(userId, title);
+  const newTodoItemId = await todoItemRepository.postTodoItem(userId, title);
 
-  return newTodoItem;
+  const newTodoItem = await todoItemRepository.findTodoItemById(newTodoItemId);
+
+  return todoDataFormatter(newTodoItem);
 };
 
 // 할일 완료 여부 토글 (4)
@@ -46,4 +48,16 @@ export const deleteTodoItem = async (todoItemId, userId) => {
   await findTodoItem(todoItemId, userId);
 
   await todoItemRepository.deleteTodoItem(todoItemId);
+};
+
+//데이터 포매터
+const todoDataFormatter = (obj) => {
+  return {
+    id: obj.id,
+    title: obj.title,
+    doneAt: obj.done_at,
+    userId: obj.user_id,
+    createdAt: obj.created_at,
+    updatedAt: obj.updated_at,
+  };
 };
