@@ -8,6 +8,7 @@ export const putTodoitem = async (id, userId) => {
     userId,
     findTodoItem
   );
+  console.log(data);
   return data;
 };
 
