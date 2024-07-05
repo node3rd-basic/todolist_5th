@@ -1,4 +1,5 @@
 import * as todoItemRepository from '../repositories/todoItem.repository.js';
+import CustomError from '../common/custom.error.js';
 
 export function getTodoItemsByUserId(userId) {
   return todoItemRepository.findMany(userId);
@@ -7,8 +8,9 @@ export function getTodoItemsByUserId(userId) {
 export function getTodoItemById(id) {
   const todoItem = todoItemRepository.findOneById(id);
   if (!todoItem) {
-    throw new Error('Todo item not found');
+    throw new CustomError(404, 'Oops! 당신의 할 일이 존재하지 않습니다.');
   }
+  
   return todoItem;
 }
 
