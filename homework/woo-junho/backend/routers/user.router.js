@@ -7,5 +7,4 @@ router.post("/sign-up", userController.postSignUp)
 router.post("/sign-in", userController.postSignIn)
 router.get("/users/me", authMiddleware, userController.getUserMe)
 router.get("/users/:id", userController.getUserById)
-
 export default router

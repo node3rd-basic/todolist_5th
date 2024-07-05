@@ -37,7 +37,7 @@ npx prisma db pull
 ### @prisma/client 설치
 - 프로젝트 코드에서 실제로 사용할 패키지 설치
 ```bash
-yarn add @prisma/clien
+yarn add @prisma/client
 ```
 
 ### prisma client 에 schema.prisma 적용
