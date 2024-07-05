@@ -30,7 +30,7 @@ export function SignIn(req, res) {
     res.json({ token });
   } catch (error) {
     res.status(e.status).send({ message: error.message });
-}
+}}
 
 //토큰검증
 export function UserMe(req, res) {
