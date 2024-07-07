@@ -1,8 +1,7 @@
 import * as todoItemRepository from "../repositories/todoItem.repository.js"
 
 export async function getTodoItemsByUserId(userId) {
-    const todoItems = await todoItemRepository.findMany(userId)
-    return todoItems.map(todoItem => dbModelToObject(todoItem))
+    return await todoItemRepository.findMany(userId)
 }
 
 export async function saveTodoItem(title, userId) {
@@ -10,10 +9,7 @@ export async function saveTodoItem(title, userId) {
         "userId": userId,
         "title": title,
     }
-    const newTodoItemId = await todoItemRepository.saveTodoItem(todoItemToSave)
-    const newTodoItem = await getTodoItemById(newTodoItemId)
-
-    return dbModelToObject(newTodoItem)
+    return await todoItemRepository.saveTodoItem(todoItemToSave)
 }
 
 export async function getTodoItemById(id) {
@@ -21,24 +17,14 @@ export async function getTodoItemById(id) {
     if (!todoItem) {
         throw new Error("Todo item not found")
     }
-    return dbModelToObject(todoItem)
+    return todoItem
 }
 
 export async function toggleDontAtById(id) {
-    await todoItemRepository.update(id)
+    const todoItem = await todoItemRepository.findOneById(id)
+    await todoItemRepository.update(id, todoItem.doneAt ? null : new Date())
 }
 
 export async function deleteTodoItemById(id) {
     await todoItemRepository.deleteOne(id)
-}
-
-function dbModelToObject(dbModel) {
-    return {
-        id: dbModel.id,
-        title: dbModel.title,
-        doneAt: dbModel.done_at,
-        userId: dbModel.user_id,
-        createdAt: dbModel.created_at,
-        updatedAt: dbModel.updated_at
-    }
 }

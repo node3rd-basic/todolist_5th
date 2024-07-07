@@ -1,6 +1,7 @@
 import authMiddleware from "../middlewares/auth.middleware.js";
 import * as todoItemController from "../controllers/todoItem.controller.js";
 import { Router } from "express";
+import errorMiddleware from "../middlewares/error.middleware.js";
 
 const router = Router()
 

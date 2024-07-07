@@ -6,15 +6,7 @@ import "dotenv/config";
 import cors from "cors";
 import userRouter from "./router/user.router.js";
 import todoitemRouter from "./router/todoitem.router.js";
-// import jwt from "jsonwebtoken";
-// import authMiddleware from "./middlewares/authMiddleware.js";
 
-// //db
-// import users from "./db/users.js";
-// import todoItems from "./db/todoitems.js";
-// //controller
-// import * as todoItemsController from "./controller/todoitems.controller.js";
-// import * as usersController from "./controller/users.controller.js";
 import errorMiddleware from "./middlewares/error.Middleware.js";
 
 const app = express();
@@ -26,12 +18,32 @@ app.get("/", (req, res) => {
 
 app.use(cors());
 app.use(express.json());
-app.use(errorMiddleware);
 
 app.use("/", userRouter);
 app.use("/todo-items", todoitemRouter);
-//미들웨어 하나 만들기
+//라우터에서 에러가 나면 뒤늦게 실행되므로 라우터 밑에 넣기
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(PORT, "포트열림:)");
 });
+
+//
+// import mysql from 'mysql2/promise'
+// import "dotenv/config"
+//접속정보 넣을 것
+// const connection = await mysql.createConnection({
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//     })
+// const [rows] = await connection.execute("select * from users where email = 'noggong@example.com'")
+// console.log(rows)
+
+//
+// host: nodejs-basic.cv6qc6w2icjd.ap-northeast-2.rds.amazonaws.com
+// port: 3306
+//database: nodejs_edu
+// user : admin
+// password: node5thbasic

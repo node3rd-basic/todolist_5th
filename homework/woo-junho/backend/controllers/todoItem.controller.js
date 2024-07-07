@@ -33,10 +33,14 @@ export function getTodoItem(req, res) {
     }
 }
 
-export async function putTodoItem(req, res) {
-    const id = validateTodoItemId(req)
-    await todoItemService.toggleDontAtById(id)
-    res.send({result: true})
+export async function putTodoItem(req, res, next) {
+    try {
+        const id = validateTodoItemId(req)
+        await todoItemService.toggleDontAtById(id)
+        res.send({result: true})
+    } catch (e) {
+        next(e)
+    }
 }
 
 export async function deleteTodoItem(req, res) {
