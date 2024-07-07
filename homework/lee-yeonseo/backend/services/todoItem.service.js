@@ -11,35 +11,33 @@ export const findTodoItem = async (todoItemId, userId) => {
   }
 
   //찾은 할일의 유저 아이디와 req.user로 받은 유저 아이디가 불일치하면 오류 반환
-  if (selectedTodoItem.user_id !== userId) {
+  if (selectedTodoItem.userId !== userId) {
     throw new CustomError(403, '접근 권한이 없는 할 일입니다.');
   }
 
-  return todoDataFormatter(selectedTodoItem);
+  return selectedTodoItem;
 };
 
 // 할일 목록 조회 (1)
 export const getTodoItemByUserId = async (userId) => {
   const myTodoItems = await todoItemRepository.findTodoItemByUserId(userId);
 
-  return myTodoItems.map((todoItem) => todoDataFormatter(todoItem));
+  return myTodoItems;
 };
 
 // 할일 등록 (3)
 export const postTodoItem = async (userId, title) => {
-  const newTodoItemId = await todoItemRepository.postTodoItem(userId, title);
+  const newTodoItem = await todoItemRepository.postTodoItem(userId, title);
 
-  const newTodoItem = await todoItemRepository.findTodoItemById(newTodoItemId);
-
-  return todoDataFormatter(newTodoItem);
+  return newTodoItem;
 };
 
 // 할일 완료 여부 토글 (4)
 export const todoItemDoneAt = async (todoItemId, userId) => {
   // //해당하는 투두 아이템 아이디의 할일 찾기
-  await findTodoItem(todoItemId, userId);
+  const foundTodoItem = await findTodoItem(todoItemId, userId);
 
-  await todoItemRepository.todoItemDoneAt(todoItemId);
+  await todoItemRepository.todoItemDoneAt(todoItemId, foundTodoItem.doneAt === null ? new Date() : null);
 };
 
 // 할일 삭제 (5)
@@ -48,16 +46,4 @@ export const deleteTodoItem = async (todoItemId, userId) => {
   await findTodoItem(todoItemId, userId);
 
   await todoItemRepository.deleteTodoItem(todoItemId);
-};
-
-//데이터 포매터
-const todoDataFormatter = (obj) => {
-  return {
-    id: obj.id,
-    title: obj.title,
-    doneAt: obj.done_at,
-    userId: obj.user_id,
-    createdAt: obj.created_at,
-    updatedAt: obj.updated_at,
-  };
 };
