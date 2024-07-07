@@ -8,9 +8,10 @@ export async function getTodoItemsByUserId(userId) {
   return await todoItemsRepository.findMany(userId);
 }
 //할일등록
-export async function postTodoItem(user_id, title) {
+export async function postTodoItem(userId, title) {
+  console.log("user_id", userId);
   const newTodoItem = {
-    user_id: user_id,
+    userId: userId,
     title: title,
   };
   const savedTodoItemId = await todoItemsRepository.saveTodoItem(newTodoItem);
@@ -21,11 +22,11 @@ export async function postTodoItem(user_id, title) {
   //하나씩 지정해주기.......
   return {
     id: savedTodoItem.id,
-    userId: savedTodoItem.user_id,
+    userId: savedTodoItem.userId,
     title: savedTodoItem.title,
-    doneAt: savedTodoItem.done_at,
-    createdAt: savedTodoItem.created_at,
-    updatedAt: savedTodoItem.updated_at,
+    doneAt: savedTodoItem.doneAt,
+    createdAt: savedTodoItem.createdAt,
+    updatedAt: savedTodoItem.updatedAt,
   };
 }
 //할일 1개 조회
@@ -40,15 +41,21 @@ export async function oneTodoItem(id) {
 
 export async function toggleTodoItemDone(userId, id) {
   console.log("iddddd", id);
+  console.log("useeeerId", userId);
   const todoItem = await todoItemsRepository.oneTodoItem(id);
   console.log("todoItem----->", todoItem);
   if (!todoItem) {
     throw new Error("해당 투두아이템을 찾을 수 없습니다.");
   }
-  if (todoItem.user_id !== userId) {
+  if (todoItem.userId !== userId) {
     throw new Error("일치하지 않습니다.");
   }
-  return await todoItemsRepository.update(id);
+  console.log("id000", todoItem.user_id);
+  console.log("나와라아이디", userId);
+  return await todoItemsRepository.update(
+    id,
+    todoItem.doneAt ? null : new Date()
+  );
 }
 //삭제
 export async function findDelById(userId, id) {
@@ -58,8 +65,8 @@ export async function findDelById(userId, id) {
   }
   //userid와 todoItem의 유저아이디가 같은지 확인해야함
   console.log("findTodoItem-->", findTodoItem);
-  if (findTodoItem.user_id !== userId) {
-    console.log("user_id-->", findTodoItem.user_id);
+  if (findTodoItem.userId !== userId) {
+    console.log("user_id-->", findTodoItem.userId);
     console.log("userId", userId);
     throw new Error("할말이없당...");
   }
