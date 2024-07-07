@@ -18,10 +18,12 @@ model todo_items {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model users {
+model Users {
   id       Int    @id @default(autoincrement())
   name     String @db.VarChar(32)
   email    String @db.VarChar(128)
   role     String @db.VarChar(24)
   password String @db.VarChar(128)
+
+  @@map("Users")
 }

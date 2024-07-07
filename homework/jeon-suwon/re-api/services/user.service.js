@@ -4,8 +4,9 @@ import { ENV_KEY } from "../constants/env.constants.js";
 import { CustomError } from "../common/custom.error.js";
 
 export const signUp = async (email, password, rePassword, role, name) => {
-  const emailExist = userRepository.findEmailById(email);
+  const emailExist = await userRepository.findEmailById(email);
   if (emailExist) throw new CustomError("존재하는 데이터가 없습니다.", 404);
+  console.log(emailExist);
   if (password !== rePassword)
     throw new CustomError("두 패스워드가 일치하지 않습니다.", 409);
 
