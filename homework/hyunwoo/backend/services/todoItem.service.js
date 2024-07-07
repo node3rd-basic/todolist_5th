@@ -17,7 +17,6 @@ export function postTodoItemById(title, userId) {
     createdAt: new Date(),
     updatedAt: null,
   };
-  console.log(newTodoItem);
   todoItemRepository.save(newTodoItem);
   return newTodoItem;
 }
