@@ -15,15 +15,12 @@ export const postTodolist = async (title, userId) => {
 
 export const changeTodoItem = async (id, userId) => {
   const findByItem = getTodolist(id, userId);
-  const newData = {
-    doneAt: findByItem.doneAt ? null : new Date(),
-  };
-  console.log(newData);
   const data = await prisma.todoItems.update({
     where: { id: +id, userId },
-    data: newData,
+    data: {
+      doneAt: findByItem.doneAt ? null : new Date(),
+    },
   });
-  console.log(data);
   return data;
 };
 
