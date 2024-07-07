@@ -11,9 +11,6 @@ todoitemRouter.get(
   todoitemController.getTodolists
 );
 
-//할일 목록 한개 조회 api
-todoitemRouter.get("/todo-items/:id", todoitemController.getTodolist);
-
 //할일 목록 생성 api
 todoitemRouter.post(
   "/todo-items",

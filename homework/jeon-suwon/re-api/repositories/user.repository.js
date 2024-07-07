@@ -1,8 +1,7 @@
-import { conn } from "../common/db.js";
 import { prisma } from "../untils/prisma.until.js";
 
 export const signUp = async (email, password, role, name) => {
-  const data = await prisma.Users.create({
+  const data = await prisma.users.create({
     data: {
       email,
       password,
@@ -15,14 +14,7 @@ export const signUp = async (email, password, role, name) => {
 };
 
 export const findEmailById = async (email) => {
-  return await prisma.Users.findFirst({
+  return await prisma.users.findFirst({
     where: { email },
   });
-};
-
-export const findUser = async (email) => {
-  const [findUser] = await conn.execute(
-    `SELECT * FROM users WHERE email = "${email}"`
-  );
-  return findUser[0];
 };

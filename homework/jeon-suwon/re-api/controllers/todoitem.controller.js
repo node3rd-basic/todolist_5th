@@ -8,20 +8,13 @@ export const getTodolists = async (req, res) => {
   return res.status(200).send(data);
 };
 
-//할일 목록 한개 조회 api
-export const getTodolist = (req, res) => {
-  const { id } = req.params;
-
-  const data = todoitemRepository.getTodolist(id);
-  return res.status(200).send(data);
-};
 //todoitem 생성 api
 export const postTodoitem = async (req, res) => {
   const { title } = req.body;
-  const { id } = req.user;
+  const userId = req.user.id;
   if (!title) throw new Error("제목을 입력해주세요^^");
 
-  const data = await todoitemRepository.postTodolist(title, id);
+  const data = await todoitemRepository.postTodolist(title, userId);
 
   res.status(201).json(data);
 };
