@@ -13,10 +13,9 @@ export const postTodolist = async (title, userId) => {
   return data;
 };
 
-export const changeTodoItem = async (id, userId) => {
-  const findByItem = getTodolist(id, userId);
+export const changeTodoItem = async (id, userId, findByItem) => {
   const data = await prisma.todoItems.update({
-    where: { id: +id, userId },
+    where: { id, userId },
     data: {
       doneAt: findByItem.doneAt ? null : new Date(),
     },
@@ -26,13 +25,13 @@ export const changeTodoItem = async (id, userId) => {
 
 export const deleteTodoitem = async (id, userId) => {
   const data = await prisma.todoItems.delete({
-    where: { id: +id, userId },
+    where: { id, userId },
   });
   return data;
 };
 
-const getTodolist = async (id, userId) => {
+export const getTodolist = async (id, userId) => {
   return await prisma.todoItems.findFirst({
-    where: { id: +id, userId },
+    where: { id, userId },
   });
 };

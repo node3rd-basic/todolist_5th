@@ -20,7 +20,7 @@ export const postTodoitem = async (req, res) => {
 };
 
 export const putTodoitem = async (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const userId = req.user.id;
   const data = await todoitemService.putTodoitem(id, userId);
 
@@ -28,7 +28,7 @@ export const putTodoitem = async (req, res) => {
 };
 
 export const deleteTodoitem = async (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const userId = req.user.id;
   const data = await todoitemService.deleteTodoitem(id, userId);
   if (data) {
