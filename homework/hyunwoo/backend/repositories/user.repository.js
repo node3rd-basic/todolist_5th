@@ -1,12 +1,15 @@
 // import usersDB from "../db/users.js";
 import conn from "../common/conn.js";
+import prisma from '../common/prisma.js';
 
 // user email 찾기
 export async function findOne(email) {
-  const [users] = await conn.execute(
-    `SELECT * FROM users WHERE email = "${email}"`
-  );
-  return users[0];
+  const user = await prisma.users.findFirst({
+    where: {
+      email
+    }
+  })
+  return user;
 }
 
 // user 저장하기
