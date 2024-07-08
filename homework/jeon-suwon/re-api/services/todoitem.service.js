@@ -2,7 +2,7 @@ import * as todoitemRepository from "../repositories/todoitem.repository.js";
 import { CustomError } from "../common/custom.error.js";
 
 export const putTodoitem = async (id, userId) => {
-  const findByItem = todoitemRepository.getTodolist(id, userId);
+  const findByItem = await todoitemRepository.getTodolist(id, userId);
   return await todoitemRepository.changeTodoItem(id, userId, findByItem);
 };
 

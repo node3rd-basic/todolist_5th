@@ -6,6 +6,14 @@ export const getTodolists = async (id) => {
   });
 };
 
+export const getTodolist = async (id, userId) => {
+  const data = await prisma.todoItems.findFirst({
+    where: { id, userId },
+  });
+  console.log(data);
+  return data;
+};
+
 export const postTodolist = async (title, userId) => {
   const data = await prisma.todoItems.create({
     data: { title, userId },
@@ -28,10 +36,4 @@ export const deleteTodoitem = async (id, userId) => {
     where: { id, userId },
   });
   return data;
-};
-
-export const getTodolist = async (id, userId) => {
-  return await prisma.todoItems.findFirst({
-    where: { id, userId },
-  });
 };
