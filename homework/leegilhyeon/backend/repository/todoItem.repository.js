@@ -19,25 +19,30 @@ export async function findTodoItems(userId) {
 //     : todoItemsDB[todoItemsDB.length - 1].id + 1;
 // }
 
-export async function pushTodoItem(newTodoItem) {
-  const sql = `INSERT INTO todo_items (user_id, title) VALUES (${newTodoItem.userId}, '${newTodoItem.title}')`
+export async function pushTodoItem(saveTodoItem) {
+  const sql = `INSERT INTO todo_items (user_id, title) VALUES (${saveTodoItem.userId}, '${saveTodoItem.title}')`
   const [result] = await conn.execute(sql)
-  return {
-    ...newTodoItem,
-    id: result.insertId
-  }
+  // return {
+  //   ...saveTodoItem,
+  //   id: result.insertId
+  // }
+  return result.insertId
  // todoItemsDB.push(newTodoItem);
 }
 
-export function putTodoItem(todoItemFind, doneAt) {
-  const todoItemIndex = todoItemsDB.indexOf(todoItemFind);
-  todoItemsDB.splice(todoItemIndex, 1, {
-    ...todoItemFind,
-    doneAt,
-  });
+export async function putTodoItem(id) {
+  const sql = `update todo_items set done_at = if(done_at is null, now(), null) where id = ${id}`
+   await conn.execute(sql)
+  // const todoItemIndex = todoItemsDB.indexOf(todoItemFind);
+  // todoItemsDB.splice(todoItemIndex, 1, {
+  //   ...todoItemFind,
+  //   doneAt,
+  // });
 }
 
-export function deleteById(todoItem) {
-  const deleteTodoItem = todoItemsDB.indexOf(todoItem);
-  todoItemsDB.splice(deleteTodoItem, 1);
+export async function deleteById(id) {
+  // const deleteTodoItem = todoItemsDB.indexOf(todoItem);
+  const sql = `delete from todo_items where id = ${id}`
+  await conn.execute(sql)
+  // todoItemsDB.splice(deleteTodoItem, 1);
 }

@@ -11,12 +11,20 @@ export async function findTodoItemById(id) {
 }
 
 export async function todoItemByUserId(userId) {
-  return await todoItemRepository.findTodoItems(userId);
+  const todoItems = await todoItemRepository.findTodoItems(userId);
+  return todoItems.map(todoItem => {
+    return {
+      ...todoItem,
+      doneAt: todoItem.done_at,
+      userId: todoItem.user_id,
+      createdAt: todoItem.created_at,
+      updatedAt: null,}
+  })
 }
 
 export async function getTodoItem(title, userId) {
   //const newId = todoItemRepository.getNewId();
-  const newTodoItem = {
+  const saveTodoItem = {
     //id: newId,
     userId: userId,
     title: title,
@@ -24,17 +32,27 @@ export async function getTodoItem(title, userId) {
     // createdAt: new Date(),
     // updatedAt: null,
   };
-  await todoItemRepository.pushTodoItem(newTodoItem);
-  return newTodoItem;
+  const newTodoId = await todoItemRepository.pushTodoItem(saveTodoItem);
+  const newTodoItem = findTodoItemById(newTodoId)
+  return {
+    ...newTodoItem,
+    doneAt: newTodoItem.done_at,
+    userId: newTodoItem.user_id,
+    createdAt: newTodoItem.created_at,
+    updatedAt: null,
+  };
 }
 
-export function putTodoItemById(id) {
-  const todoItemFind = findTodoItemById(id);
-  const doneAt = todoItemFind.doneAt == null ? new Date() : null;
-  todoItemRepository.putTodoItem(todoItemFind, doneAt);
+export async function putTodoItemById(id) {
+  const todoItemFind = await findTodoItemById(id);
+  // if(todoItemFind.userId !== id){
+  //   throw new CustomError("일치하는 할일목록이 없습니다.", 404)
+  // }
+  //const doneAt = todoItemFind.doneAt == null ? new Date() : null;
+  await todoItemRepository.putTodoItem(todoItemFind.id);
 }
 
-export function deleteTodoItemById(id) {
-  const deleteTodoItem = findTodoItemById(id);
-  todoItemRepository.deleteById(deleteTodoItem);
+export async function deleteTodoItemById(id) {
+  //const deleteTodoItem = findTodoItemById(id);
+  todoItemRepository.deleteById(id);
 }
