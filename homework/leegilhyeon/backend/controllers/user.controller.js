@@ -15,7 +15,6 @@ export async function SignUp(req, res) {
     return;
   }
   try {
-    console.log(email, password, role, name)
     const newUser = await userService.signUpUser(email, password, role, name);
     res.json(newUser);
   } catch (error) {

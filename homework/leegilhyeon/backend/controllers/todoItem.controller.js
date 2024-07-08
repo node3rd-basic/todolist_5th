@@ -2,6 +2,7 @@ import * as todoItemService from "../services/todoItem.service.js";
 
 const validateTodoId = (req) => {
   const todoId = Number(req.params.id);
+  console.log(req.params.id)
   if (isNaN(todoId)) {
     throw new Error("Id는 숫자여야 합니다.");
   }
