@@ -8,20 +8,24 @@ datasource db {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model todo_items {
-  id         Int       @id @default(autoincrement())
-  user_id    Int
-  title      String    @db.VarChar(512)
-  done_at    DateTime? @db.DateTime(0)
-  created_at DateTime  @default(now()) @db.DateTime(0)
-  updated_at DateTime? @db.DateTime(0)
+model TodoItem {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user.id")
+  title     String    @db.VarChar(512)
+  doneAt    DateTime? @map("done_at") @db.DateTime(0)
+  createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime? @map("updated_at") @db.DateTime(0)
+
+  @@map("todo_items")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model users {
+model User {
   id       Int    @id @default(autoincrement())
   name     String @db.VarChar(32)
   email    String @db.VarChar(128)
   role     String @db.VarChar(24)
   password String @db.VarChar(128)
+
+  @@map("users")
 }
