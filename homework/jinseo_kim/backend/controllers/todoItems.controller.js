@@ -23,12 +23,12 @@ export async function postTodoItem(req, res) {
 
 export async function deleteTodoItem(req, res) {
   const id = validate.validateTodoItemId(req);
-  await todoItemService.deleteTodoItemById(id);
+  await todoItemService.deleteTodoItemById(Number(id));
   res.send({ result: 'true' });
 }
 
 export async function putTodoItem(req, res) {
   const id = validate.validateTodoItemId(req);
-  await todoItemService.toggleDonAtById(id);
+  await todoItemService.toggleDonAtById(Number(id));
   res.send({ result: 'true' });
 }
