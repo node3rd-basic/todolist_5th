@@ -1,4 +1,3 @@
-import todoItemsFromDB from "../db/todoItems.js";
 import conn from "../common/conn.js";
 
 export async function findMany(userId) {
@@ -17,7 +16,6 @@ export async function findMany(userId) {
 }
 
 export async function saveTodoItem(newItem) {
-  console.log();
   const sql = `INSERT INTO todo_items (user_id, title) VALUES (${newItem.userId}, "${newItem.title}")`;
   const [result] = await conn.execute(sql);
   return {
@@ -36,14 +34,14 @@ export async function findOneById(id) {
 
 export async function update(checkTodoItem) {
   const sql = `UPDATE todo_items SET done_at = if(done_at is null, now(), null) WHERE id = ${checkTodoItem.id}`;
-  console.log("!@#!$@$!$$@$", sql);
   const [result] = await conn.execute(sql);
 
   return result;
 }
 
-export async function deleteOne(todoItem) {
-  const indexTodoItem = await todoItemsFromDB.indexOf(todoItem);
+export async function deleteOne(id) {
+  const sql = `DELETE FROM todo_items WHERE id = ${id}`;
+  const result = await conn.execute(sql);
 
-  todoItemsFromDB.splice(indexTodoItem, 1);
+  return result;
 }

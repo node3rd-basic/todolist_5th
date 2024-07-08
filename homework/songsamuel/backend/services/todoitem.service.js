@@ -39,5 +39,8 @@ export async function toggleDoneAtById(id) {
 // 삭제 API
 export async function deleteTodoItemById(id) {
   const selectedTodoItem = await getTodoItemById(id);
-  todoItemRepository.deleteOne(selectedTodoItem);
+
+  const todoItemId = selectedTodoItem.id;
+
+  todoItemRepository.deleteOne(todoItemId);
 }
