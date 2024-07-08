@@ -1,16 +1,16 @@
 import * as todoitemsRepository from "../repositories/todoitems.repository.js";
 
 //할 일 목록 조회
-export const getMyPost = (id) => {
-  const myPost = todoitemsRepository.getPostByUserId(id);
+export const getMyPost = async (id) => {
+  const myPost = await todoitemsRepository.getPostByUserId(id);
 
   return myPost;
 };
 
 //할 일 하나 조회
 
-export const getMyPostById = (id, postId) => {
-  const myPostById = todoitemsRepository.getPostById(postId);
+export const getMyPostById = async (id, postId) => {
+  const myPostById = await todoitemsRepository.getPostById(postId);
 
   // 가져온 todo-item 의 userId 와 현재 사용자의 id 가 같은지 확인
   // 같지 않을 경우 403 에러처리
@@ -23,8 +23,11 @@ export const getMyPostById = (id, postId) => {
 
 //검색어로 할 일 조회
 
-export const getMyPostByKeyword = (id, keyword) => {
-  const myPostByKeyword = todoitemsRepository.getPostbyKeyword(id, keyword);
+export const getMyPostByKeyword = async (id, keyword) => {
+  const myPostByKeyword = await todoitemsRepository.getPostbyKeyword(
+    id,
+    keyword
+  );
 
   return myPostByKeyword;
 };

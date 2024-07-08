@@ -14,24 +14,32 @@ export const findByEmail = async (email) => {
 };
 
 export const findByEmailAndPassword = async (email, password) => {
-  if (user.email !== email || user.password !== password) {
-    throw new Error({ message: `이메일 혹은 비밀번호가 일치하지 않습니다.` });
-  }
+  // const findByEmail = await conn.execute(
+  //   `SELECT email FROM users WHERE email = ?`,
+  //   [email]
+  // );
+  // const findByPassword = await conn.execute(
+  //   `SELECT password FROM users WHERE password = ?`,
+  //   [password]
+  // );
 
-  const findedUser = userDB.find(
-    (user) => user.email === email && user.password === password
+  // console.log(`email : ${findByEmail}, password : ${findByPassword}`);
+  // if (findByEmail !== email || findByPassword !== password) {
+  //   throw new Error({ message: `이메일 혹은 비밀번호가 일치하지 않습니다.` });
+  // }
+
+  const [findedUser] = await conn.execute(
+    `SELECT * FROM users WHERE email = ${email} AND password = ${password}`
   );
-
-  return findedUser;
+  // console.log("findedUser in repository :", findedUser);
+  return findedUser[0];
 };
-
-// user id 생성
-export const getId = (userDB) =>
-  userDB.length > 0 ? userDB[userDB.length - 1].id + 1 : 1;
 
 // users 배열에 회원정보 추가 하기
 export function saveUser(user) {
-  userDB.push({ id: getId(userDB), ...user });
+  conn.execute(
+    `INSERT INTO users (email, password, name, role) values (${user.email}, ${user.password}, ${user.name}, ${user.role})`
+  );
 
-  return userDB[userDB.length - 1];
+  return user;
 }

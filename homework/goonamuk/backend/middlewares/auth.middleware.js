@@ -4,9 +4,15 @@ const secretKey = "kljsdfjkl;sdfioijm3";
 
 /** token 미들웨어 */
 const authMiddleware = (req, res, next) => {
+  // console.log("authMiddleware!");
+  // console.log(req.headers.authorization);
+  // console.log(req.user);
+
+  const token = req.headers.authorization;
+  // console.log("token in middleware : ", token);
   try {
-    const token = req.headers.authorization;
     const user = jwt.verify(token, secretKey);
+    // console.log("user in authMiddleware :", user);
     req.user = user;
     next();
   } catch (e) {

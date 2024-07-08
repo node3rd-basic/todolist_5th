@@ -5,7 +5,8 @@ export const myPost = async (req, res, next) => {
   try {
     const { id } = req.user;
     const myPost = await todoitemsService.getMyPost(id);
-    res.status(200).json({ myPost });
+
+    res.status(200).send(myPost);
     return;
   } catch (error) {
     next(error);

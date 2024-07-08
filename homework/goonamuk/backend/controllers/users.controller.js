@@ -3,15 +3,15 @@ import * as userService from "../services/users.service.js";
 /** 회원가입 API */
 
 export const signUp = (req, res, next) => {
-  const { email, password, rePassword, role, name } = req.body;
-
+  const { email, password, rePassword, name, role } = req.body;
+  console.log(req.body);
   try {
     const newUser = userService.userSignUp(
       email,
       password,
       rePassword,
-      role,
-      name
+      name,
+      role
     );
     res.status(201).json(newUser);
   } catch (error) {
@@ -20,10 +20,11 @@ export const signUp = (req, res, next) => {
 };
 
 /** 로그인 API */
-export const signIn = (req, res) => {
+export const signIn = async (req, res) => {
   const { email, password } = req.body;
 
-  const token = userService.userSignIn(email, password);
+  const token = await userService.userSignIn(email, password);
+  // console.log("token in user controller : ", token);
   res.status(200).json({ token });
 
   return;
@@ -31,5 +32,7 @@ export const signIn = (req, res) => {
 
 /** 내 정보 조회 */
 export const myInfo = (req, res) => {
-  res.json(req.user);
+  const user = req.user;
+  // console.log("user in user controller - myInfo : ", req.user);
+  res.json(user);
 };

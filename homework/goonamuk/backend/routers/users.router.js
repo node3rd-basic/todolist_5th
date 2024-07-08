@@ -8,10 +8,10 @@ import { signInValidator } from "../middlewares/validator/signIn.validator.middl
 const router = Router();
 
 //회원가입 api
-router.post("/sign_up", signUpValidator, userController.signUp);
+router.post("/sign-up", signUpValidator, userController.signUp);
 
 //로그인 api
-router.post("/sign_in", signInValidator, userController.signIn);
+router.post("/sign-in", signInValidator, userController.signIn);
 
 //내 정보 조회 api
 router.get("/users/me", authMiddleware, userController.myInfo);

@@ -1,88 +1,77 @@
 import { title } from "process";
-import todoitemsDB from "../databases/todoitems.db.js";
 import conn from "../common/conn.js";
 
 // user의 id 값으로 todo-items 를 조회
-export const getPostByUserId = (id) => {
-  const userPosts = todoitemsDB.filter((item) => item.userId === id);
+export const getPostByUserId = async (id) => {
+  const [userPosts] = await conn.execute(
+    `SELECT * FROM todo_items WHERE user_id = ${id}`
+  );
+
   return userPosts;
 };
 
 // post의 id 값으로 todo-items 를 조회
-export const getPostById = (postId) => {
-  const userPostById = todoitemsDB.find((item) => item.id === postId);
+export const getPostById = async (postId) => {
+  const userPostById = await conn.execute(
+    `SELECT * FROM todo_items WHERE id = ${postId}`
+  );
   return userPostById;
 };
 
 //입력한 keyword 값으로 todo-items 조회
-export const getPostbyKeyword = (id, keyword) => {
-  const userPostsByKeyword = todoitemsDB.filter(
-    (item) => item.title.includes(keyword) && item.userId === id
+export const getPostbyKeyword = async (id, keyword) => {
+  const userPostsByKeyword = await conn.execute(
+    `SELECT * FROM todo_items WHERE title LIKE %${keyword}% AND user_id = ${id}`
   );
 
   return userPostsByKeyword;
 };
 
 //입력한 post params로 todo-items 삭제
-export const deleteMyPostByPostId = (id, postId) => {
-  const index = todoitemsDB.findIndex((item) => item.id === postId);
-  const findPostByIndex = todoitemsDB[index];
+export const deleteMyPostByPostId = async (id, postId) => {
+  const findPostByPostId = await conn.execute(
+    `SELECT * FROM todo_items WHERE id = ${postId}`
+  );
 
-  if (index < 0) {
+  if (!findPostByPostId) {
     throw new Error("해당하는 할 일이 없습니다.");
   }
-  if (findPostByIndex.userId !== id) {
+  if (findPostByPostId.user_id !== id) {
     throw new Error("권한이 없습니다.");
   }
 
-  console.log(index, findPostByIndex);
-  todoitemsDB.splice(index, 1);
+  const deleteMyPostByPostId = await conn.execute(
+    `DELETE FROM todo_items WHERE id = ${postId}`
+  );
 
-  return findPostByIndex;
+  return;
 };
 
 // todo-items 에서 id 값으로 todo-item 찾기
-export const toggleTodoItemByPostId = (id, postId) => {
-  const findPostById = todoitemsDB.find((item) => item.id === postId);
+export const toggleTodoItemByPostId = async (id, postId) => {
+  const findPostByPostId = await conn.execute(
+    `SELECT * FROM todo_items WHERE id = ${postId}`
+  );
 
-  console.log(findPostById);
-
-  // todoItem 의 doneAt 을 toggle 처리
-  const toggledTodoItem = {
-    ...findPostById,
-    doneAt: findPostById.doneAt ? null : new Date(),
-  };
-
-  // 선택된 toggleItem 의 index 값 찾기
-  const index = todoitemsDB.findIndex((item) => item.id === postId);
-
-  if (findPostById.userId !== id) {
+  if (findPostByPostId.user_id !== id) {
     throw new Error("권한이 없습니다.");
   }
-  console.log(index);
-  todoitemsDB.splice(index, 1, toggledTodoItem);
+
+  // todoItem 의 doneAt 을 toggle 처리
+  const toggledTodoItem = await conn.execute(
+    `UPDATE todo_items SET done_At = IF (done_At is NOT NULL, NULL, NOW()) WHERE id = ${postId}`
+  );
 
   return toggledTodoItem;
 };
 
 // todo-items 의 가장 마지막에 새 아이템을 넣기
 
-export const createNewTodoItem = (id, title) => {
-  // todo-items 에서 id 값 생성
-  const postId =
-    todoitemsDB.length > 0 ? todoitemsDB[todoitemsDB.length - 1].id + 1 : 1;
-
+export const createNewTodoItem = async (id, title) => {
   // todo-items 에 새로운 todo-item 추가
-  const newTodoItem = {
-    id: postId,
-    userId: id,
-    title,
-    doneAt: null,
-    createdAt: new Date(),
-    updatedAt: null,
-  };
-
-  todoitemsDB.push(newTodoItem);
+  const newTodoItem = await conn.execute(
+    `INSERT INTO todo_items (user_id, title) values (${id}, ${title})`
+  );
 
   return newTodoItem;
 };
