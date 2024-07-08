@@ -18,7 +18,6 @@ export function validateSignUp(email, password, rePassword, role, name) {
 
 // email 찾기
 export async function getUserByEmail(email) {
-  console.log("이메일 가져오기", email);
   return await userRepository.findOne(email);
 }
 
@@ -56,5 +55,5 @@ export async function signIn(email, password) {
   }
 
   const { password: _password, ...user } = findUser;
-  return jwt.sign(user, process.env.JWT_SECRET_KEY);
+  return await jwt.sign(user, process.env.JWT_SECRET_KEY);
 }

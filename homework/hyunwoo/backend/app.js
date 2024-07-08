@@ -16,9 +16,10 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(levelLogMiddleware);
-app.use(errorMiddleware);
+
 app.use('/', userRouter);
 app.use('/todo-items', todoItemRouter);
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(port, "포트로 연결되었습니다.");

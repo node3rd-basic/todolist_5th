@@ -2,9 +2,7 @@ import jwt from "jsonwebtoken";
 
 // token 인증
 export default (req, res, next) => {
-
   const token = req.headers.authorization;
-  console.log(token)
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
     next();

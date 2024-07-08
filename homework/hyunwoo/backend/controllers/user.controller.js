@@ -16,6 +16,6 @@ export async function postSignIn(req, res) {
 }
 
 // 토큰 검증
-export async function getUserMe(req, res) {
-  await res.json(req.user);
+export function getUserMe(req, res) {
+  res.json(req.user);
 }
