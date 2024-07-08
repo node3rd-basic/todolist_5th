@@ -19,7 +19,7 @@ export async function createUser(userData) {
       email: userData.email,
       password: userData.password,
       role: userData.role,
-      name: userData.name,
+      name : userData.name,
     },
   });
   return newUser;
