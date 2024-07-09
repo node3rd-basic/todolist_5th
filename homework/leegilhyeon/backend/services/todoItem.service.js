@@ -24,7 +24,6 @@ export async function getTodoItem(title, userId) {
   };
   const newTodoId = await todoItemRepository.pushTodoItem(saveTodoItem);
   const newTodoItem = await findTodoItemById(newTodoId)
-  console.log(newTodoItem)
   return todoItemChange(newTodoItem)
 }
 
