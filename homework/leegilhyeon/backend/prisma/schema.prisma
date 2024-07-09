@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model todoItem {
+  id         Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  title      String    @db.VarChar(512)
+  doneAt    DateTime? @db.DateTime(0) @map("done_at")
+  createdAt DateTime  @default(now()) @db.DateTime(0) @map("created_at")
+  updatedAt DateTime? @db.DateTime(0) @map("updated_at")
+
+  @@map("todo_items")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(32)
+  email    String @db.VarChar(128)
+  role     String @db.VarChar(24)
+  password String @db.VarChar(128)
+
+  @@map("users")
+}
