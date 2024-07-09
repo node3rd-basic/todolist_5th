@@ -77,6 +77,7 @@ export const toggleTodoItem = async (req, res) => {
   );
 
   res.json({ result: true });
+  return;
 };
 
 //할 일 추가
@@ -90,4 +91,5 @@ export const createNewTodoItem = async (req, res) => {
   }
   const createNewTodoItem = await todoitemsService.createNewTodoItem(id, title);
   res.json(createNewTodoItem);
+  return;
 };

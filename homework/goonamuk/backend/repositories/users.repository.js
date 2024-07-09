@@ -29,7 +29,7 @@ export const findByEmailAndPassword = async (email, password) => {
   // }
 
   const [findedUser] = await conn.execute(
-    `SELECT * FROM users WHERE email = ${email} AND password = ${password}`
+    `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`
   );
   // console.log("findedUser in repository :", findedUser);
   return findedUser[0];

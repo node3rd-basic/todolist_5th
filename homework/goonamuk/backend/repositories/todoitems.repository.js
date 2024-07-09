@@ -69,9 +69,10 @@ export const toggleTodoItemByPostId = async (id, postId) => {
 
 export const createNewTodoItem = async (id, title) => {
   // todo-items 에 새로운 todo-item 추가
-  const newTodoItem = await conn.execute(
-    `INSERT INTO todo_items (user_id, title) values (${id}, ${title})`
+  const [newTodoItem] = await conn.execute(
+    `INSERT INTO todo_items (user_id, title) values ('${id}', '${title}')`
   );
 
+  console.log("투두아이템 투두레포지토리 : ", newTodoItem);
   return newTodoItem;
 };

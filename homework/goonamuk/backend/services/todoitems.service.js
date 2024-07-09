@@ -2,7 +2,7 @@ import * as todoitemsRepository from "../repositories/todoitems.repository.js";
 
 //할 일 목록 조회
 export const getMyPost = async (id) => {
-  const myPost = await todoitemsRepository.getPostByUserId(id);
+  const [myPost] = await todoitemsRepository.getPostByUserId(id);
 
   return myPost;
 };
@@ -60,5 +60,6 @@ export const createNewTodoItem = async (id, title) => {
     title
   );
 
+  console.log("뉴튜두아이템 : ", createNewTodoItem);
   return createNewTodoItem;
 };
