@@ -33,12 +33,12 @@ export const deleteMyPostByPostId = async (id, postId) => {
     `SELECT * FROM todo_items WHERE id = ${postId}`
   );
 
-  if (!findPostByPostId) {
-    throw new Error("해당하는 할 일이 없습니다.");
-  }
-  if (findPostByPostId.user_id !== id) {
-    throw new Error("권한이 없습니다.");
-  }
+  // if (!findPostByPostId) {
+  //   throw new Error("해당하는 할 일이 없습니다.");
+  // }
+  // if (findPostByPostId.user_id !== id) {
+  //   throw new Error("권한이 없습니다.");
+  // }
 
   const deleteMyPostByPostId = await conn.execute(
     `DELETE FROM todo_items WHERE id = ${postId}`
@@ -47,15 +47,15 @@ export const deleteMyPostByPostId = async (id, postId) => {
   return;
 };
 
-// todo-items 에서 id 값으로 todo-item 찾기
 export const toggleTodoItemByPostId = async (id, postId) => {
+  // todo-items 에서 id 값으로 todo-item 찾기
   const findPostByPostId = await conn.execute(
     `SELECT * FROM todo_items WHERE id = ${postId}`
   );
 
-  if (findPostByPostId.user_id !== id) {
-    throw new Error("권한이 없습니다.");
-  }
+  // if (findPostByPostId.user_id !== id) {
+  //   throw new Error("권한이 없습니다.");
+  // }
 
   // todoItem 의 doneAt 을 toggle 처리
   const toggledTodoItem = await conn.execute(

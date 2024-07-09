@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const secretKey = "kljsdfjkl;sdfioijm3";
 
-export const userSignUp = (email, password, name, role) => {
+export const userSignUp = (email, name, password, rePassword, role) => {
   // 위의 값들이 전부 들어왔는지 확인
   // 필수값이 누락된 경우 400 에러처리
 
@@ -15,8 +15,8 @@ export const userSignUp = (email, password, name, role) => {
 
   const newUser = {
     email,
-    password,
     name,
+    password,
     role,
   };
 

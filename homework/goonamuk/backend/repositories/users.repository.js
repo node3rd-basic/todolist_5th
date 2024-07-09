@@ -38,7 +38,7 @@ export const findByEmailAndPassword = async (email, password) => {
 // users 배열에 회원정보 추가 하기
 export function saveUser(user) {
   conn.execute(
-    `INSERT INTO users (email, password, name, role) values (${user.email}, ${user.password}, ${user.name}, ${user.role})`
+    `INSERT INTO users (email, name, password, role) values ('${user.email}', '${user.name}', '${user.password}', '${user.role}')`
   );
 
   return user;

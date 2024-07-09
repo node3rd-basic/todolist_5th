@@ -69,6 +69,7 @@ export const deleteMyPostByPostId = async (req, res) => {
 export const toggleTodoItem = async (req, res) => {
   //user에서 id값 색인
   const { id } = req.user;
+  const postId = Number(req.params.id);
 
   const toggledTodoItemByPostId = await todoitemsService.toggleTodoItemByPostId(
     id,
@@ -79,7 +80,7 @@ export const toggleTodoItem = async (req, res) => {
 };
 
 //할 일 추가
-export const createNewTodoItem = (req, res) => {
+export const createNewTodoItem = async (req, res) => {
   const { title } = req.body;
   const { id } = req.user;
   // title 값이 들어왔는지 확인
@@ -87,6 +88,6 @@ export const createNewTodoItem = (req, res) => {
     res.status(400).json({ message: "title 을 입력해주세요." });
     return;
   }
-  const createNewTodoItem = todoitemsService.createNewTodoItem(id, title);
+  const createNewTodoItem = await todoitemsService.createNewTodoItem(id, title);
   res.json(createNewTodoItem);
 };

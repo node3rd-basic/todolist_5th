@@ -34,8 +34,8 @@ export const getMyPostByKeyword = async (id, keyword) => {
 
 //할 일 삭제
 
-export const deleteMyPostByPostId = (id, postId) => {
-  const deletedMyPostByPostId = todoitemsRepository.deleteMyPostByPostId(
+export const deleteMyPostByPostId = async (id, postId) => {
+  const deletedMyPostByPostId = await todoitemsRepository.deleteMyPostByPostId(
     id,
     postId
   );
@@ -45,19 +45,20 @@ export const deleteMyPostByPostId = (id, postId) => {
 
 //할 일 수정
 
-export const toggleTodoItemByPostId = (id, postId) => {
-  const toggledTodoItemByPostId = todoitemsRepository.toggleTodoItemByPostId(
-    id,
-    postId
-  );
+export const toggleTodoItemByPostId = async (id, postId) => {
+  const toggledTodoItemByPostId =
+    await todoitemsRepository.toggleTodoItemByPostId(id, postId);
 
   return toggledTodoItemByPostId;
 };
 
 //할 일 추가
 
-export const createNewTodoItem = (id, title) => {
-  const createNewTodoItem = todoitemsRepository.createNewTodoItem(id, title);
+export const createNewTodoItem = async (id, title) => {
+  const createNewTodoItem = await todoitemsRepository.createNewTodoItem(
+    id,
+    title
+  );
 
   return createNewTodoItem;
 };
