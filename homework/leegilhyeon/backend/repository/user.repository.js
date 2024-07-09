@@ -6,10 +6,6 @@ export async function findUser(email) {
       email
     }
   })
-  // const sql = `SELECT * FROM users WHERE email = ?`
-  // const [users] = await conn.execute(sql, [email])
-
-  // return users[0];
 }
 
 export async function pushUser(newUser) {
@@ -18,15 +14,7 @@ export async function pushUser(newUser) {
             password: newUser.password,
             name: newUser.name,
             role: newUser.role,}}      
-
   )
-
   return createUser
-  // const sql = `INSERT INTO users (email, password, name, role ) VALUES (?, ?, ?, ?)`
-  // const result = await conn.execute(sql,[newUser.email, newUser.password, newUser.name, newUser.role])
-  // return {
-  //   id: result[0].insertId,
-  //   ...newUser
-  // }
 }
 

@@ -22,9 +22,7 @@ export async function getTodoItem(title, userId) {
     userId: userId,
     title: title,
   };
-  const newTodoId = await todoItemRepository.pushTodoItem(saveTodoItem);
-  // const newTodoItem = await findTodoItemById(newTodoId)
-  return newTodoId
+  return await todoItemRepository.pushTodoItem(saveTodoItem);
 }
 
 export async function putTodoItemById(id) {
@@ -35,14 +33,3 @@ export async function putTodoItemById(id) {
 export async function deleteTodoItemById(id) {
   todoItemRepository.deleteById(id);
 }
-
-// const todoItemChange = (todoModel) => {
-//   return {
-//     id: todoModel.id,
-//     title: todoModel.title,
-//     doneAt: todoModel.done_at,
-//     userId: todoModel.user_id,
-//     createdAt: todoModel.created_at,
-//     updatedAt: todoModel.updated_at,
-//   };
-// }
