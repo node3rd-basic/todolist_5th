@@ -13,11 +13,11 @@ export function postSignUp(req, res) {
 }
 
 // 로그인
-export function postSignIn(req, res) {
+export async function postSignIn(req, res) {
   const { email, password } = req.body;
 
   try {
-    const userToken = userService.SignIn(email, password);
+    const userToken = await userService.SignIn(email, password);
 
     res.json({ token: userToken });
   } catch (error) {

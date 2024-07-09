@@ -14,41 +14,42 @@ const validateTodoItemId = (req) => {
 // app.js에서 app.get("/todo-items", authMiddleware, todoItemController.getTodoItems);에서
 // 그 중 authMiddleware에서 가져옴.
 // 생각해보면 할 일 목록 가져온 것에서 인증한 아이디를 통해 DB에서 검색하는 것이니까 맞음.
-export function getTodoItems(req, res) {
+export async function getTodoItems(req, res) {
   const user = req.user;
-  const todoItems = todoItemService.getTodoItemsById(user.id);
+  const todoItems = await todoItemService.getTodoItemsById(user.id);
   res.send(todoItems);
 }
 
 // 할 일 등록 api
-export function postTodoItem(req, res) {
+export async function postTodoItem(req, res) {
   const { title } = req.body;
   const user = req.user;
-  const newItem = todoItemService.saveTodoItem(title, user.id);
+  console.log(user);
+  const newItem = await todoItemService.saveTodoItem(title, user.id);
   res.send(newItem);
 }
 
 // 목록 상세 조회 api
-export function getTodoItem(req, res) {
+export async function getTodoItem(req, res) {
   const id = validateTodoItemId(req);
-  const todoItem = todoItemService.getTodoItemById(id);
+  const todoItem = await todoItemService.getTodoItemById(id);
   res.send(todoItem);
 }
 
 // 수정 api
-export function putTodoItem(req, res) {
+export async function putTodoItem(req, res) {
   const id = validateTodoItemId(req);
 
-  todoItemService.toggleDontAtById(id);
+  await todoItemService.toggleDoneAtById(id);
   res.send({
     result: true,
   });
 }
 
 // 삭제 api
-export function deleteTodoItem(req, res) {
+export async function deleteTodoItem(req, res) {
   const id = validateTodoItemId(req);
-  todoItemService.deleteTodoItemById(id);
+  await todoItemService.deleteTodoItemById(id);
   res.send({
     result: true,
   });
