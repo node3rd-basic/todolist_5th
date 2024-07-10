@@ -1,30 +1,43 @@
-import todoItemsFromDB from '../db/todoItems.js';
-import conn from '../common/conn.js'
-
+import prisma from '../common/prisma.js';
+import conn from '../common/conn.js';
 
 export async function pushItem(userId, title) {
-  const sql = `INSERT INTO todo_items (user_id, title) VALUES (:userId, :title)`;
-  const [newTodoItem] = await conn.execute(sql, { userId, title });
-  return newTodoItem.insertId;
+  const newTodoItem = await prisma.todoItem.create({
+    data: {
+      userId: userId,
+      title: title,
+    },
+  });
+  return newTodoItem.id;
 }
-
 export async function findMany(userId) {
-  const [selectItem] = await conn.execute(
-    `SELECT * FROM todo_items WHERE user_id = "${userId}"`
-  );
-  return selectItem;
+  const selectedItems = await prisma.todoItem.findMany({
+    where: {
+      userId: userId,
+    },
+  });
+  return selectedItems;
 }
 export async function findOneByTodoIdId(id) {
-  const sql = `SELECT * FROM todo_items WHERE id = ?`;
-  const [selectedTodoItem] = await conn.execute(sql, [id]);
-  return selectedTodoItem[0] || null;
+  const selectedTodoItem = await prisma.todoItem.findUnique({
+    where: { id: Number(id) },
+  });
+  return selectedTodoItem || null;
 }
 
 export async function update(id) {
-  await conn.execute(`UPDATE todo_items SET done_at = IF(done_at IS NULL, NOW(), NULL) WHERE id = ?`, [id]);
+  const todoItem = await prisma.todoItem.findUnique({ where: { id: id } });
+  const updatedDoneAt = todoItem.doneAt === null ? new Date() : null;
+  await prisma.todoItem.update({
+    where: { id: id },
+    data: { doneAt: updatedDoneAt },
+  });
 }
 
-export async function deleteOne(todoItem) {
-  const sql = `DELETE FROM todo_items WHERE id = ?`;
-  await conn.execute(sql, [todoItem.id]);
+export async function deleteOne(id) {
+  await prisma.todoItem.delete({
+    where: {
+      id,
+    },
+  });
 }
