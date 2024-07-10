@@ -10,7 +10,7 @@ export async function saveTodoItem(todoItem) {
   // console.log("TodoItem", TodoItem);
   console.log("todoItem->", todoItem);
   return await prisma.TodoItem.create({
-    data: { userId: todoItem.userId, title: todoItem.title },
+    data: { userId: +todoItem.userId, title: todoItem.title },
     select: {
       id: true,
       userId: true,
@@ -23,13 +23,13 @@ export async function saveTodoItem(todoItem) {
 }
 //이거먼저 1개 조회 : 수정이 해당 목록찾는거랑 같으니 써도 되지않으까
 export async function oneTodoItem(id) {
-  console.log("Id---", id);
-  return await prisma.TodoItem.findUnique({ where: { id: id } });
+  return await prisma.TodoItem.findUnique({ where: { id: +id } });
 }
 
 export async function update(id, doneAt) {
   console.log("이건 id", id);
   console.log("doneAt", doneAt);
+  console.log(typeof id);
   return await prisma.TodoItem.update({ where: { id: +id }, data: { doneAt } });
 
   // // const sql = `update todo_items set done_at = NOW() WHERE id = ${todoitems.id}`;
