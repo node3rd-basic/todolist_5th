@@ -1,35 +1,30 @@
-import * as todoItemRepository from "../repository/todoItem.repository.js";
+import * as userRepository from "../repository/user.repository.js";
+import jwt from "jsonwebtoken";
 import CustomError from "../common/custom.error.js";
 
 
-export async function findTodoItemById(id) {
-  const todoItem = await todoItemRepository.findTodoItemById(id);
-  if (!todoItem) {
-    throw new CustomError("해당 아이디가 가진 todoItem이 없습니다.", 404);
+export async function signUpUser(email, password, role, name) {
+  const existedUser = await userRepository.findUser(email);
+
+  if (existedUser) {
+    throw new CustomError("이미 가입된 이메일 입니다.", 409);
   }
-  return todoItem;
+  const newUser = { email, password, role, name };
+  await userRepository.pushUser(newUser);
+  return newUser;
 }
 
-export async function todoItemByUserId(userId) {
-  const todoItems = await todoItemRepository.findTodoItems(userId);
-  return todoItems
-  
-}
+export async function signInUser(email, password) {
+  const findUser = await userRepository.findUser(email);
 
-export async function getTodoItem(title, userId) {
-  
-  const saveTodoItem = {
-    userId: userId,
-    title: title,
-  };
-  return await todoItemRepository.pushTodoItem(saveTodoItem);
-}
+  if (!findUser) {
+    throw new CustomError("해당하는 사용자가 없습니다.", 404);
+  }
+  if (findUser.password !== password) {
+    throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
+  }
+  const { password: _password, ...user } = findUser;
 
-export async function putTodoItemById(id) {
-  const todoItemFind = await findTodoItemById(id);
-  await todoItemRepository.putTodoItem(id, todoItemFind.doneAt ? null: new Date());
-}
-
-export async function deleteTodoItemById(id) {
-  todoItemRepository.deleteById(id);
+  const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
+  return token;
 }

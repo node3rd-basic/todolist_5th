@@ -17,25 +17,11 @@ export async function postTodoItem(req, res) {
   //인증시 뭘로 인증할건지 그 인증할 것은 어디서 가져올건지
   const user = req.user;
   const { title } = req.body;
-
-  //새로운 할일이 없다면 1, 있다면 할일목록 +1 한 아이디
-  // const newId = todoItems[todoItems.length - 1]
-  //   ? todoItems[todoItems.length - 1].id + 1
-  //   : 1;
-
-  // const newTodoItem = {
-  //   id: newId,
-  //   userId: user.id,
-  //   title: title,
-  //   doneAt: null,
-  //   createdAt: new Date(),
-  //   updatedAt: "2021-08-01",
-  // };
-
-  // //등록  :푸쉬할 곳.push(푸쉬할 것)
-  // todoItems.push(newTodoItem);
+  console.log("7777user", user);
   //결과반환 : 클라이언트에게 전달
-  const newTodoItem = await todoItemsService.postTodoItem(user.id, title);
+  const userId = user.id;
+  const newTodoItem = await todoItemsService.postTodoItem(userId, title);
+  console.log("user.id", userId);
   res.send(newTodoItem);
 }
 
@@ -54,7 +40,9 @@ export async function getTodoItem(req, res, next) {
 export async function putTodoItem(req, res, next) {
   //내가 원하는 할일 목록 아이디 찾기, 아이디는 숫자
   const userId = req.user.id;
+  console.log("컨트롤러아이디타입", typeof userId);
   const id = Number(req.params.id);
+  console.log("넘버-아이디타입", typeof id);
   if (isNaN(id)) {
     res.status(400).send({
       result: false,

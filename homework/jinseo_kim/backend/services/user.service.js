@@ -2,26 +2,26 @@ import jwt from 'jsonwebtoken';
 import * as userRepository from '../repositories/user.repository.js';
 import CustomError from '../common/custom.error.js';
 
-export function getUserByEmail(email) {
-  return userRepository.findUser(email);
+export async function getUserByEmail(email) {
+  return await userRepository.findUser(email);
 }
-export function getUserByPassword(password) {
-  return userRepository.findUser(password);
+export async function getUserByPassword(password) {
+  return await userRepository.findUser(password);
 }
 
-export function createUser(email, password, role, name) {
-  const extUser = getUserByEmail(email);
+export async function createUser(email, password, role, name) {
+  const extUser = await getUserByEmail(email);
 
   if (extUser) {
     throw new CustomError(409, '이미 가입된 이메일입니다.');
   }
   const newUser = { email, password, role, name };
-  userRepository.pushUser(newUser);
+  await userRepository.pushUser(newUser);
   return newUser;
 }
 
-export function singUser(email, password) {
-  const selectedUser = getUserByEmail(email);
+export async function singUser(email, password) {
+  const selectedUser = await getUserByEmail(email);
   if (!selectedUser) {
     throw new CustomError(404, '유저 정보가 없습니다.');
   }

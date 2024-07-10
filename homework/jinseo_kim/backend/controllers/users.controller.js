@@ -1,7 +1,7 @@
 import * as userService from '../services/user.service.js';
 
 // 회원가입 API
-export function postUserSignUp(req, res) {
+export async function postUserSignUp(req, res) {
   const { email, password, rePassword, role, name } = req.body;
   if (!email || !password || !rePassword || !role || !name || password !== rePassword) {
     res.status(400).send({ message: '입력필드의 필수값이 누락되었습니다.' });
@@ -9,7 +9,7 @@ export function postUserSignUp(req, res) {
   }
 
   try {
-    const newUser = userService.createUser(email, password, role, name);
+    const newUser = await userService.createUser(email, password, role, name);
     res.json(newUser);
   } catch (error) {
     console.error(error);
@@ -18,9 +18,9 @@ export function postUserSignUp(req, res) {
 }
 
 // 로그인 API
-export function postUserSignIn(req, res) {
+export async function postUserSignIn(req, res) {
   const { email, password } = req.body;
-  const token = userService.singUser(email, password);
+  const token = await userService.singUser(email, password);
   res.status(200).send({ token });
 }
 
