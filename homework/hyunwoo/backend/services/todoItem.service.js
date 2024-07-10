@@ -2,7 +2,7 @@ import * as todoItemRepository from "../repositories/todoItem.repository.js";
 
 // 할일 목록 조회
 export async function findTodoItems(userId) {
-  return await todoItemRepository.findMany(userId);
+  return await todoItemRepository.findTodoItemsById(userId);
 }
 
 // 할일 목록 추가

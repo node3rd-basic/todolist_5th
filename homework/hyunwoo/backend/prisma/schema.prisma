@@ -10,7 +10,7 @@ datasource db {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model TodoItem {
   id        Int       @id @default(autoincrement())
-  userId    Int       @map("user.id")
+  userId    Int       @map("user_id")
   title     String    @db.VarChar(512)
   doneAt    DateTime? @map("done_at") @db.DateTime(0)
   createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(0)

@@ -1,21 +1,22 @@
 import prisma from "../common/prisma.js";
 
 // id에 맞는 todoItem 찾기
-export async function getTodoItemById(userId) {
+export async function getTodoItemById(id) {
   return await prisma.todoItem.findUnique({
     where: {
-      userId,
+      id,
     },
   });
 }
 
 // todoItems 찾기
-export async function findMany(userId) {
-  return await prisma.todoItem.findMany({
+export async function findTodoItemsById(userId) {
+  const todoItems =  await prisma.todoItem.findMany({
     where: {
       userId,
     },
   });
+  return todoItems
 }
 
 // todoItem 추가하기
@@ -31,7 +32,7 @@ export async function saveTodoItem(todoItem) {
 
 // todoItem index 찾아서 수정하기
 export async function updateTodoItem(id, doneAt) {
-  await prisma.todoItem.update({
+  return await prisma.todoItem.update({
     where: {
       id,
     },
@@ -43,7 +44,7 @@ export async function updateTodoItem(id, doneAt) {
 
 // todoItem index 찾아서 삭제하기
 export async function deleteOne(id) {
-  await prisma.todoItem.delete({
+  return await prisma.todoItem.delete({
     where: {
       id,
     },
