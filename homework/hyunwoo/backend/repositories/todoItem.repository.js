@@ -9,7 +9,17 @@ export async function getTodoItemById (todoItemId) {
 // todoItems 찾기
 export async function findMany(userId) {
     const [item] = await conn.execute(`SELECT * FROM todo_items WHERE user_id = "${userId}"`);
-    return item;
+    const findedTodoItems = item.map((item) => {
+      return {
+      id: item.id,
+      userId,
+      title: item.title,
+      doneAt: item.done_at,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at
+      }
+    })
+    return findedTodoItems;
 }
 
 // todoItem 추가하기
