@@ -6,6 +6,7 @@ const router = Router()
 
 router.use(authMiddleware)
 router.get('/', todoItemsController.getTodoItems);
+router.get('/:id', todoItemsController.getTodoItem);
 router.post('/', todoItemsController.postTodoItem);
 router.delete('/:id', todoItemsController.deleteTodoItem);
 router.put('/:id', todoItemsController.putTodoItem);
