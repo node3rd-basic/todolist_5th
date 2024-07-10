@@ -3,11 +3,22 @@ import conn from "../common/conn.js";
 
 // user의 id 값으로 todo-items 를 조회
 export const getPostByUserId = async (id) => {
-  const [userPosts] = await conn.execute(
+  const [userItems] = await conn.execute(
     `SELECT * FROM todo_items WHERE user_id = ${id}`
   );
 
-  return userPosts;
+  const findedTodoItems = userItems.map((userItems) => {
+    return {
+      id: userItems.id,
+      userId: userItems.user_id,
+      title: userItems.title,
+      doneAt: userItems.done_At,
+      createdAt: userItems.created_at,
+      updatedAt: userItems.updated_at,
+    };
+  });
+
+  return findedTodoItems;
 };
 
 // post의 id 값으로 todo-items 를 조회
@@ -29,7 +40,7 @@ export const getPostbyKeyword = async (id, keyword) => {
 
 //입력한 post params로 todo-items 삭제
 export const deleteMyPostByPostId = async (id, postId) => {
-  const findPostByPostId = await conn.execute(
+  const findTodoItemById = await conn.execute(
     `SELECT * FROM todo_items WHERE id = ${postId}`
   );
 
@@ -69,10 +80,24 @@ export const toggleTodoItemByPostId = async (id, postId) => {
 
 export const createNewTodoItem = async (id, title) => {
   // todo-items 에 새로운 todo-item 추가
-  const [newTodoItem] = await conn.execute(
-    `INSERT INTO todo_items (user_id, title) values ('${id}', '${title}')`
+  const newTodoItem = await conn.execute(
+    `INSERT INTO todo_items (user_id, title) values (${id}, '${title}')`
   );
 
-  console.log("투두아이템 투두레포지토리 : ", newTodoItem);
-  return newTodoItem;
+  const [getMyTodoItem] = await conn.execute(
+    `SELECT * FROM todo_items WHERE user_id = ${id} ORDER BY id DESC LIMIT 1`
+  );
+
+  const [returnTodoItem] = getMyTodoItem.map((getMyTodoItem) => {
+    return {
+      id: getMyTodoItem.id,
+      userId: getMyTodoItem.user_id,
+      title: getMyTodoItem.title,
+      doneAt: getMyTodoItem.done_At,
+      createdAt: getMyTodoItem.created_at,
+      updatedAt: getMyTodoItem.updated_at,
+    };
+  });
+
+  return returnTodoItem;
 };

@@ -90,6 +90,8 @@ export const createNewTodoItem = async (req, res) => {
     return;
   }
   const createNewTodoItem = await todoitemsService.createNewTodoItem(id, title);
+
+  // console.log(createNewTodoItem[0]);
   res.json(createNewTodoItem);
   return;
 };
