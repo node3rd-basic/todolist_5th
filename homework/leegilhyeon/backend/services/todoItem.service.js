@@ -11,30 +11,38 @@ export async function findTodoItemById(id) {
 }
 
 export async function todoItemByUserId(userId) {
-  return await todoItemRepository.findTodoItems(userId);
+  const todoItems = await todoItemRepository.findTodoItems(userId);
+  return todoItems.map(todoItem => todoItemChange(todoItem))
+  
 }
 
 export async function getTodoItem(title, userId) {
-  //const newId = todoItemRepository.getNewId();
-  const newTodoItem = {
-    //id: newId,
+  
+  const saveTodoItem = {
     userId: userId,
     title: title,
-    // doneAt: null,
-    // createdAt: new Date(),
-    // updatedAt: null,
   };
-  await todoItemRepository.pushTodoItem(newTodoItem);
-  return newTodoItem;
+  const newTodoId = await todoItemRepository.pushTodoItem(saveTodoItem);
+  const newTodoItem = await findTodoItemById(newTodoId)
+  return todoItemChange(newTodoItem)
 }
 
-export function putTodoItemById(id) {
-  const todoItemFind = findTodoItemById(id);
-  const doneAt = todoItemFind.doneAt == null ? new Date() : null;
-  todoItemRepository.putTodoItem(todoItemFind, doneAt);
+export async function putTodoItemById(id) {
+  const todoItemFind = await findTodoItemById(id);
+  await todoItemRepository.putTodoItem(todoItemFind.id);
 }
 
-export function deleteTodoItemById(id) {
-  const deleteTodoItem = findTodoItemById(id);
-  todoItemRepository.deleteById(deleteTodoItem);
+export async function deleteTodoItemById(id) {
+  todoItemRepository.deleteById(id);
+}
+
+const todoItemChange = (todoModel) => {
+  return {
+    id: todoModel.id,
+    title: todoModel.title,
+    doneAt: todoModel.done_at,
+    userId: todoModel.user_id,
+    createdAt: todoModel.created_at,
+    updatedAt: todoModel.updated_at,
+  };
 }
