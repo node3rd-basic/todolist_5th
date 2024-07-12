@@ -15,15 +15,17 @@ export async function SignUp(email, password, rePassword, role, name) {
     throw new CustomError("비밀번호와 비밀번호 확인이 일치하지 않습니다.", 401);
   }
 
+  // console.log("email", email);
+
   const existingUser = await userRepository.findUserByEmail(email);
 
-  // console.log(email);
+  // console.log("existingUser@@@@@@@@@@@@", existingUser);
 
   if (existingUser) {
     throw new CustomError("이미 존재하는 이메일입니다.", 409);
   }
 
-  console.log(existingUser);
+  // console.log(existingUser);
 
   // 신규 id 입력하기
   // const newId = userRepository.getIncrementedId();
@@ -35,7 +37,9 @@ export async function SignUp(email, password, rePassword, role, name) {
     name,
   };
 
-  userRepository.pushNewUser(newUser);
+  // console.log("newUser@@@@@@@@@@@@", newUser);
+
+  await userRepository.pushNewUser(newUser);
 
   return newUser;
 }
@@ -48,7 +52,6 @@ export async function SignIn(email, password) {
 
   if (!foundUser) {
     throw new CustomError("존재하지 않는 유저입니다.", 404);
-    return;
   }
 
   // userData는 내가 이름 지은 것 foundUser에서 password 뺀 나머지를 넣은 값

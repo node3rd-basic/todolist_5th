@@ -1,10 +1,16 @@
 import * as userService from "../services/user.service.js";
 
 // 회원가입
-export function postSignUp(req, res) {
+export async function postSignUp(req, res) {
   const { email, password, rePassword, role, name } = req.body;
   try {
-    const newUser = userService.SignUp(email, password, rePassword, role, name);
+    const newUser = await userService.SignUp(
+      email,
+      password,
+      rePassword,
+      role,
+      name
+    );
 
     res.json(newUser);
   } catch (error) {
