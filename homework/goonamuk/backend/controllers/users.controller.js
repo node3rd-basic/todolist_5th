@@ -24,7 +24,6 @@ export const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   const token = await userService.userSignIn(email, password);
-  // console.log("token in user controller : ", token);
   res.status(200).json({ token });
 
   return;
@@ -33,6 +32,5 @@ export const signIn = async (req, res) => {
 /** 내 정보 조회 */
 export const myInfo = (req, res) => {
   const user = req.user;
-  // console.log("user in user controller - myInfo : ", req.user);
   res.json(user);
 };

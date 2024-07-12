@@ -14,24 +14,9 @@ export const findByEmail = async (email) => {
 };
 
 export const findByEmailAndPassword = async (email, password) => {
-  // const findByEmail = await conn.execute(
-  //   `SELECT email FROM users WHERE email = ?`,
-  //   [email]
-  // );
-  // const findByPassword = await conn.execute(
-  //   `SELECT password FROM users WHERE password = ?`,
-  //   [password]
-  // );
-
-  // console.log(`email : ${findByEmail}, password : ${findByPassword}`);
-  // if (findByEmail !== email || findByPassword !== password) {
-  //   throw new Error({ message: `이메일 혹은 비밀번호가 일치하지 않습니다.` });
-  // }
-
   const [findedUser] = await conn.execute(
     `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`
   );
-  // console.log("findedUser in repository :", findedUser);
   return findedUser[0];
 };
 

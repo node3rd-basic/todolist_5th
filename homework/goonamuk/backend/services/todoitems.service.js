@@ -1,10 +1,10 @@
 import * as todoitemsRepository from "../repositories/todoitems.repository.js";
 
 //할 일 목록 조회
-export const getMyPost = async (id) => {
-  const myPost = await todoitemsRepository.getPostByUserId(id);
+export const getMyItem = async (id) => {
+  const myItem = await todoitemsRepository.getTodoItemsByUserId(id);
 
-  return myPost;
+  return myItem;
 };
 
 //할 일 하나 조회
@@ -23,8 +23,8 @@ export const getMyPostById = async (id, postId) => {
 
 //검색어로 할 일 조회
 
-export const getMyPostByKeyword = async (id, keyword) => {
-  const myPostByKeyword = await todoitemsRepository.getPostbyKeyword(
+export const getItemsbyKeyword = async (id, keyword) => {
+  const myPostByKeyword = await todoitemsRepository.getItemsbyKeyword(
     id,
     keyword
   );
@@ -34,22 +34,22 @@ export const getMyPostByKeyword = async (id, keyword) => {
 
 //할 일 삭제
 
-export const deleteMyPostByPostId = async (id, postId) => {
-  const deletedMyPostByPostId = await todoitemsRepository.deleteMyPostByPostId(
+export const deleteMyItemByItemId = async (id, postId) => {
+  const deleteMyItemByItemId = await todoitemsRepository.deleteMyItemByItemId(
     id,
     postId
   );
 
-  return deletedMyPostByPostId;
+  return deleteMyItemByItemId;
 };
 
 //할 일 수정
 
-export const toggleTodoItemByPostId = async (id, postId) => {
-  const toggledTodoItemByPostId =
-    await todoitemsRepository.toggleTodoItemByPostId(id, postId);
+export const toggleTodoItemByItemId = async (id, postId) => {
+  const toggledTodoItemByItemId =
+    await todoitemsRepository.toggleTodoItemByItemId(id, postId);
 
-  return toggledTodoItemByPostId;
+  return toggledTodoItemByItemId;
 };
 
 //할 일 추가
@@ -60,6 +60,5 @@ export const createNewTodoItem = async (id, title) => {
     title
   );
 
-  // console.log("뉴튜두아이템 : ", createNewTodoItem[0]);
   return createNewTodoItem;
 };

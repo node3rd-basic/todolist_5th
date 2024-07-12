@@ -2,7 +2,7 @@ import { title } from "process";
 import conn from "../common/conn.js";
 
 // user의 id 값으로 todo-items 를 조회
-export const getPostByUserId = async (id) => {
+export const getTodoItemsByUserId = async (id) => {
   const [userItems] = await conn.execute(
     `SELECT * FROM todo_items WHERE user_id = ${id}`
   );
@@ -30,43 +30,43 @@ export const getPostById = async (postId) => {
 };
 
 //입력한 keyword 값으로 todo-items 조회
-export const getPostbyKeyword = async (id, keyword) => {
-  const userPostsByKeyword = await conn.execute(
+export const getItemsbyKeyword = async (id, keyword) => {
+  const useritemsByKeyword = await conn.execute(
     `SELECT * FROM todo_items WHERE title LIKE %${keyword}% AND user_id = ${id}`
   );
 
-  return userPostsByKeyword;
+  return useritemsByKeyword;
 };
 
 //입력한 post params로 todo-items 삭제
-export const deleteMyPostByPostId = async (id, postId) => {
-  const findTodoItemById = await conn.execute(
+export const deleteMyItemByItemId = async (id, postId) => {
+  const findTodoItemByItemId = await conn.execute(
     `SELECT * FROM todo_items WHERE id = ${postId}`
   );
 
-  // if (!findPostByPostId) {
-  //   throw new Error("해당하는 할 일이 없습니다.");
-  // }
-  // if (findPostByPostId.user_id !== id) {
-  //   throw new Error("권한이 없습니다.");
-  // }
+  if (!findTodoItemByItemId) {
+    throw new Error("해당하는 할 일이 없습니다.");
+  }
+  if (findTodoItemByItemId.user_id !== id) {
+    throw new Error("권한이 없습니다.");
+  }
 
-  const deleteMyPostByPostId = await conn.execute(
+  const deleteMyItemByItemId = await conn.execute(
     `DELETE FROM todo_items WHERE id = ${postId}`
   );
 
   return;
 };
 
-export const toggleTodoItemByPostId = async (id, postId) => {
+export const toggleTodoItemByItemId = async (id, postId) => {
   // todo-items 에서 id 값으로 todo-item 찾기
-  const findPostByPostId = await conn.execute(
+  const findtodoItemByitemId = await conn.execute(
     `SELECT * FROM todo_items WHERE id = ${postId}`
   );
 
-  // if (findPostByPostId.user_id !== id) {
-  //   throw new Error("권한이 없습니다.");
-  // }
+  if (findtodoItemByitemId.user_id !== id) {
+    throw new Error("권한이 없습니다.");
+  }
 
   // todoItem 의 doneAt 을 toggle 처리
   const toggledTodoItem = await conn.execute(

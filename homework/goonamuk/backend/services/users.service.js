@@ -38,12 +38,7 @@ export const userSignIn = async (email, password) => {
 
   // 사용자가 존재할 경우 jwt token 생성 후 응답
 
-  // user = { ...user, password: _pw };
-
-  // console.log(`findedUser in user service :`, findedUser);
   const { password: undefined, ...user } = findedUser;
-  // console.log(`user in user service :`, user);
   const signIn = jwt.sign(user, secretKey);
-  // console.log(signIn);
   return signIn;
 };

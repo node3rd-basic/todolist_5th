@@ -1,10 +1,10 @@
 import * as todoitemsService from "../services/todoitems.service.js";
 
 //할 일 전체 조회
-export const myPost = async (req, res, next) => {
+export const myItem = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const myPost = await todoitemsService.getMyPost(id);
+    const myPost = await todoitemsService.getMyItem(id);
 
     res.status(200).send(myPost);
     return;
@@ -14,13 +14,13 @@ export const myPost = async (req, res, next) => {
 };
 
 //할 일 한 가지 조회
-export const myPostById = async (req, res, next) => {
+export const myItemById = async (req, res, next) => {
   try {
     // id 값이 숫자인지 확인
     const { id } = req.user;
     const postId = Number(req.params.id);
 
-    const myPostById = await todoitemsService.getMyPostById(id, postId);
+    const myPostById = await todoitemsService.getMyItemById(id, postId);
 
     res.status(200).json(myPostById);
     return;
@@ -36,7 +36,7 @@ export const searchByKeyword = async (req, res, next) => {
     const { keyword } = req.params;
     const { id } = req.user;
 
-    const searchByKeyword = await todoitemsService.getMyPostByKeyword(
+    const searchByKeyword = await todoitemsService.getItemsbyKeyword(
       id,
       keyword
     );
@@ -50,17 +50,17 @@ export const searchByKeyword = async (req, res, next) => {
 
 //할 일 삭제
 
-export const deleteMyPostByPostId = async (req, res) => {
+export const deleteMyItemByItemId = async (req, res) => {
   // id 값이 숫자인지 확인
   const { id } = req.user;
   const postId = Number(req.params.id);
 
-  const deletedMyPostByPostId = await todoitemsService.deleteMyPostByPostId(
+  const deletedMyItemByItemId = await todoitemsService.deleteMyItemByItemId(
     id,
     postId
   );
 
-  res.status(200).send({ result: true, deletedMyPostByPostId });
+  res.status(200).send({ result: true, deletedMyItemByItemId });
   return;
 };
 
@@ -71,7 +71,7 @@ export const toggleTodoItem = async (req, res) => {
   const { id } = req.user;
   const postId = Number(req.params.id);
 
-  const toggledTodoItemByPostId = await todoitemsService.toggleTodoItemByPostId(
+  const toggledTodoItemByPostId = await todoitemsService.toggleTodoItemByItemId(
     id,
     postId
   );
@@ -91,7 +91,6 @@ export const createNewTodoItem = async (req, res) => {
   }
   const createNewTodoItem = await todoitemsService.createNewTodoItem(id, title);
 
-  // console.log(createNewTodoItem[0]);
   res.json(createNewTodoItem);
   return;
 };

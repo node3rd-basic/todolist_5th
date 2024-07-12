@@ -9,10 +9,10 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 const router = Router();
 router.use(authMiddleware);
 //내 글 찾기 api
-router.get("/", todoitemsController.myPost);
+router.get("/", todoitemsController.myItem);
 
 //할 일 상세 보기 api
-router.get("/:id", todoitemsController.myPostById);
+router.get("/:id", todoitemsController.myItemById);
 
 //할 일 검색 api
 router.get(
@@ -31,7 +31,7 @@ router.put("/:id", postIdValidator, todoitemsController.toggleTodoItem);
 router.delete(
   "/:id",
   postIdValidator,
-  todoitemsController.deleteMyPostByPostId
+  todoitemsController.deleteMyItemByItemId
 );
 
 export default router;
