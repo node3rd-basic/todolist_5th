@@ -1,43 +1,32 @@
-import todoItemsDB from "../db/todoItems.js";
 import conn from "../common/conn.js"
 
 export async function findTodoItemById(id) {
-  const [todoItem] = await conn.execute(`SELECT * FROM todo_items WHERE id = ${id}`)
-  //const todoItem = todoItemsDB.find((todoItem) => todoItem.id === id);
+  const sql = `SELECT * FROM todo_items WHERE id = ?`
+  const [todoItem] = await conn.execute(sql, [id])
+
   return todoItem[0] ? todoItem[0] : null 
 }
 
 export async function findTodoItems(userId) {
-  const sql = `SELECT * FROM todo_items WHERE user_id = ${userId}`
-  const [rows]= await conn.execute(sql)
-  return rows  //todoItemsDB.filter((todoItem) => todoItem.userId === userId);
+  const sql = `SELECT * FROM todo_items WHERE user_id = ?`
+  const [rows]= await conn.execute(sql, [userId])
+  return rows
 }
 
-// export function getNewId() {
-//   return todoItemsDB.length === 0
-//     ? 1
-//     : todoItemsDB[todoItemsDB.length - 1].id + 1;
-// }
+export async function pushTodoItem(saveTodoItem) {
 
-export async function pushTodoItem(newTodoItem) {
-  const sql = `INSERT INTO todo_items (user_id, title) VALUES (${newTodoItem.userId}, '${newTodoItem.title}')`
-  const [result] = await conn.execute(sql)
-  return {
-    ...newTodoItem,
-    id: result.insertId
-  }
- // todoItemsDB.push(newTodoItem);
+  const sql = `INSERT INTO todo_items (user_id, title) VALUES (?, ?)`
+  const [result] = await conn.execute(sql, [saveTodoItem.userId, saveTodoItem.title])
+  
+  return result.insertId
 }
 
-export function putTodoItem(todoItemFind, doneAt) {
-  const todoItemIndex = todoItemsDB.indexOf(todoItemFind);
-  todoItemsDB.splice(todoItemIndex, 1, {
-    ...todoItemFind,
-    doneAt,
-  });
+export async function putTodoItem(id) {
+  const sql = `update todo_items set done_at = if(done_at is null, now(), null) where id = ?`
+   await conn.execute(sql, [id])
 }
 
-export function deleteById(todoItem) {
-  const deleteTodoItem = todoItemsDB.indexOf(todoItem);
-  todoItemsDB.splice(deleteTodoItem, 1);
+export async function deleteById(id) {
+  const sql = `delete from todo_items where id = ?`
+  await conn.execute(sql, [id])
 }

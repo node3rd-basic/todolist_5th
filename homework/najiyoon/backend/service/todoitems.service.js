@@ -11,14 +11,19 @@ export async function getTodoItemsByUserId(userId) {
 export async function postTodoItem(userId, title) {
   console.log("user_id", userId);
   const newTodoItem = {
-    userId: userId,
+    userId: +userId,
     title: title,
   };
   const savedTodoItemId = await todoItemsRepository.saveTodoItem(newTodoItem);
+  console.log("savedTodoItemId", savedTodoItemId);
   //api 스펙이 안맞으므로 다시 돌려야함 맵 : 아이디로 투두아이템 조회해서 꺼내와야함
   //아이디로 1개조회 -> 이걸로 맵 돌리기
-  const savedTodoItem = await todoItemsRepository.oneTodoItem(savedTodoItemId);
-  console.log("savedTodoItem->", savedTodoItem);
+  const id = savedTodoItemId.id;
+  const savedTodoItem = await todoItemsRepository.oneTodoItem(
+    id
+    // savedTodoItemId.id
+  );
+  console.log("나와라savedTodoItem->", savedTodoItem);
   //하나씩 지정해주기.......
   return {
     id: savedTodoItem.id,
@@ -40,10 +45,8 @@ export async function oneTodoItem(id) {
 //할일수정//
 
 export async function toggleTodoItemDone(userId, id) {
-  console.log("iddddd", id);
-  console.log("useeeerId", userId);
+  console.log("아이디타입", typeof id);
   const todoItem = await todoItemsRepository.oneTodoItem(id);
-  console.log("todoItem----->", todoItem);
   if (!todoItem) {
     throw new Error("해당 투두아이템을 찾을 수 없습니다.");
   }

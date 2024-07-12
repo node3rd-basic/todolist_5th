@@ -8,6 +8,5 @@ export const errorHandlerMiddleware = (err, req, res, next) => {
   } else {
     console.log(err);
     res.status(500).json({ message: 'oops, An error occurred on the server . . .' });
-
   }
 };
