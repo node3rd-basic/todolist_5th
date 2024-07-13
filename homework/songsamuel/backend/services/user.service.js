@@ -2,9 +2,6 @@ import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
 import CustomError from "../common/custom.error.js";
 
-// // 토큰 시크릿 키
-// const secretKey = "돈 많이 벌고 싶다.";
-
 // 회원가입 API
 export async function SignUp(email, password, rePassword, role, name) {
   if (!email || !password || !rePassword || !role || !name) {
@@ -15,20 +12,11 @@ export async function SignUp(email, password, rePassword, role, name) {
     throw new CustomError("비밀번호와 비밀번호 확인이 일치하지 않습니다.", 401);
   }
 
-  // console.log("email", email);
-
   const existingUser = await userRepository.findUserByEmail(email);
-
-  // console.log("existingUser@@@@@@@@@@@@", existingUser);
 
   if (existingUser) {
     throw new CustomError("이미 존재하는 이메일입니다.", 409);
   }
-
-  // console.log(existingUser);
-
-  // 신규 id 입력하기
-  // const newId = userRepository.getIncrementedId();
 
   const newUser = {
     email,
@@ -36,8 +24,6 @@ export async function SignUp(email, password, rePassword, role, name) {
     role,
     name,
   };
-
-  // console.log("newUser@@@@@@@@@@@@", newUser);
 
   await userRepository.pushNewUser(newUser);
 
