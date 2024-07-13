@@ -34,6 +34,7 @@ export async function toggleDoneAtById(id) {
   const checkTodoItem = await getTodoItemById(id);
 
   const doneAt = checkTodoItem.doneAt ? null : new Date();
+
   await todoItemRepository.update(id, doneAt);
 }
 
@@ -43,6 +44,5 @@ export async function deleteTodoItemById(id) {
 
   const todoItemId = selectedTodoItem.id;
 
-  // console.log("deleteTodoItemById", todoItemId);
   await todoItemRepository.deleteOne(todoItemId);
 }
