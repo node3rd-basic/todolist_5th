@@ -1,25 +1,20 @@
-import { user } from "../db/user.db.js";
-import { conn } from "../common/db.js";
-
-export const newId = () => {
-  return user.length > 0 ? user[user.length - 1].userId + 1 : 1;
-};
+import { prisma } from "../untils/prisma.until.js";
 
 export const signUp = async (email, password, role, name) => {
-  const data = await conn.execute(
-    `INSERT INTO users (email, password, name, role) VALUES ("${email}","${password}","${name}","${role}")`
-  );
+  const data = await prisma.users.create({
+    data: {
+      email,
+      password,
+      role,
+      name,
+    },
+  });
 
   return data;
 };
 
-export const findEmailById = (email) => {
-  user.find((el) => el.email === email);
-};
-
-export const findUser = async (email) => {
-  const [findUser] = await conn.execute(
-    `SELECT * FROM users WHERE email = "${email}"`
-  );
-  return findUser[0];
+export const findEmailById = async (email) => {
+  return await prisma.users.findFirst({
+    where: { email },
+  });
 };

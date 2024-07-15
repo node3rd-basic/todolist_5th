@@ -1,16 +1,18 @@
-import usersDB from "../db/users.js";
+import conn from "../common/conn.js";
 
-const incrementedTodoId = () =>
-  usersDB.length === 0 ? 1 : usersDB[usersDB.length - 1].id + 1;
+export async function findUser(email) {
+  const sql = `SELECT * FROM users WHERE email = ?`
+  const [users] = await conn.execute(sql, [email])
 
-export function findUser(email) {
-  const existedUser = usersDB.find((user) => user.email === email);
-  return existedUser;
+  return users[0];
 }
 
-export function pushUser(newUser) {
-  usersDB.push({
-    ...newUser,
-    id: incrementedTodoId(usersDB),
-  });
+export async function pushUser(newUser) {
+  const sql = `INSERT INTO users (email, password, name, role ) VALUES (?, ?, ?, ?)`
+  const result = await conn.execute(sql,[newUser.email, newUser.password, newUser.name, newUser.role])
+  return {
+    id: result[0].insertId,
+    ...newUser
+  }
 }
+
