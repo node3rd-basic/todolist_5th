@@ -10,41 +10,41 @@ const validateTodoItemId = (req) => {
 };
 
 // 할일 목록 조회
-export function getTodoItems(req, res) {
+export async function getTodoItems(req, res) {
   const user = req.user;
-  const todoItems = todoItemService.findTodoItems(user.id);
+  const todoItems = await todoItemService.findTodoItems(user.id);
   res.send(todoItems);
 }
 
 // 할일 목록 추가
-export function postTodoItem(req, res) {
+export async function postTodoItem(req, res) {
   const user = req.user;
   const { title } = req.body;
-  const newTodoItem = todoItemService.postTodoItemById(title, user.id);
+  const newTodoItem = await todoItemService.postTodoItemById(title, user.id);
 
   res.send(newTodoItem);
 }
 
 // 할일 한가지 조회
-export function getTodoItem(req, res) {
+export async function getTodoItem(req, res) {
   const id = validateTodoItemId(req);
-  const todoItem = todoItemService.findTodoItemById(id);
+  const todoItem = await todoItemService.findTodoItemById(id);
 
   res.send(todoItem);
 }
 
 // 할일 수정하기
-export function putTodoItem(req, res) {
+export async function putTodoItem(req, res) {
   const id = validateTodoItemId(req);
-  const existTodoItem = todoItemService.putTodoItemById(id);
+  const existTodoItem = await todoItemService.putTodoItemById(id);
 
   res.send({ result: true });
 }
 
 // 할일 삭제하기
-export function deleteTodoItem(req, res) {
+export async function deleteTodoItem(req, res) {
   const id = validateTodoItemId(req);
-  const existTodoItem = todoItemService.deleteTodoItemById(id);
+  const existTodoItem = await todoItemService.deleteTodoItemById(id);
 
   res.send({ result: true });
 }
