@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
+import cors from "cors"; // 프론트랑 통신 잘하기 위한 용도 / 다른 서버에서 우리 백엔드 서버랑 연결할 수 있도록 해주는 용도
 
 // middleware
 import leaveLog from "./middlewares/leaveLogMiddleware.js";
