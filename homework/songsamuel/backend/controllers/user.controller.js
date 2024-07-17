@@ -1,21 +1,34 @@
 import * as userService from "../services/user.service.js";
 
 // 회원가입
-export function postSignUp(req, res) {
+export async function postSignUp(req, res) {
   const { email, password, rePassword, role, name } = req.body;
+  try {
+    const newUser = await userService.SignUp(
+      email,
+      password,
+      rePassword,
+      role,
+      name
+    );
 
-  const newUser = userService.SignUp(email, password, rePassword, role, name);
-
-  res.json(newUser);
+    res.json(newUser);
+  } catch (error) {
+    res.status(error.status).send({ message: error.message });
+  }
 }
 
 // 로그인
-export function postSignIn(req, res) {
+export async function postSignIn(req, res) {
   const { email, password } = req.body;
 
-  const userToken = userService.SignIn(email, password);
+  try {
+    const userToken = await userService.SignIn(email, password);
 
-  res.json({ token: userToken });
+    res.json({ token: userToken });
+  } catch (error) {
+    res.status(error.status).send({ message: error.message });
+  }
 }
 
 export function getUserMe(req, res) {

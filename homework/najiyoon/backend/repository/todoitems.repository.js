@@ -1,49 +1,46 @@
+import prisma from "../common/prisma.js";
 import todoitems from "../db/todoitems.js";
-import * as todoItemsDB from "../db/todoitems.js";
+// import conn from "../common/conn.js";
+
 //목록조회
-export function findMany(userId) {
-  return todoItemsDB.filter((todoitems) => (todoitems.userId = userId));
+export async function findMany(userId) {
+  return await prisma.TodoItem.findMany({ where: { userId: +userId } });
 }
-//등록
-export function getNewId(userId) {
-  return todoItemsDB[todoItemsDB.length - 1]
-    ? todoItemsDB[todoItemsDB.length - 1].id + 1
-    : 1;
+export async function saveTodoItem(todoItem) {
+  // console.log("TodoItem", TodoItem);
+  console.log("todoItem->", todoItem);
+  return await prisma.TodoItem.create({
+    data: { userId: +todoItem.userId, title: todoItem.title },
+    select: {
+      id: true,
+      userId: true,
+      title: true,
+      doneAt: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 }
-
-export function saveTodoItem(todoItem) {
-  todoItemsDB.push(todoItem);
-}
-//1개 조회 : 수정이 해당 목록찾는거랑 같으니 써도 되지않으까
-export function oneTodoItem(id) {
-  return todoItemsDB.find((todoitems) => todoitems.id === id);
-}
-
-//수정:내가 원하는 투두 아이템 번호 찾음
-// export function putTodoItem(id) {
-//   const reInPutTodoItem = todoItemsDB.indexOf(todoItem);
-//   return reInPutTodoItem;
-
-//   //수정입력 : null을 바꾸는 것 : 새 날짜로
-//   const indexOfFind = todoItemsDB.indexof((todoItems) => todoItems.id === id);
-// }
-export function findById(id) {
-  return todoItemsDB.find((todoItems) => todoItems.id === id);
+//이거먼저 1개 조회 : 수정이 해당 목록찾는거랑 같으니 써도 되지않으까
+export async function oneTodoItem(id) {
+  return await prisma.TodoItem.findUnique({ where: { id: +id } });
 }
 
-export function update(id, updatedTodoItem) {
-  const index = todoItemsDB.findIndex((todoItems) => todoItems.id === id);
-  if (index !== -1) {
-    todoItemsDB[index] = updatedTodoItem;
-    return updatedTodoItem;
-  }
-  return null;
+export async function update(id, doneAt) {
+  console.log("이건 id", id);
+  console.log("doneAt", doneAt);
+  console.log(typeof id);
+  return await prisma.TodoItem.update({ where: { id: +id }, data: { doneAt } });
+
+  // // const sql = `update todo_items set done_at = NOW() WHERE id = ${todoitems.id}`;
+  // const sql = `update todo_items set done_at = if(done_at is null, now(), null) where id = ?`;
+  // await conn.execute(sql, [id]);
 }
-//삭제
+
 //삭제할 인덱스 : 서비스에서 정의한 아이디
-export function spliceIndex(delTodoItem) {
-  const index = todoItemsDB.findIndex(
-    (todoItems) => todoItems.id === delTodoItem
-  );
-  todoItemsDB.splice(index, 1);
+export async function deleteItem(id) {
+  console.log("id->", id);
+  return await prisma.TodoItem.delete({ where: { id: +id } });
+  // const sql = `delete from todo_items where id = ?`;
+  // const [rows] = await conn.execute(sql, [id]);
 }

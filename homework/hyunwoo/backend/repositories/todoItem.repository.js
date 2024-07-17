@@ -11,7 +11,7 @@ export async function getTodoItemById(id) {
 
 // todoItems 찾기
 export async function findTodoItemsById(userId) {
-  const todoItems =  await prisma.todoItem.findMany({
+  const todoItems = await prisma.todoItem.findMany({
     where: {
       userId,
     },

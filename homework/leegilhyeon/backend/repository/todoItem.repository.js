@@ -1,33 +1,45 @@
-import todoItemsDB from "../db/todoItems.js";
+import prisma from "../common/prisma.js"
 
-export function findTodoItemById(id) {
-  const todoItem = todoItemsDB.find((todoItem) => todoItem.id === id);
-  return todoItem;
+export async function findTodoItemById(id) {
+  return await prisma.todoItem.findUnique({
+    where: { id }
+  })
 }
 
-export function findTodoItems(userId) {
-  return todoItemsDB.filter((todoItem) => todoItem.userId === userId);
+export async function findTodoItems(userId) {
+  return await prisma.todoItem.findMany({
+    where:{
+      userId
+    }
+  })
 }
 
-export function getNewId() {
-  return todoItemsDB.length === 0
-    ? 1
-    : todoItemsDB[todoItemsDB.length - 1].id + 1;
+export async function pushTodoItem(saveTodoItem) {
+  return await prisma.todoItem.create({
+    data: {
+      userId: saveTodoItem.userId,
+      title: saveTodoItem.title
+    }
+  })
 }
 
-export function pushTodoItem(newTodoItem) {
-  todoItemsDB.push(newTodoItem);
+export async function putTodoItem(id, doneAt) {
+
+   await prisma.todoItem.update({
+    where: {
+      id
+    },
+    data: {
+      doneAt,
+    },
+  })
 }
 
-export function putTodoItem(todoItemFind, doneAt) {
-  const todoItemIndex = todoItemsDB.indexOf(todoItemFind);
-  todoItemsDB.splice(todoItemIndex, 1, {
-    ...todoItemFind,
-    doneAt,
-  });
+export async function deleteById(id) {
+    await prisma.todoItem.delete({
+    where: {
+      id
+    },
+  })
 }
 
-export function deleteById(todoItem) {
-  const deleteTodoItem = todoItemsDB.indexOf(todoItem);
-  todoItemsDB.splice(deleteTodoItem, 1);
-}

@@ -1,34 +1,41 @@
-import todoItemsFromDB from "../db/todoitems.js";
+import conn from "../common/conn.js";
 
-export function findMany(userId) {
-  return todoItemsFromDB.filter((todoItem) => todoItem.userId === userId);
+export async function findMany(userId) {
+  const sql = `SELECT * FROM todo_items WHERE user_id = ?`;
+
+  const [rows] = await conn.execute(sql, [userId]);
+
+  console.log("[rows]", [rows]);
+  return rows;
 }
 
-export function getNewId() {
-  return todoItemsFromDB.length === 0
-    ? 1
-    : todoItemsFromDB[todoItemsFromDB.length - 1].id + 1;
+export async function saveTodoItem(newItem) {
+  const sql = `INSERT INTO todo_items (user_id, title) VALUES (?, ?)`;
+  const [result] = await conn.execute(sql, [newItem.userId, newItem.title]);
+  return {
+    ...newItem,
+    id: result.insertId,
+  };
 }
 
-export function saveTodoItem(newItem) {
-  return todoItemsFromDB.push(newItem);
+export async function findOneById(id) {
+  const sql = `SELECT * FROM todo_items WHERE id = ?`;
+  const [rows] = await conn.execute(sql, [id]);
+  // rows가 아닌 이유는 한개만 찾을꺼니까 첫번째 요소([0])인것만 찾을 것이니까
+  return rows[0] || null;
+  //  rows[0] || null; 해석 :  rows[0]가 있으면  rows[0]를 반환하고 아니면 null을 반환해라
 }
 
-export function findOneById(id) {
-  return todoItemsFromDB.find((todoItem) => todoItem.id === id);
+export async function update(checkTodoItem) {
+  const sql = `UPDATE todo_items SET done_at = if(done_at is null, now(), null) WHERE id = ?`;
+  const result = await conn.execute(sql, [checkTodoItem.id]);
+
+  return result;
 }
 
-export function update(checkTodoItem, doneAt) {
-  const todoItemsIndex = todoItemsFromDB.indexOf(checkTodoItem);
+export async function deleteOne(id) {
+  const sql = `DELETE FROM todo_items WHERE id = ?`;
+  const result = await conn.execute(sql, [id]);
 
-  todoItemsFromDB.splice(todoItemsIndex, 1, {
-    ...checkTodoItem,
-    doneAt,
-  });
-}
-
-export function deleteOne(todoItem) {
-  const indexTodoItem = todoItemsFromDB.indexOf(todoItem);
-
-  todoItemsFromDB.splice(indexTodoItem, 1);
+  return result;
 }

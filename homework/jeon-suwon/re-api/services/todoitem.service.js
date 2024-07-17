@@ -1,14 +1,13 @@
 import * as todoitemRepository from "../repositories/todoitem.repository.js";
+import { CustomError } from "../common/custom.error.js";
 
-export const putTodoitem = (id, userId) => {
-  const findTodoItem = todoitemRepository.findTodoItem(id);
-
-  const data = todoitemRepository.changeTodoItem(id, userId, findTodoItem);
-  return data;
+export const putTodoitem = async (id, userId) => {
+  const findByItem = await todoitemRepository.getTodolist(id, userId);
+  return await todoitemRepository.changeTodoItem(id, userId, findByItem);
 };
 
-export const deleteTodoitem = (id) => {
-  const findTodoItem = todoitemRepository.findIndexTodoItem(id);
-
-  if (todoitemRepository.deleteTodoitem(findTodoItem)) return true;
+export const deleteTodoitem = async (id, userId) => {
+  const data = await todoitemRepository.deleteTodoitem(id, userId);
+  if (!data) throw new CustomError("데이터가 존재하지 않습니다.", 404);
+  return data;
 };

@@ -7,6 +7,7 @@ export default (req, res, next) => {
     const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     req.user = user;
+
     next();
   } catch (error) {
     res.status(401).json({ message: '인증 정보가 유효하지 않습니다.' });

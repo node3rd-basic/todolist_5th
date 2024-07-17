@@ -1,15 +1,30 @@
-import conn from "../common/conn.js";
+import prisma from "../common/prisma.js";
 
 export async function findOne(email) {
-    const [users] = await conn.execute(`SELECT * FROM users WHERE email = '${email}'`)
-    return users[0]
+    return await prisma.User.findFirst({
+        where: {
+            email
+        }
+    })
+}
+
+
+export async function findOneById(id) {
+    return await prisma.User.findUnique({
+        where: {
+            id
+        }
+    })
 }
 
 export async function save(user) {
-    const sql = `INSERT INTO users (email, password, name, role) VALUES ('${user.email}', '${user.password}', '${user.name}', '${user.role}')`
-    const result = await conn.execute(sql)
-    return {
-        id: result[0].insertId,
-        ...user
-    }
+    const savedUser = await prisma.User.create( {
+        data: {
+            email: user.email,
+            password: user.password,
+            role: user.role,
+            name: user.name
+        }
+    })
+    return savedUser
 }

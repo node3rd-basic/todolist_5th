@@ -5,10 +5,11 @@ import express from "express";
 const todoitemRouter = express();
 
 //할일 목록 조회 api
-todoitemRouter.get("/todo-items", todoitemController.getTodolists);
-
-//할일 목록 한개 조회 api
-todoitemRouter.get("/todo-items/:id", todoitemController.getTodolist);
+todoitemRouter.get(
+  "/todo-items",
+  authMiddleware,
+  todoitemController.getTodolists
+);
 
 //할일 목록 생성 api
 todoitemRouter.post(

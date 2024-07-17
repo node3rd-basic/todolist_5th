@@ -5,29 +5,26 @@ export async function getTodoItemsByUserId(userId) {
 }
 
 export async function saveTodoItem(title, userId) {
-    const newTodoItem = {
+    const todoItemToSave = {
         "userId": userId,
         "title": title,
     }
-    await todoItemRepository.saveTodoItem(newTodoItem)
-    return newTodoItem
+    return await todoItemRepository.saveTodoItem(todoItemToSave)
 }
 
-export function getTodoItemById(id) {
-    const todoItem = todoItemRepository.findOneById(id)
+export async function getTodoItemById(id) {
+    const todoItem = await todoItemRepository.findOneById(id)
     if (!todoItem) {
         throw new Error("Todo item not found")
     }
     return todoItem
 }
 
-export function toggleDontAtById(id) {
-    const selectedTodoItem = getTodoItemById(id)
-    const doneAt = selectedTodoItem.doneAt ? null : new Date()
-    todoItemRepository.update(selectedTodoItem, doneAt)
+export async function toggleDontAtById(id) {
+    const todoItem = await todoItemRepository.findOneById(id)
+    await todoItemRepository.update(id, todoItem.doneAt ? null : new Date())
 }
 
-export function deleteTodoItemById(id) {
-    const selectedTodoItem = getTodoItemById(id)
-    todoItemRepository.deleteOne(selectedTodoItem)
+export async function deleteTodoItemById(id) {
+    await todoItemRepository.deleteOne(id)
 }

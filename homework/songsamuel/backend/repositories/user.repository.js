@@ -1,21 +1,35 @@
-import userDB from "../db/users.js";
+import conn from "../common/conn.js";
 
-export function findUserByEmail(email) {
-  return userDB.email === email;
+// 이메일 중복 화인
+export async function findUserByEmail(email) {
+  const sql = `SELECT * FROM users WHERE email = ?`;
+
+  // console.log("sql@@@@@@", sql);
+
+  const [users] = await conn.execute(sql, [email]);
+
+  return users[0]; // users의 첫번쨰 요소를 가져온다.
 }
 
-export function getIncrementedId() {
-  return userDB[userDB.length - 1] ? userDB[userDB.length - 1].id + 1 : 1;
+// 새로운 유저 등록
+export async function pushNewUser(newUser) {
+  const sql = `INSERT INTO users (email, password, role, name) VALUES (:email, :password, :role, :name)`;
+
+  // console.log("sql 결과값!!", sql);
+
+  await conn.execute(sql, newUser);
 }
 
-export function pushNewUser(newUser) {
-  return userDB.push(newUser);
-}
+export async function findUser(email, password) {
+  const sql = `SELECT * from users where (email, password) = ( ?, ?)`;
 
-export function findUser(email, password) {
-  const user = userDB.find(
-    (user) => user.email === email && user.password === password
-  );
+  // console.log("sql", sql);
 
-  return user;
+  const [result] = await conn.execute(sql, [email, password]);
+
+  // 여기 확인필요!
+
+  // console.log("result", result);
+
+  return result[0];
 }

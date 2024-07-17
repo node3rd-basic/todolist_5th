@@ -1,16 +1,21 @@
-import usersDB from "../db/users.js";
+import prisma from "../common/prisma.js";
 
-const incrementedTodoId = () =>
-  usersDB.length === 0 ? 1 : usersDB[usersDB.length - 1].id + 1;
-
-export function findUser(email) {
-  const existedUser = usersDB.find((user) => user.email === email);
-  return existedUser;
+export async function findUser(email) {
+  return await prisma.User.findFirst({
+    where: {
+      email
+    }
+  })
 }
 
-export function pushUser(newUser) {
-  usersDB.push({
-    ...newUser,
-    id: incrementedTodoId(usersDB),
-  });
+export async function pushUser(newUser) {
+  const createUser = await prisma.User.create({
+      data: {email: newUser.email,
+            password: newUser.password,
+            name: newUser.name,
+            role: newUser.role,}}      
+  )
+  return createUser
 }
+
+

@@ -1,20 +1,20 @@
-import usersDB from '../db/users.js';
+import prisma from '../common/prisma.js';
 
-//투두아이템 아이디, 유저 아이디 생성
-export const getIncrementedId = () => (usersDB[usersDB.length - 1] ? usersDB[usersDB.length - 1].id + 1 : 1);
-
-export const findUserByEmail = (email) => {
-  const existedUser = usersDB.find((user) => user.email === email);
-
-  return existedUser;
-};
-
-export const createUser = (newUser) => {
-  usersDB.push(newUser);
-};
-
-export const findUser = (email, password) => {
-  const user = usersDB.find((user) => user.email === email && user.password === password);
+export const findUserByEmail = async (email) => {
+  const user = await prisma.user.findFirst({ where: { email } });
 
   return user;
+};
+
+export const createUser = async (userData) => {
+  const newUser = await prisma.user.create({
+    data: {
+      email: userData.email,
+      password: userData.password,
+      role: userData.role,
+      name: userData.name,
+    },
+  });
+
+  return newUser;
 };
