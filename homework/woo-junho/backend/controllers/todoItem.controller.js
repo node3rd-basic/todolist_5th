@@ -12,7 +12,6 @@ const validateTodoItemId = (req) => {
 export async function getTodoItems(req, res) {
     const user = req.user
     const todoItems = await todoItemService.getTodoItemsByUserId(user.id)
-    console.log(todoItems)
     res.send(todoItems)
 }
 

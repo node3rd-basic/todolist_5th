@@ -5,6 +5,13 @@ export async function findMany(userId) {
     return await prisma.TodoItem.findMany({
             where: {
                 userId
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         }
     )
