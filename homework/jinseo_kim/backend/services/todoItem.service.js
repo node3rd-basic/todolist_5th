@@ -13,9 +13,6 @@ export async function getTodoItemById(id) {
   return todoItem;
 }
 
-
-
-
 export async function createTodoItem(title, userId) {
   const newTodoItem = {
     userId: Number(userId),
@@ -30,13 +27,12 @@ export async function createTodoItem(title, userId) {
 
 export async function deleteTodoItemById(id) {
   const selectedTodoItem = await getTodoItemById(id);
-  await todoItemRepository.deleteOne(selectedTodoItem);
+  await todoItemRepository.deleteOne(selectedTodoItem.id);
 }
 export async function toggleDonAtById(id) {
   const selectedTodoItem = await getTodoItemById(id);
   await todoItemRepository.update(selectedTodoItem.id);
 }
-
 
 export async function getTodoItemsById(id) {
   const todoItem = await todoItemRepository.findOneByTodoIdId(id);
