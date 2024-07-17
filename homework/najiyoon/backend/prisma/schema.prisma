@@ -15,9 +15,9 @@ model TodoItem {
   doneAt    DateTime? @map("done_at") @db.DateTime(0)
   createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(0)
   updatedAt DateTime? @map("updated_at") @db.DateTime(0)
-
+  user User @relation(fields: [userId], references: [id])
   @@map("todo_items")
-}
+} 
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model User {
@@ -26,7 +26,7 @@ model User {
   password String @db.VarChar(128)
   name     String @db.VarChar(24)
   role     role   @default(student)
-
+  todoItems TodoItem[]
   @@map("users")
 }
 
