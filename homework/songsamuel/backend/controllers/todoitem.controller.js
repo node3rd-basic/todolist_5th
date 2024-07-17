@@ -16,6 +16,7 @@ const validateTodoItemId = (req) => {
 // 생각해보면 할 일 목록 가져온 것에서 인증한 아이디를 통해 DB에서 검색하는 것이니까 맞음.
 export async function getTodoItems(req, res) {
   const user = req.user;
+  console.log("user", user.id);
   const todoItems = await todoItemService.getTodoItemsById(user.id);
   res.send(todoItems);
 }
