@@ -2,7 +2,7 @@ import * as todoItemRepository from "../repositories/todoItem.repository.js";
 
 // 할일 목록 조회
 export async function findTodoItems(userId) {
-  return await todoItemRepository.findMany(userId);
+  return await todoItemRepository.findTodoItemsById(userId);
 }
 
 // 할일 목록 추가
@@ -24,11 +24,13 @@ export async function findTodoItemById(id) {
 }
 
 // 할일 수정하기
-export async function putTodoItemById(id) {
-  return await todoItemRepository.update(id);
+export async function putTodoItemById(id, userId) {
+  const findTodoItem = await findTodoItemById(id, userId)
+  await todoItemRepository.updateTodoItem(id, findTodoItem.doneAt === null ? new Date() : null);
 }
 
 // 할일 삭제하기
-export async function deleteTodoItemById(id) {
-  return await todoItemRepository.deleteOne(id);
+export async function deleteTodoItemById(id, userId) {
+  await findTodoItem(id, userId);
+  await todoItemRepository.deleteOne(todoItemId);
 }
