@@ -31,6 +31,6 @@ export async function putTodoItemById(id, userId) {
 
 // 할일 삭제하기
 export async function deleteTodoItemById(id, userId) {
-  await findTodoItem(id, userId);
-  await todoItemRepository.deleteOne(todoItemId);
+  await findTodoItemById(id, userId);
+  await todoItemRepository.deleteOne(id);
 }
