@@ -1,0 +1,18 @@
+config:
+  # base url 정의 (우리는 domain을 작성)
+  target: 'http://localhost:3000'
+  phases:
+    # 부하테스트 시간 (초)
+    - duration: 30
+      # 부하테스트 동안의 사용자 수 (초당 요청 수)
+      arrivalRate: 15
+      name: api-request-test
+# 부하 테스트 시나리오
+scenarios:
+  # 시나리오 정의
+  - name: 'just get hash'
+    flow:
+      - get:
+          url: '/todo-items'
+          headers:
+            Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjM0NjM2LCJuYW1lIjoiODg4OCIsImVtYWlsIjoiOTk5OSIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzIxMzg3NDA3fQ.1Bw_PMWTd1ZhrTqxP_tN81sQmqCIxQt4OPIxa-A0KJ4'
