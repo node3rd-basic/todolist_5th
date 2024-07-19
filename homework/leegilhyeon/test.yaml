@@ -11,4 +11,4 @@ scenarios:
       - get:
           url: "/todo-items"
           headers:
-            Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuyasOykgO2YuCIsImVtYWlsIjoibm9nZ29uZ0BleGFtcGxlLmNvbSIsInJvbGUiOiJ0dXRvciIsImlhdCI6MTcyMTIxNjAwOX0.UOsNOog71HQ2z9M53aHDuerl5GTx0ZosrSC-B-PLXpE"
+            Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuydtOq4uO2YhCIsImVtYWlsIjoibGdoNTQ5OEBleGFtcGxlLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzIxMzkwOTc1fQ.EVmbR-M4tXoO4hgVaNbIQZVCmXrW2wcgyGtTHsH_RKk"
