@@ -2,9 +2,6 @@ import * as userRepository from "../repositories/user.repository.js";
 import jwt from "jsonwebtoken";
 import CustomError from "../common/custom.error.js";
 
-// // 토큰 시크릿 키
-// const secretKey = "돈 많이 벌고 싶다.";
-
 // 회원가입 API
 export async function SignUp(email, password, rePassword, role, name) {
   if (!email || !password || !rePassword || !role || !name) {
@@ -17,16 +14,9 @@ export async function SignUp(email, password, rePassword, role, name) {
 
   const existingUser = await userRepository.findUserByEmail(email);
 
-  // console.log(email);
-
   if (existingUser) {
     throw new CustomError("이미 존재하는 이메일입니다.", 409);
   }
-
-  console.log(existingUser);
-
-  // 신규 id 입력하기
-  // const newId = userRepository.getIncrementedId();
 
   const newUser = {
     email,
@@ -35,7 +25,7 @@ export async function SignUp(email, password, rePassword, role, name) {
     name,
   };
 
-  userRepository.pushNewUser(newUser);
+  await userRepository.pushNewUser(newUser);
 
   return newUser;
 }
@@ -48,7 +38,6 @@ export async function SignIn(email, password) {
 
   if (!foundUser) {
     throw new CustomError("존재하지 않는 유저입니다.", 404);
-    return;
   }
 
   // userData는 내가 이름 지은 것 foundUser에서 password 뺀 나머지를 넣은 값
