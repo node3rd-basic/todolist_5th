@@ -1,0 +1,87 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.get todo": 100,
+      "vusers.created": 100,
+      "http.requests": 100,
+      "plugins.metrics-by-endpoint./todo-items.errors.ECONNREFUSED": 100,
+      "errors.ECONNREFUSED": 100,
+      "vusers.failed": 100
+    },
+    "rates": {
+      "http.request_rate": 5
+    },
+    "firstCounterAt": 1721386411887,
+    "lastCounterAt": 1721386431131,
+    "firstMetricAt": 1721386411887,
+    "lastMetricAt": 1721386431131,
+    "period": 1721386430000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.get todo": 42,
+        "vusers.created": 42,
+        "http.requests": 42,
+        "plugins.metrics-by-endpoint./todo-items.errors.ECONNREFUSED": 42,
+        "errors.ECONNREFUSED": 42,
+        "vusers.failed": 42
+      },
+      "rates": {
+        "http.request_rate": 5
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1721386411887,
+      "lastCounterAt": 1721386419950,
+      "firstMetricAt": 1721386411887,
+      "lastMetricAt": 1721386419950,
+      "period": "1721386410000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.get todo": 50,
+        "vusers.created": 50,
+        "http.requests": 50,
+        "plugins.metrics-by-endpoint./todo-items.errors.ECONNREFUSED": 50,
+        "errors.ECONNREFUSED": 50,
+        "vusers.failed": 50
+      },
+      "rates": {
+        "http.request_rate": 5
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1721386420006,
+      "lastCounterAt": 1721386429948,
+      "firstMetricAt": 1721386420006,
+      "lastMetricAt": 1721386429948,
+      "period": "1721386420000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.get todo": 8,
+        "vusers.created": 8,
+        "http.requests": 8,
+        "plugins.metrics-by-endpoint./todo-items.errors.ECONNREFUSED": 8,
+        "errors.ECONNREFUSED": 8,
+        "vusers.failed": 8
+      },
+      "rates": {
+        "http.request_rate": 8
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1721386430006,
+      "lastCounterAt": 1721386431131,
+      "firstMetricAt": 1721386430006,
+      "lastMetricAt": 1721386431131,
+      "period": "1721386430000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}
