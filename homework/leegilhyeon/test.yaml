@@ -1,0 +1,14 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 20
+      arrivalRate: 5
+      name: "TodoService"
+
+scenarios:
+  - name: "get todo"
+    flow:
+      - get:
+          url: "/todo-items"
+          headers:
+            Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuydtOq4uO2YhCIsImVtYWlsIjoibGdoNTQ5OEBleGFtcGxlLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzIxMzkwOTc1fQ.EVmbR-M4tXoO4hgVaNbIQZVCmXrW2wcgyGtTHsH_RKk"

@@ -11,7 +11,7 @@ const validateTodoId = (req) => {
 //내 할일 목록
 export async function getTodoItems(req, res) {
   const user = req.user;
-  const todoItems = await todoItemService.todoItemByUserId(user.id);
+  const todoItems = await todoItemService.getTodoItemsByUserId(user.id);
   res.send(todoItems);
 }
 
@@ -19,7 +19,7 @@ export async function getTodoItems(req, res) {
 export async function getTodoItem(req, res) {
   try {
     const id = validateTodoId(req);
-    const todoItem = await todoItemService.findTodoItemById(id);
+    const todoItem = await todoItemService.getTodoItemById(id);
     res.send(todoItem);
   } catch (error) {
     res.status(e.status).send({ message: e.message });
